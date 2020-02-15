@@ -90,7 +90,22 @@ export default new Router({
                     path: '/403',
                     component: () => import(/* webpackChunkName: "403" */ '../components/page/403.vue'),
                     meta: { title: '403' }
-                }
+                },
+                {
+                    path: '/departmentManagement',
+                    component: () => import(/* webpackChunkName: "dashboard" */ '../components/page/department_management/index'),
+                    meta: { title: '部门管理' }
+                },
+                {
+                    path: '/jobManagement',
+                    component: () => import(/* webpackChunkName: "dashboard" */ '../components/page/job_management/index'),
+                    meta: { title: '岗位管理' }
+                },
+                {
+                    path: '/staffManagement',
+                    component: () => import(/* webpackChunkName: "dashboard" */ '../components/page/staff_management/index'),
+                    meta: { title: '员工管理' }
+                },
             ]
         },
         {

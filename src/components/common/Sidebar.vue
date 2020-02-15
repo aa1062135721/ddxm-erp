@@ -140,7 +140,22 @@ export default {
                             title: '404页面'
                         }
                     ]
-                }
+                },
+                {
+                    icon: 'el-icon-lx-copy',
+                    index: 'departmentManagement',
+                    title: '部门管理'
+                },
+                {
+                    icon: 'el-icon-lx-copy',
+                    index: 'jobManagement',
+                    title: '岗位管理'
+                },
+                {
+                    icon: 'el-icon-lx-copy',
+                    index: 'staffManagement',
+                    title: '员工管理'
+                },
             ]
         };
     },
