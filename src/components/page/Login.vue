@@ -3,9 +3,9 @@
         <div class="ms-login">
             <div class="ms-title">后台管理系统</div>
             <el-form :model="param" :rules="rules" ref="login" label-width="0px" class="ms-content">
-                <el-form-item prop="username">
-                    <el-input v-model="param.username" placeholder="username">
-                        <el-button slot="prepend" icon="el-icon-lx-people"></el-button>
+                <el-form-item prop="account">
+                    <el-input v-model="param.account" placeholder="username" clearable>
+<!--                        <el-button slot="prepend" icon="el-icon-lx-people"></el-button>-->
                     </el-input>
                 </el-form-item>
                 <el-form-item prop="password">
@@ -14,31 +14,33 @@
                         placeholder="password"
                         v-model="param.password"
                         @keyup.enter.native="submitForm()"
+                        clearable
                     >
-                        <el-button slot="prepend" icon="el-icon-lx-lock"></el-button>
+<!--                        <el-button slot="prepend" icon="el-icon-lx-lock"></el-button>-->
                     </el-input>
                 </el-form-item>
                 <div class="login-btn">
                     <el-button type="primary" @click="submitForm()">登录</el-button>
                 </div>
-                <p class="login-tips">Tips : 用户名和密码随便填。</p>
+<!--                <p class="login-tips">Tips : 用户名和密码随便填。</p>-->
             </el-form>
         </div>
     </div>
 </template>
 
 <script>
-    import {mapMutations } from 'vuex'
+import { mapMutations } from 'vuex';
+import { login } from '@/api/user.js';
 
 export default {
     data: function() {
         return {
             param: {
-                username: 'admin',
-                password: '123123',
+                account: 'admin',
+                password: '123456',
             },
             rules: {
-                username: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
+                account: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
                 password: [{ required: true, message: '请输入密码', trigger: 'blur' }],
             },
         };
@@ -48,17 +50,17 @@ export default {
         submitForm() {
             this.$refs.login.validate(valid => {
                 if (valid) {
-                    const userInfo = {
-                        name: '大帅哥',
-                        sex: '男',
-                        headImg: 'https://ddxm661.com/static/admin/img/avatar.png'
-                    };
-                    this.setUserInfo(userInfo);
-                    this.$message.success('登录成功');
-                    this.$router.push('/');
+                    login(this.param).then(res => {
+                        if (res.code === 200){
+                            this.$message.success('登录成功');
+                            this.setUserInfo(res.data);
+                            this.$router.push('/');
+                        }
+                    }).catch(err => {
+                        console.log(err)
+                    })
                 } else {
                     this.$message.error('请输入账号和密码');
-                    console.log('error submit!!');
                     return false;
                 }
             });

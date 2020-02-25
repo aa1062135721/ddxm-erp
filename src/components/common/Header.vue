@@ -71,7 +71,8 @@
 
 <script>
 import bus from '../common/bus';
-import { mapState, mapActions, mapMutations } from 'vuex'
+import { mapState, mapActions, mapMutations } from 'vuex';
+import { loginOut } from '@/api/user.js';
 
 export default {
     data() {
@@ -90,8 +91,12 @@ export default {
         // 用户名下拉菜单选择事件
         handleCommand(command) {
             if (command == 'loginout') {
-                this.setUserInfo({});
-                this.$router.push('/login');
+                loginOut().then(res => {
+                    this.setUserInfo({});
+                    this.$router.push('/login');
+                }).catch(err => {
+                    console.log(err)
+                })
             }
             // 同步
             if (command == 'checkUser') {

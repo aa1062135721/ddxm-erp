@@ -1,9 +1,9 @@
 import axios from 'axios';
+import { Message } from 'element-ui';
 
 const service = axios.create({
     // process.env.NODE_ENV === 'development' 来判断是否开发环境
-    // easy-mock服务挂了，暂时不使用了
-    // baseURL: 'https://www.easy-mock.com/mock/592501a391470c0ac1fab128',
+    baseURL: process.env.NODE_ENV === 'development' ? '/api' : 'http://testadmin2.ddxm661.com',
     timeout: 5000
 });
 
@@ -20,6 +20,13 @@ service.interceptors.request.use(
 service.interceptors.response.use(
     response => {
         if (response.status === 200) {
+            if (response.data.code != 200){
+                Message.closeAll();
+                Message({
+                    message: response.data.msg,
+                    type: 'error'
+                })
+            }
             return response.data;
         } else {
             Promise.reject();
