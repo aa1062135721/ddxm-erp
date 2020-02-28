@@ -14,7 +14,7 @@
                         clearable>
                 </el-input>
                 <el-button type="primary" @click="getList">查询</el-button>
-                <el-button type="primary" plain @click="addDialog.visible = true">添加</el-button>
+                <el-button type="primary" plain @click="staffAddDialogShow">添加</el-button>
             </div>
             <div style="margin: 40px 0;">
                 <el-table :data="responseData.data" style="width: 100%">
@@ -28,6 +28,8 @@
                     <template slot-scope="scope">
                         <el-switch
                                 v-model="scope.row.is_switch"
+                                :active-value="1"
+                                :inactive-value="0"
                                 active-color="#13ce66"
                                 @change="staffIsSwitch(scope.row)"
                         >
@@ -37,7 +39,7 @@
                 <el-table-column label="操作">
                     <template slot-scope="scope">
                         <el-button type="text">权限管理</el-button>
-                        <el-button type="text" @click="staffEdit(scope.row)">编辑</el-button>
+                        <el-button type="text" @click="staffEditDialogShow(scope.row)">编辑</el-button>
                         <el-button type="text" @click="deleteDepartment(scope.row)">删除</el-button>
                     </template>
                 </el-table-column>
@@ -66,12 +68,12 @@
                 </el-form-item>
                 <el-form-item label="所属部门" prop="role_id">
                     <el-select v-model="addDialog.ruleForm.role_id" placeholder="请选择">
-                        <el-option v-for="(item, index) in department" :key="index" :label="item.name" :value="item.id"></el-option>
+                        <el-option v-for="(item, index) in addDialog.department" :key="index" :label="item.r_name" :value="item.id"></el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item label="所属岗位" prop="ag_id">
                     <el-select v-model="addDialog.ruleForm.ag_id" placeholder="请选择">
-                        <el-option v-for="(item, index) in job" :key="index" :label="item.name" :value="item.id"></el-option>
+                        <el-option v-for="(item, index) in addDialog.job" :key="index" :label="item.rg_name" :value="item.id"></el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item>
@@ -82,7 +84,7 @@
         </el-dialog>
 
         <el-dialog v-dialogDrag title="编辑员工" center :visible.sync="editDialog.visible" width="30%">
-            <el-form :model="editDialog.ruleForm" :rules="editDialog.rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
+            <el-form :model="editDialog.ruleForm" :rules="editDialog.rules" ref="editDialog" label-width="100px" class="demo-ruleForm">
                 <el-form-item label="账号" prop="a_account">
                     <el-input v-model="editDialog.ruleForm.a_account"></el-input>
                 </el-form-item>
@@ -97,17 +99,16 @@
                 </el-form-item>
                 <el-form-item label="所属部门" prop="role_id">
                     <el-select v-model="editDialog.ruleForm.role_id" placeholder="请选择">
-                        <el-option v-for="(item, index) in department" :key="index" :label="item.name" :value="item.id"></el-option>
+                        <el-option v-for="(item, index) in editDialog.department" :key="index" :label="item.r_name" :value="item.id"></el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item label="所属岗位" prop="ag_id">
                     <el-select v-model="editDialog.ruleForm.ag_id" placeholder="请选择">
-                        <el-option v-for="(item, index) in job" :key="index" :label="item.name" :value="item.id"></el-option>
+                        <el-option v-for="(item, index) in editDialog.job" :key="index" :label="item.rg_name" :value="item.id"></el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item>
-                    <el-button type="primary" @click="staffAdd('ruleForm')">立即创建</el-button>
-                    <el-button @click="resetForm('ruleForm')">重置</el-button>
+                    <el-button type="primary" @click="staffEditConfirm('editDialog')">确认编辑</el-button>
                 </el-form-item>
             </el-form>
         </el-dialog>
@@ -119,7 +120,7 @@
 
     export default {
         name: 'index',
-        data(){
+        data() {
             return {
                 requestData: {
                     page: 1,
@@ -142,34 +143,7 @@
                         }
                     ]
                 },
-                job: [
-                    {
-                        id: 1,
-                        name: 'PHP开发工程师',
-                    },
-                    {
-                        id: 2,
-                        name: '前端开发工程师',
-                    },
-                    {
-                        id: 3,
-                        name: '客服',
-                    },
-                ],
-                department: [
-                    {
-                        id: 1,
-                        name: '电商部',
-                    },
-                    {
-                        id: 2,
-                        name: '研发部',
-                    },
-                    {
-                        id: 2,
-                        name: '财务部',
-                    },
-                ],
+
                 addDialog: {
                     visible: false,
                     ruleForm: {
@@ -196,6 +170,8 @@
                             { required: true, message: '请选择部门', trigger: 'blur' },
                         ],
                     },
+                    department: [],// 部门
+                    job: [],//岗位
                 },
                 editDialog: {
                     visible: false,
@@ -228,11 +204,12 @@
                             { required: true, message: '请选择部门', trigger: 'blur' },
                         ],
                     },
+                    department: [],// 部门
+                    job: [],//岗位
                 },
             }
         },
         methods: {
-
             // 删除员工
             deleteDepartment(staff){
                 const requestData = {
@@ -263,7 +240,7 @@
                 });
             },
 
-
+            //改变页码
             handleCurrentChange(val) {
                 this.requestData.page = val;
                 this.getList();
@@ -280,6 +257,18 @@
             },
 
             //添加员工
+            staffAddDialogShow(){
+                add().then(res => {
+                    if (res.code === 200) {
+                       this.addDialog.department = res.data.role;
+                       this.addDialog.job = res.data.grade;
+                       this.addDialog.visible = true;
+                    }
+                }).catch(err => {
+                    console.log(err)
+                })
+
+            },
             staffAdd(formName){
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
@@ -287,6 +276,48 @@
                             if (res.code === 200) {
                                 this.resetForm(formName);
                                 this.addDialog.visible = false;
+                                this.getList();
+                                this.$message.success('新增成功！');
+                            }
+                        }).catch(err => {
+                            console.log(err)
+                        });
+                    } else {
+                        return false;
+                    }
+                });
+            },
+            resetForm(formName) {
+                this.$refs[formName].resetFields();
+            },
+
+            // 员工的编辑
+            staffEditDialogShow(scope){
+                edit({id: scope.id}).then(res => {
+                    if (res.code === 200) {
+                        this.editDialog.department = res.data.role;
+                        this.editDialog.job = res.data.grade;
+
+                        this.editDialog.ruleForm.id = res.data.info.id;
+                        this.editDialog.ruleForm.a_account = res.data.info.a_account;
+                        this.editDialog.ruleForm.a_username = res.data.info.a_username;
+                        this.editDialog.ruleForm.ag_id = res.data.info.rg_id;
+                        this.editDialog.ruleForm.role_id = res.data.info.r_id;
+
+                        this.editDialog.visible = true;
+                    }
+                }).catch(err => {
+                    console.log(err)
+                });
+
+            },
+            staffEditConfirm(formName){
+                this.$refs[formName].validate((valid) => {
+                    if (valid) {
+                        edit(this.editDialog.ruleForm).then(res => {
+                            if (res.code === 200) {
+                                this.resetForm(formName);
+                                this.editDialog.visible = false;
                                 this.getList();
                             }
                         }).catch(err => {
@@ -297,10 +328,6 @@
                     }
                 });
             },
-            resetForm(formName) {
-                this.$refs[formName].resetFields();
-            },
-
             //是否启用操作
             staffIsSwitch(staff){
                 const requestData = {
@@ -311,22 +338,16 @@
                     if (res.code === 200){
                         this.$message.success('操作成功');
                     } else {
-                        staff.is_switch = !staff.is_switch;
+                        staff.is_switch = staff.is_switch ? 0 : 1;
                     }
                 }).catch(err => {
                     console.log(err);
                 })
             },
-
-            // 员工的编辑
-            staffEdit(staff){
-                this.editDialog.visible = true;
-                console.log(this.editDialog.ruleForm)
-            },
         },
         beforeMount() {
-            this.getList()
-        }
+            this.getList();
+        },
     };
 </script>
 

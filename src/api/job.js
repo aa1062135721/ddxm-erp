@@ -1,11 +1,11 @@
 /**
- *  员工管理
-**/
+ *  岗位管理
+ **/
 import request from '../utils/request';
 
 export const list = query => {
     return request({
-        url: '/auth/admin_manage/getList',
+        url: '/auth/Admin_grade/getList',
         method: 'post',
         data: query
     });
@@ -13,7 +13,7 @@ export const list = query => {
 
 export const add = query => {
     return request({
-        url: '/auth/admin_manage/add',
+        url: '/auth/Admin_grade/add',
         method: 'post',
         data: query
     });
@@ -21,7 +21,7 @@ export const add = query => {
 
 export const edit = query => {
     return request({
-        url: '/auth/admin_manage/edit',
+        url: '/auth/Admin_grade/add',
         method: 'post',
         data: query
     });
@@ -29,7 +29,7 @@ export const edit = query => {
 
 export const del = query => {
     return request({
-        url: '/auth/admin_manage/del',
+        url: '/auth/Admin_grade/del',
         method: 'post',
         data: query
     });
@@ -38,16 +38,7 @@ export const del = query => {
 // 禁用或启用
 export const isSwitch = query => {
     return request({
-        url: '/auth/admin_manage/isSwitch',
-        method: 'post',
-        data: query
-    });
-};
-
-// 查询单个员工的详细信息
-export const find = query => {
-    return request({
-        url: '/auth/admin_manage/find',
+        url: '/auth/Admin_grade/setSwitch',
         method: 'post',
         data: query
     });
