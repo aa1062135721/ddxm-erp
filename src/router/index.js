@@ -106,6 +106,16 @@ export default new Router({
                     component: () => import(/* webpackChunkName: "dashboard" */ '../components/page/staff_management/index'),
                     meta: { title: '员工管理' }
                 },
+                {
+                    path: '/menuManagement',
+                    component: () => import(/* webpackChunkName: "dashboard" */ '../components/page/menu_management/index'),
+                    meta: { title: '菜单管理' }
+                },
+                {
+                    path: '/logManagement',
+                    component: () => import(/* webpackChunkName: "dashboard" */ '../components/page/log_management/index'),
+                    meta: { title: '登录日志' }
+                },
             ]
         },
         {

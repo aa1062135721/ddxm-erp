@@ -143,6 +143,11 @@ export default {
                 },
                 {
                     icon: 'el-icon-lx-copy',
+                    index: 'logManagement',
+                    title: '登录日志'
+                },
+                {
+                    icon: 'el-icon-lx-copy',
                     index: 'departmentManagement',
                     title: '部门管理'
                 },
@@ -156,6 +161,12 @@ export default {
                     index: 'staffManagement',
                     title: '员工管理'
                 },
+                {
+                    icon: 'el-icon-lx-copy',
+                    index: 'menuManagement',
+                    title: '菜单管理'
+                },
+                
             ]
         };
     },
