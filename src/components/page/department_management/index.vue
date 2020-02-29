@@ -101,7 +101,7 @@
                     },
                     rules: {
                         r_pid: [
-                            // { required: true, message: '请选择上级部门', trigger: 'blur' },
+                            { required: true, message: '请选择上级部门', trigger: 'blur' },
                         ],
                         r_name: [
                             { required: true, message: '请输入部门名称', trigger: 'blur' },
@@ -142,6 +142,7 @@
                 add().then(res => {
                     if (res.code === 200) {
                         this.addDepartmentDialog.visible = true;
+                        res.data.push({id: 0, r_name: '顶级部门'});
                         this.addDepartmentDialog.department = res.data;
                     }
                 }).catch(err => {
