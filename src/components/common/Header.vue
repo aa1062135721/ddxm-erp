@@ -12,23 +12,15 @@
             </div>
             <div class="my-menu">
                 <ul>
-                    <li>首页</li>
-                    <li>商品</li>
-                    <li>订单</li>
-                    <li>库存</li>
-                    <li>用户</li>
-                    <li>促销</li>
-                    <li>运营</li>
-                    <li>内容</li>
-                    <li>统计</li>
-                    <li>财务</li>
-                    <li>设置</li>
-                    <li class="active">权限</li>
+                    <li v-for="(item,index) in nav" :key="index">
+                        {{item}}
+                    </li>
                 </ul>
             </div>
         </div>
         <div class="header-right">
             <div class="header-user-con">
+                
                 <!-- 全屏显示 -->
                 <div class="btn-fullscreen" @click="handleFullScreen">
                     <el-tooltip effect="dark" :content="fullscreen?`取消全屏`:`全屏`" placement="bottom">
@@ -79,8 +71,18 @@ export default {
         return {
             collapse: false,
             fullscreen: false,
-            message: 2
+            message: 2,
+            nav:["首页"]
         };
+    },
+    created () {
+       let router = window.localStorage.getItem("router")
+       console.log(JSON.parse(router))
+       let nav = JSON.parse(router)
+       nav.forEach(item=>{
+           console.log(item)
+           this.nav.push(item.meta.title)
+       })
     },
     computed: {
         ...mapState(['userInfo']),
@@ -112,11 +114,13 @@ export default {
                 this.setUserInfoAction();
             }
         },
+
         // 侧边栏折叠
         collapseChage() {
             this.collapse = !this.collapse;
             bus.$emit('collapse', this.collapse);
         },
+
         // 全屏事件
         handleFullScreen() {
             let element = document.documentElement;

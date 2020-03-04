@@ -7,3 +7,11 @@ export const fetchData = query => {
         params: query
     });
 };
+
+export const getRoute = query => {
+    return request({
+        url: '/system/test_action/index',
+        method: 'get',
+        params: query
+    });
+};

@@ -163,7 +163,7 @@ export default {
                 },
                 {
                     icon: 'el-icon-lx-copy',
-                    index: 'menuManagement',
+                    index: 'menu',
                     title: '菜单管理'
                 },
                 

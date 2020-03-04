@@ -42,15 +42,16 @@
                 class="demo-ruleForm"
             >
                 <el-form-item label="父级ID" prop="a_pid">
-                    <el-input clearable v-model="addDepartmentDialog.ruleForm.a_pid"></el-input>
-                    <!-- <el-select v-model="addDepartmentDialog.ruleForm.a_pid" placeholder="请选择">
+                    <!-- <el-input clearable v-model="addDepartmentDialog.ruleForm.a_pid"></el-input> -->
+                    <el-select v-model="addDepartmentDialog.ruleForm.a_pid" placeholder="请选择">
                         <el-option
                             v-for="item in options"
-                            :key="item.value"
-                            :label="item.label"
-                            :value="item.value"
+                            :key="item.id"
+                            :label="item.a_name"
+                            :value="item.id"
+                            size="medium"
                         ></el-option>
-                    </el-select>-->
+                    </el-select>
                 </el-form-item>
                 <el-form-item label="名称" prop="a_name">
                     <el-input clearable v-model="addDepartmentDialog.ruleForm.a_name"></el-input>
@@ -67,8 +68,8 @@
                 <el-form-item label="层级" prop="a_level">
                     <el-input clearable v-model="addDepartmentDialog.ruleForm.a_level"></el-input>
                 </el-form-item>
-                <el-form-item label="数据请求路由" prop="a_api_url">
-                    <el-input clearable v-model="addDepartmentDialog.ruleForm.a_api_url"></el-input>
+                <el-form-item label="文件请求地址" prop="a_component">
+                    <el-input clearable v-model="addDepartmentDialog.ruleForm.a_component"></el-input>
                 </el-form-item>
                 <el-form-item label="页面请求路由" prop="a_page_url">
                     <el-input clearable v-model="addDepartmentDialog.ruleForm.a_page_url"></el-input>
@@ -115,7 +116,7 @@ export default {
                     a_controller: '', // 控制器
                     a_action: '', // 操作方法
                     a_level: '', // 层级
-                    a_api_url: '', // 数据请求路由
+                    a_component: '', // 文件请求路径
                     a_page_url: '', // 页面请求路由
                     type_id: '' // 类型
                 },
@@ -126,7 +127,7 @@ export default {
                     a_controller: [{ required: true, validator: validateForm, trigger: 'blur' }],
                     a_action: [{ required: true, validator: validateForm, trigger: 'blur' }],
                     a_level: [{ required: true, validator: validateForm, trigger: 'blur' }],
-                    a_api_url: [{ required: true, message: '请输入路由地址', trigger: 'blur' }],
+                    a_component: [{ required: true, message: '请输入路由地址', trigger: 'blur' }],
                     a_page_url: [{ required: true, message: '请输入路由地址', trigger: 'blur' }],
                     type_id: [{ required: true, validator: validateForm, trigger: 'blur' }]
                 }
@@ -163,11 +164,19 @@ export default {
             defaultProps: {
                 children: 'son',
                 label: 'a_name'
-            }
+            },
+            options: [
+                {
+                    id: 0,
+                    a_name: '设置顶级',
+                    a_level: 1
+                }
+            ]
         };
     },
     created() {
         this.getMenu();
+        this.getFathers();
     },
     inject: ['reload'], // 页面刷新
     methods: {
@@ -176,6 +185,17 @@ export default {
                 console.log('列表', res);
                 if (res.code == 200) {
                     this.menu = res.data;
+                }
+            });
+        },
+
+        getFathers() {
+            addMenu().then(res => {
+                console.log(res.data.parents);
+                if (res.code == 200) {
+                    res.data.parents.forEach(item => {
+                        this.options.push(item);
+                    });
                 }
             });
         },
@@ -198,7 +218,7 @@ export default {
                         });
                     } else {
                         editMenu(this.addDepartmentDialog.ruleForm).then(res => {
-                            if(res.code == 200){
+                            if (res.code == 200) {
                                 this.addDepartmentDialog.visible = false;
                                 this.reload();
                             }
@@ -235,7 +255,7 @@ export default {
                 a_controller: '', // 控制器
                 a_action: '', // 操作方法
                 a_level: '', // 层级
-                a_api_url: '', // 数据请求路由
+                a_component: '', // 数据请求路由
                 a_page_url: '', // 页面请求路由
                 type_id: '' // 类型
             };
@@ -257,7 +277,6 @@ export default {
             }).then(res => {
                 if (res.code == 200) {
                     let obj = res.data.info[`${id}`];
-                    delete obj.id;
                     this.addDepartmentDialog.ruleForm = obj;
                     this.val = 2;
                     this.addDepartmentDialog.visible = true;
@@ -268,27 +287,31 @@ export default {
         remove(node, data) {
             console.log('删除', node);
             console.log('删2', data);
-            let id = node.data.id
+            let id = node.data.id;
             this.$confirm('此操作将删除其所有子节点, 是否继续?', '提示', {
-                    confirmButtonText: '确定',
-                    cancelButtonText: '取消',
-                    type: 'warning'
-                }).then(() => {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            })
+                .then(() => {
                     delMenu({
                         id
-                    }).then(res => {
-                        if (res.code === 200) {
-                            this.$message({
-                                type: 'success',
-                                message: '删除成功!'
-                            });
-                            this.reload();
-                        }
-                    }).catch(err => {
-                        console.log(err);
-                        this.$message.error('操作失败');
                     })
-                }).catch(() => {
+                        .then(res => {
+                            if (res.code === 200) {
+                                this.$message({
+                                    type: 'success',
+                                    message: '删除成功!'
+                                });
+                                this.reload();
+                            }
+                        })
+                        .catch(err => {
+                            console.log(err);
+                            this.$message.error('操作失败');
+                        });
+                })
+                .catch(() => {
                     this.$message({
                         type: 'info',
                         message: '已取消删除'

@@ -1,0 +1,1 @@
+module.exports = () => import('../components/common/Home.vue')
