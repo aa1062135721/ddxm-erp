@@ -166,7 +166,11 @@ export default {
                     index: 'menu',
                     title: '菜单管理'
                 },
-                
+                {
+                    icon: 'el-icon-lx-copy',
+                    index: 'shouldPurchase',
+                    title: '待采购单'
+                },
             ]
         };
     },

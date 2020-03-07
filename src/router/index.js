@@ -22,6 +22,32 @@ export const constantRoutes = [
                     component: () => import(/* webpackChunkName: "dashboard" */ '../components/page/menu_management/index'),
                     meta: { title: '菜单管理' }
                 },
+        {
+            path: '/shouldPurchase',
+            component: () => import('../components/page/purchase_management/should_purchase/index'),
+            meta: { title: '待采购单' }
+        },
+        {
+            path: '/purchaseLog',
+            component: () => import('../components/page/purchase_management/purchase_log/index'),
+            meta: { title: '待采记录' }
+        },
+        {
+            path: '/depotManagement',
+            component: () => import('../components/page/depot_management/depot_management/index'),
+            meta: { title: '仓库管理' }
+        },
+        {
+            path: '/supplierManagement',
+            component: () => import('../components/page/depot_management/supplier_management/index'),
+            meta: { title: '供应商管理' }
+        },
+        {
+            path: '/inventoryCheck',
+            component: () => import('../components/page/depot_management/inventory_check/index'),
+            meta: { title: '库存查询' }
+        },
+
             ]
 },
 {
