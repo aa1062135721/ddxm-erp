@@ -9,12 +9,16 @@ const state = {
         // name: '大帅哥',
         // sex: '男',
         // headImg: 'https://ddxm661.com/static/admin/img/avatar.png'
-    }
+    },
+    sideBarId:0
 };
 
 const mutations = {
     setUserInfo(state, saveData = {}) {
         state.userInfo = saveData;
+    },
+    setId(state,id){
+        state.sideBarId = id
     }
 };
 
@@ -28,6 +32,10 @@ const actions = {
         setTimeout(() => {
             commit('setUserInfo', userInfo);
         }, 2000);
+    },
+    setSideId({commit},id) {
+        console.log("得到ID",id)
+        commit('setId',id)
     }
 };
 

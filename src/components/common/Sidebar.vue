@@ -11,38 +11,38 @@
             unique-opened
             router
         >
-            <template v-for="item in items">
-                <template v-if="item.subs">
-                    <el-submenu :index="item.index" :key="item.index">
+            <template v-for="(item,index) in items">
+                <template v-if="item.children">
+                    <el-submenu :index="item.path" :key="index">
                         <template slot="title">
-                            <i :class="item.icon"></i>
-                            <span slot="title">{{ item.title }}</span>
+                            <i class="el-icon-lx-copy"></i>
+                            <span slot="title">{{ item.meta.title }}</span>
                         </template>
-                        <template v-for="subItem in item.subs">
+                        <template v-for="subItem in item.children">
                             <el-submenu
-                                v-if="subItem.subs"
-                                :index="subItem.index"
+                                v-if="subItem.children"
+                                :index="subItem.path"
                                 :key="subItem.index"
                             >
-                                <template slot="title">{{ subItem.title }}</template>
+                                <template slot="title">{{ subItem.meta.title }}</template>
                                 <el-menu-item
-                                    v-for="(threeItem,i) in subItem.subs"
+                                    v-for="(threeItem,i) in subItem.children"
                                     :key="i"
                                     :index="threeItem.index"
                                 >{{ threeItem.title }}</el-menu-item>
                             </el-submenu>
                             <el-menu-item
                                 v-else
-                                :index="subItem.index"
+                                :index="subItem.path"
                                 :key="subItem.index"
-                            >{{ subItem.title }}</el-menu-item>
+                            >{{ subItem.meta.title }}</el-menu-item>
                         </template>
                     </el-submenu>
                 </template>
                 <template v-else>
-                    <el-menu-item :index="item.index" :key="item.index">
-                        <i :class="item.icon"></i>
-                        <span slot="title">{{ item.title }}</span>
+                    <el-menu-item :index="item.path" :key="item.index">
+                        <i class="el-icon-lx-copy"></i>
+                        <span slot="title">{{ item.meta.title }}</span>
                     </el-menu-item>
                 </template>
             </template>
@@ -52,6 +52,7 @@
 
 <script>
 import bus from '../common/bus';
+import { mapState } from 'vuex';
 export default {
     data() {
         return {
@@ -170,7 +171,14 @@ export default {
             ]
         };
     },
+    watch:{
+        sideBarId(){
+            this.getSideBar()
+        }
+
+    },
     computed: {
+        ...mapState(['userInfo','sideBarId']),
         onRoutes() {
             return this.$route.path.replace('/', '');
         }
@@ -181,6 +189,18 @@ export default {
             this.collapse = msg;
             bus.$emit('collapse-content', msg);
         });
+
+        this.getSideBar()
+    },
+    methods:{
+        getSideBar(){
+            this.userInfo.auth.forEach(item => {
+                if(item.id == this.sideBarId){
+                    console.log(item.children)
+                    this.items = item.children
+                }
+            });
+        }
     }
 };
 </script>

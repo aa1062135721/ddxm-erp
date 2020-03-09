@@ -12,8 +12,8 @@
             </div>
             <div class="my-menu">
                 <ul>
-                    <li v-for="(item,index) in nav" :key="index">
-                        {{item}}
+                    <li v-for="(item,index) in nav" :key="index" @click="navTab(item.id)">
+                        {{item.title}}
                     </li>
                 </ul>
             </div>
@@ -72,24 +72,21 @@ export default {
             collapse: false,
             fullscreen: false,
             message: 2,
-            nav:["首页"]
+            nav:[{
+                id:0,
+                title:"首页",
+            }]
         };
     },
     created () {
-       let router = window.localStorage.getItem("router")
-       console.log(JSON.parse(router))
-       let nav = JSON.parse(router)
-       nav.forEach(item=>{
-           console.log(item)
-           this.nav.push(item.meta.title)
-       })
+       this.getNav()
     },
     computed: {
         ...mapState(['userInfo']),
     },
     methods: {
         ...mapMutations(['setUserInfo']),
-        ...mapActions(['setUserInfoAction']),
+        ...mapActions(['setUserInfoAction','setSideId']),
         // 用户名下拉菜单选择事件
         handleCommand(command) {
             if (command == 'loginout') {
@@ -113,6 +110,25 @@ export default {
             if (command == 'checkUser1') {
                 this.setUserInfoAction();
             }
+        },
+
+        // nav点击
+        navTab(id){
+            this.setSideId(id)
+        },
+
+        // 获取导航
+        getNav(){
+            let router = window.localStorage.getItem("router")
+            let nav = JSON.parse(router)
+            nav.forEach(item=>{
+                console.log("导航",item)
+                let obj = {
+                    id:item.id,
+                    title:item.meta.title
+                }
+                this.nav.push(obj)
+            })
         },
 
         // 侧边栏折叠
