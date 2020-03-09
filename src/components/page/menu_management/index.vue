@@ -21,9 +21,6 @@
                     :render-content="renderContent"
                 ></el-tree>
             </div>
-            <div>
-                <el-pagination background layout="prev, pager, next" :total="1000"></el-pagination>
-            </div>
         </div>
 
         <el-dialog

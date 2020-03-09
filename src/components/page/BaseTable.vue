@@ -102,7 +102,6 @@
 </template>
 
 <script>
-import { fetchData } from '../../api/index';
 export default {
     name: 'basetable',
     data() {
@@ -113,11 +112,21 @@ export default {
                 pageIndex: 1,
                 pageSize: 10
             },
-            tableData: [],
+            tableData: [
+                {
+                    id: 1,
+                    name: "张三",
+                    money: 123,
+                    address: "广东省东莞市长安镇",
+                    state: "成功",
+                    date: "2019-11-1",
+                    thumb: "https://lin-xin.gitee.io/images/post/wms.png"
+                }
+            ],
             multipleSelection: [],
             delList: [],
             editVisible: false,
-            pageTotal: 0,
+            pageTotal: 50,
             form: {},
             idx: -1,
             id: -1
@@ -129,11 +138,6 @@ export default {
     methods: {
         // 获取 easy-mock 的模拟数据
         getData() {
-            fetchData(this.query).then(res => {
-                console.log(res);
-                this.tableData = res.list;
-                this.pageTotal = res.pageTotal || 50;
-            });
         },
         // 触发搜索按钮
         handleSearch() {

@@ -20,7 +20,7 @@
         </div>
         <div class="header-right">
             <div class="header-user-con">
-                
+
                 <!-- 全屏显示 -->
                 <div class="btn-fullscreen" @click="handleFullScreen">
                     <el-tooltip effect="dark" :content="fullscreen?`取消全屏`:`全屏`" placement="bottom">
@@ -34,7 +34,7 @@
                         :content="message?`有${message}条未读消息`:`消息中心`"
                         placement="bottom"
                     >
-                        <router-link to="/tabs">
+                        <router-link to="/">
                             <i class="el-icon-bell"></i>
                         </router-link>
                     </el-tooltip>
@@ -42,12 +42,12 @@
                 </div>
                 <!-- 用户头像 -->
                 <div class="user-avator">
-                    <img :src="userInfo.headImg" />
+                    <img :src="userInfo.headImg || 'https://ddxm661.com/static/admin/img/avatar.png'" />
                 </div>
                 <!-- 用户名下拉菜单 -->
                 <el-dropdown class="user-name" trigger="click" @command="handleCommand">
                     <span class="el-dropdown-link">
-                        {{userInfo.name}}
+                        {{userInfo.username}}
                         <i class="el-icon-caret-bottom"></i>
                     </span>
                     <el-dropdown-menu slot="dropdown">
