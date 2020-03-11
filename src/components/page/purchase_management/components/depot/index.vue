@@ -15,9 +15,10 @@
 </template>
 
 <script>
-    import { list } from '@/api/depot/depot.js'
+    import { listAll } from '../../../../../api/depot/depot';
 
     export default {
+
         name: 'index',
         props: {
             placeholder: {
@@ -28,9 +29,7 @@
         data(){
             return {
                 choosesValue: '',
-                list: [
-                    {id: 1, w_name: '界石仓库'},
-                ]
+                list: []
             }
         },
         methods: {
@@ -39,9 +38,9 @@
             }
         },
         beforeCreate() {
-            list({page: 0}).then(res => {
+            listAll().then(res => {
                 if (res.code === 200) {
-                    this.list = res.data.data
+                    this.list = res.data
                 }
             }).catch(err => {
                 console.log(err);

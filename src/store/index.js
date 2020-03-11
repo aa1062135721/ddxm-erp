@@ -5,11 +5,7 @@ import createPersistedState from 'vuex-persistedstate'; // vuex持久化存储�
 Vue.use(Vuex);
 
 const state = {
-    userInfo: {
-        // name: '大帅哥',
-        // sex: '男',
-        // headImg: 'https://ddxm661.com/static/admin/img/avatar.png'
-    },
+    userInfo: {},
     sideBarId:0
 };
 
@@ -23,16 +19,6 @@ const mutations = {
 };
 
 const actions = {
-    setUserInfoAction({ commit }) {
-        const userInfo = {
-            name: '小可爱',
-            sex: '女',
-            headImg: 'https://ddxm661.com/static/admin/img/avatar.png'
-        };
-        setTimeout(() => {
-            commit('setUserInfo', userInfo);
-        }, 2000);
-    },
     setSideId({commit},id) {
         console.log("得到ID",id)
         commit('setId',id)

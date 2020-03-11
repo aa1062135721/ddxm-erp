@@ -12,7 +12,7 @@
             </div>
             <div class="my-menu">
                 <ul>
-                    <li v-for="(item,index) in nav" :key="index" @click="navTab(item.id)">
+                    <li v-for="(item,index) in nav" :key="index" @click="navTab(item.id)" :class="{'active' : item.id === sideBarId}">
                         {{item.title}}
                     </li>
                 </ul>
@@ -51,8 +51,6 @@
                         <i class="el-icon-caret-bottom"></i>
                     </span>
                     <el-dropdown-menu slot="dropdown">
-                        <el-dropdown-item command="checkUser">同步切换用户</el-dropdown-item>
-                        <el-dropdown-item command="checkUser1">异步切换用户</el-dropdown-item>
                         <el-dropdown-item divided command="loginout">退出登录</el-dropdown-item>
                     </el-dropdown-menu>
                 </el-dropdown>
@@ -82,11 +80,10 @@ export default {
        this.getNav()
     },
     computed: {
-        ...mapState(['userInfo']),
+        ...mapState(['userInfo', 'sideBarId']),
     },
     methods: {
-        ...mapMutations(['setUserInfo']),
-        ...mapActions(['setUserInfoAction','setSideId']),
+        ...mapActions(['setSideId']),
         // 用户名下拉菜单选择事件
         handleCommand(command) {
             if (command == 'loginout') {
@@ -96,19 +93,6 @@ export default {
                 }).catch(err => {
                     console.log(err)
                 })
-            }
-            // 同步
-            if (command == 'checkUser') {
-                const userInfo = {
-                    name: '大帅哥',
-                    sex: '男',
-                    headImg: 'https://ddxm661.com/static/admin/img/avatar.png'
-                };
-                this.setUserInfo(userInfo);
-            }
-            // 异步
-            if (command == 'checkUser1') {
-                this.setUserInfoAction();
             }
         },
 
