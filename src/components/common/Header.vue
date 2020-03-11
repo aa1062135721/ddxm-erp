@@ -83,13 +83,17 @@ export default {
         ...mapState(['userInfo', 'sideBarId']),
     },
     methods: {
+        ...mapMutations(['setUserInfo']),
         ...mapActions(['setSideId']),
         // 用户名下拉菜单选择事件
         handleCommand(command) {
             if (command == 'loginout') {
                 loginOut().then(res => {
                     this.setUserInfo({});
-                    this.$router.push('/login');
+                    window.localStorage.removeItem('router')
+                    this.$router.push({
+                        path: '/login'
+                    });
                 }).catch(err => {
                     console.log(err)
                 })

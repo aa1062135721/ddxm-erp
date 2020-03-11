@@ -48,6 +48,16 @@ export const constantRoutes = [
         //     meta: { title: '库存查询' }
         // },
 
+        {
+            path: '/departmentAuth',
+            component: () => import('../components/page/department_management/auth'),
+            meta: { title: '部门权限管理' }
+        },
+        {
+            path: '/staffAuth',
+            component: () => import('../components/page/staff_management/auth'),
+            meta: { title: '员工权限管理' }
+        },
     ]
 },
 {

@@ -38,7 +38,7 @@
                 </el-table-column>
                 <el-table-column label="操作">
                     <template slot-scope="scope">
-                        <el-button type="text">权限管理</el-button>
+                        <el-button type="text" @click="goToAuth(scope.row)">权限管理</el-button>
                         <el-button type="text" @click="staffEditDialogShow(scope.row)">编辑</el-button>
                         <el-button type="text" @click="deleteDepartment(scope.row)">删除</el-button>
                     </template>
@@ -342,6 +342,18 @@
                     }
                 }).catch(err => {
                     console.log(err);
+                })
+            },
+
+            // 权限管理页面
+            goToAuth(scope) {
+                console.log(scope);
+                this.$router.push({
+                    path: '/staffAuth',
+                    query: {
+                        role_id: scope.role_id,// 部门id
+                        admin_id: scope.id,// 员工id
+                    }
                 })
             },
         },

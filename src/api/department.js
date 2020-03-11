@@ -43,3 +43,12 @@ export const isSwitch = query => {
         data: query
     });
 };
+
+// 设置权限
+export const setAuth = query => {
+    return request({
+        url: '/auth/role_manage/setAuth',
+        method: 'post',
+        data: query
+    });
+};

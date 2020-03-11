@@ -35,11 +35,10 @@
                 :model="addDepartmentDialog.ruleForm"
                 :rules="addDepartmentDialog.rules"
                 ref="ruleForm"
-                label-width="100px"
+                label-width="150px"
                 class="demo-ruleForm"
             >
                 <el-form-item label="父级ID" prop="a_pid">
-                    <!-- <el-input clearable v-model="addDepartmentDialog.ruleForm.a_pid"></el-input> -->
                     <el-select v-model="addDepartmentDialog.ruleForm.a_pid" placeholder="请选择">
                         <el-option
                             v-for="item in options"
@@ -72,7 +71,10 @@
                     <el-input clearable v-model="addDepartmentDialog.ruleForm.a_page_url"></el-input>
                 </el-form-item>
                 <el-form-item label="类型" prop="type_id">
-                    <el-input clearable v-model="addDepartmentDialog.ruleForm.type_id"></el-input>
+                    <el-select v-model="addDepartmentDialog.ruleForm.type_id" clearable placeholder="请选择">
+                        <el-option label="按钮" value="1" size="medium"></el-option>
+                        <el-option label="路由" value="2" size="medium"></el-option>
+                    </el-select>
                 </el-form-item>
                 <el-form-item>
                     <el-button type="primary" @click="submitForm('ruleForm')" v-if="val == 1">立即创建</el-button>

@@ -52,3 +52,12 @@ export const find = query => {
         data: query
     });
 };
+
+// 设置权限
+export const setAuth = query => {
+    return request({
+        url: '/auth/admin_manage/setAuth',
+        method: 'post',
+        data: query
+    });
+};
