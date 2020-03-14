@@ -7,3 +7,16 @@ export const getRoute = query => {
         params: query
     });
 };
+
+/**
+ * 查看物流
+ * @param query {code: 'jd', sn: 'JDVE00865342928'}
+ * @returns {AxiosPromise}
+ */
+export const logistics = query => {
+    return request({
+        url: '/system/Common/logistics',
+        method: 'post',
+        params: query
+    });
+};

@@ -22,7 +22,8 @@
             placeholder: {
                 type: String,
                 default: '选择供应商'
-            }
+            },
+            value: null,
         },
         data(){
             return {
@@ -32,8 +33,16 @@
         },
         methods: {
             change(){
-                this.$emit('change', this.choosesValue);
+                this.$emit('input', this.choosesValue);
             }
+        },
+        watch: {
+            value: {
+                immediate:true,
+                handler:function(newVal){
+                    this.choosesValue = newVal;
+                }
+            },
         },
         beforeCreate() {
             listAll().then(res => {

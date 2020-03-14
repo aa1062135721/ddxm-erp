@@ -2,20 +2,18 @@
     <div>
         <div class="crumbs">
             <el-breadcrumb separator="/">
-                <el-breadcrumb-item>采购记录</el-breadcrumb-item>
+                <el-breadcrumb-item>采购入库单</el-breadcrumb-item>
             </el-breadcrumb>
         </div>
         <div class="container">
             <div class="search-div">
                 <supplier v-model="requestData.sup_id"></supplier>
-                <el-select placeholder="是否先打款" v-model="requestData.is_price_firse" clearable class="my-input">
-                    <el-option label="是" value="1"></el-option>
-                    <el-option label="否" value="0"></el-option>
-                </el-select>
-                <el-select placeholder="发货方式" v-model="requestData.pick_way" clearable class="my-input">
-                    <el-option label="自提" value="2"></el-option>
-                    <el-option label="发给仓库" value="1"></el-option>
-                    <el-option label="发给客户" value="3"></el-option>
+                <el-select placeholder="发货方式" v-model="requestData.status" clearable class="my-input">
+                    <el-option label="待付款" value="0"></el-option>
+                    <el-option label="待发货" value="1"></el-option>
+                    <el-option label="待入库" value="3"></el-option>
+                    <el-option label="部分入库" value="4"></el-option>
+                    <el-option label="全部入库" value="5"></el-option>
                 </el-select>
                 <el-date-picker
                         v-model="requestData.time"
@@ -27,9 +25,8 @@
                         start-placeholder="采购开始时间"
                         end-placeholder="采购结束时间">
                 </el-date-picker>
-                <depot placeholder="采购到达仓库" v-model="requestData.sup_id"></depot>
                 <el-button type="primary" @click="getList">搜索</el-button>
-                <el-button type="primary" plain>导出</el-button>
+                <el-button type="primary" plain @click="logisticsDialog.isShow = true">导出</el-button>
             </div>
             <div style="margin: 40px 0;">
                 <el-table :data="responseData.data" style="width: 100%">
@@ -79,31 +76,100 @@
                 </el-pagination>
             </div>
         </div>
+
+        <logistics :isShow.sync="logisticsDialog.isShow" :code="logisticsDialog.code" :sn="logisticsDialog.sn"></logistics>
+        <el-dialog v-dialogDrag title="入库记录" center :visible.sync="warehouseLogDialog.isShow" width="40%">
+            <div v-for="(item, index) in warehouseLogDialog.responseData" :key="index">
+                <div>
+                    所入仓库：sss
+                    入库人员：{{item.p_user_name}}
+                    入库时间：{{item.create_time}}
+                    查看物流:
+                    <el-button type="text">编辑</el-button>
+                    <el-button type="text">取消入库</el-button>
+                </div>
+                <el-table :data="item.items" style="width: 100%">
+                    <el-table-column prop="title" label="商品名"></el-table-column>
+                    <el-table-column prop="bar_code" label="条形码"></el-table-column>
+                    <el-table-column prop="attr_name" label="规格"></el-table-column>
+                    <el-table-column prop="num" label="采购数量"></el-table-column>
+                    <el-table-column prop="war_num" label="入库数量"></el-table-column>
+                </el-table>
+            </div>
+        </el-dialog>
+        <el-dialog v-dialogDrag title="发货" center :visible.sync="sendGoodsDialog.isShow" width="40%">
+            <el-form :model="sendGoodsDialog.requestData" :rules="sendGoodsDialog.rules" ref="sendGoodsDialog" label-width="100px" :inline="true">
+                <el-form-item label="选择仓库" prop="depot">
+                    <depot v-model="sendGoodsDialog.requestData.depot"></depot>
+                </el-form-item>
+                <el-form-item label="选择快递" prop="">
+                    <el-select placeholder="选择快递" clearable>
+                        <el-option label="京东" value="0"></el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="选择快递" prop="">
+                    <el-input placeholder="请输入运单号"></el-input>
+                </el-form-item>
+                <el-form-item label="选择快递" prop="">
+                    <el-input placeholder="运费"></el-input>
+                </el-form-item>
+            </el-form>
+            <el-table style="width: 100%;margin: 10px 0;">
+                <el-table-column prop="title" label="商品名"></el-table-column>
+                <el-table-column prop="bar_code" label="条形码"></el-table-column>
+                <el-table-column prop="attr_name" label="规格"></el-table-column>
+                <el-table-column prop="num" label="待发货量"></el-table-column>
+                <el-table-column label="发货数量"></el-table-column>
+            </el-table>
+            <div>
+                <el-button type="primary">发货</el-button>
+            </div>
+        </el-dialog>
     </div>
 </template>
 
 <script>
-    import supplier from '../components/supplier/index'
     import depot from '../components/depot/index'
-    import { list, del, } from '../../../../api/purchase/purchaseLog';
+    import supplier from '../components/supplier/index'
+    import logistics from '../../../common/logistics'
+    import { list, } from '../../../../api/purchase/purchaseWarehouse';
     export default {
         name: 'index',
         data() {
             return {
                 requestData: {
                     sup_id: '',//供应商ID
-                    is_price_firse: '', //是否先打款：1是0否
                     time:'',
                     start_time: '', //采购时间
                     end_time: '', //采购时间
-                    pick_way: '', //发货方式：1发给仓库，2自提，3发给客户
+                    status: '', //状态：0待付款，1待发货，3待入库，4部分入库，5全部入库
                     page: 1,
                     limit: 10,
                 },
                 responseData: {
                     count: 0,
                     data: []
-                }
+                },
+                warehouseLogDialog: {
+                    isShow: false,
+                    responseData: []
+                },
+                logisticsDialog: {
+                    isShow: false,
+                    code: 'jd',
+                    sn: 'JDVE008653429281111'
+                },
+                sendGoodsDialog: {
+                    isShow: true,
+                    rules: {
+                        depot: [
+                            { required: true, message: '请选择仓库', trigger: 'blur' },
+                        ]
+                    },
+                    requestData: {
+                        depot: ''
+                    },
+                },
             }
         },
         methods: {
@@ -123,6 +189,7 @@
         },
         components: {
             supplier,
+            logistics,
             depot,
         },
         beforeMount() {

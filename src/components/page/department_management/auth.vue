@@ -62,6 +62,7 @@
                 setAuth({role_id: this.$route.query.role_id}).then(res => {
                     if (res.code === 200) {
                         this.choosesValue = this.getChoosesValue(res.data);
+                        console.log("已选择：", this.choosesValue);
                         this.responseData = res.data;
                     }
                 }).catch(err => {

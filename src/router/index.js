@@ -58,6 +58,11 @@ export const constantRoutes = [
             component: () => import('../components/page/staff_management/auth'),
             meta: { title: '员工权限管理' }
         },
+        // {
+        //     path: '/purchaseWarehouse',
+        //     component: () => import('../components/page/purchase_management/purchase_warehouse/index'),
+        //     meta: { title: '采购入库单' }
+        // },
     ]
 },
 {

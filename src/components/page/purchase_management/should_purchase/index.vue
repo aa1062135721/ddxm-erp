@@ -12,7 +12,7 @@
                         placeholder="商品名称/条形码"
                         clearable>
                 </el-input>
-                <supplier @change="supplierChange"></supplier>
+                <supplier></supplier>
                 <el-date-picker
                         class="my-input"
                         style="width: 300px;"
