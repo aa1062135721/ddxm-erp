@@ -11,11 +11,14 @@
                 <span>捣蛋熊</span>
             </div>
             <div class="my-menu">
-                <ul>
-                    <li v-for="(item,index) in nav" :key="index" @click="navTab(item.id)" :class="{'active' : item.id === sideBarId}">
+                <!-- <ul>
+                    <li v-for="(item,index) in nav" :key="index" @click="navTab(item.id)" :class="{'active' : item.id === sideBarId}" >
                         {{item.title}}
                     </li>
-                </ul>
+                </ul> -->
+                <el-menu :default-active="activeIndex" class="nav-demo" mode="horizontal" @select="handleSelect">
+                    <el-menu-item :index="item.id" v-for="(item,index) in nav" :key="index">{{item.title}}</el-menu-item>
+                </el-menu>
             </div>
         </div>
         <div class="header-right">
@@ -71,9 +74,10 @@ export default {
             fullscreen: false,
             message: 2,
             nav:[{
-                id:0,
+                id:'0',
                 title:"首页",
-            }]
+            }],
+            activeIndex:'0'
         };
     },
     created () {
@@ -100,11 +104,9 @@ export default {
             }
         },
 
-        // nav点击
-        navTab(id){
-            this.setSideId(id)
+        handleSelect(key, keyPath){
+            this.setSideId(key)
         },
-
         // 获取导航
         getNav(){
             let router = window.localStorage.getItem("router")
@@ -193,19 +195,34 @@ export default {
         line-height: 50px;
     }
     .my-menu {
-        ul {
-            list-style-type: none;
-            display: flex;
-            li {
-                font-size: 16px;
-                line-height: 50px;
-                height: 50px;
-                padding: 0 10px;
-                &:hover {
-                    background: rgba(255, 255, 255, 0.3);
+        // ul {
+        //     list-style-type: none;
+        //     display: flex;
+        //     li {
+        //         font-size: 16px;
+        //         line-height: 50px;
+        //         height: 50px;
+        //         padding: 0 10px;
+        //         &:hover {
+        //             background: rgba(255, 255, 255, 0.3);
+        //         }
+        //         &.active{
+        //             background: rgba(255, 255, 255, 0.3);
+        //         }
+        //     }
+        // }
+        .nav-demo{
+            height: 100%;
+            background-color: #3498DB;
+            li{
+                height: 100%;
+                color: #ffffff;
+                &.is-active{
+                    border-bottom:2px solid #ffffff;
+                    background-color: #2b78ac;
                 }
-                &.active{
-                    background: rgba(255, 255, 255, 0.3);
+                &:hover{
+                    background: #2b78ac;
                 }
             }
         }

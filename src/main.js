@@ -47,6 +47,7 @@ router.beforeEach((to, from, next) => {
         }
     } else {
         console.log("未登录：强制跳转登录页面");
+        getRouter = undefined;
         if (to.path === '/login'){
             next();
         } else {
