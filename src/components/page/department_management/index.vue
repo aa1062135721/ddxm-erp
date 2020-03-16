@@ -283,7 +283,6 @@
 
             // 权限管理页面
             goToAuth(scope) {
-                console.log(scope);
                 this.$router.push({
                     path: '/departmentAuth',
                     query: {

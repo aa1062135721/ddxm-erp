@@ -6,7 +6,7 @@
             </el-breadcrumb>
         </div>
         <div class="container">
-            <el-checkbox-group v-model="choosesValue" @change="handleCheckedCitiesChange">
+            <el-checkbox-group v-model="choosesValue">
                 <el-table :data="responseData"
                           row-key="id"
                           style="width: 100%;"
@@ -22,14 +22,14 @@
                     <el-table-column label="路由权限">
                         <template slot-scope="scope">
                             <template v-if="scope.row.type_id !== 1">
-                                <el-checkbox :label="scope.row.id">选择</el-checkbox>
+                                <el-checkbox :label="scope.row.id" @change="routerAuth(scope.row.id, $event)">选择</el-checkbox>
                             </template>
                         </template>
                     </el-table-column>
                     <el-table-column label="按钮权限">
                         <template slot-scope="scope">
                             <template v-if="scope.row.type_id === 1">
-                                <el-checkbox :label="scope.row.id">选择</el-checkbox>
+                                <el-checkbox :label="scope.row.id" @change="btnAuth(scope.row.id, $event)">选择</el-checkbox>
                             </template>
                         </template>
                     </el-table-column>
@@ -55,34 +55,28 @@
             };
         },
         methods: {
-            handleCheckedCitiesChange(value) {
-                console.log(value)
-            },
             getList(){
                 setAuth({role_id: this.$route.query.role_id}).then(res => {
                     if (res.code === 200) {
-                        this.choosesValue = this.getChoosesValue(res.data);
-                        console.log("已选择：", this.choosesValue);
+                        this.choosesValue = this.getChoosesValue(res.data, []);
                         this.responseData = res.data;
                     }
                 }).catch(err => {
                     console.log(err);
                 })
             },
-            getChoosesValue(item){
-                let arr = [];
-                item.map(one => {
+            getChoosesValue(arr, ids = []){
+                arr.map(one => {
                     if (one.son && one.son.length) {
-                        this.getChoosesValue(one.son);
+                        this.getChoosesValue(one.son, ids);
                     }
                     if (one.is_set){
-                        arr.push(one.id);
+                        ids.push(one.id);
                     }
                 });
-                return arr;
+                return ids;
             },
             saveAuth(){
-                console.log(this.choosesValue);
                 const requestData = {
                     ids: this.choosesValue.join(','),
                     role_id: this.$route.query.role_id,
@@ -93,17 +87,79 @@
                 }
                 setAuth(requestData).then(res => {
                     if (res.code === 200) {
+                        this.$message.success('保存成功！');
                         this.getList();
                     }
                 }).catch(err => {
                     console.log(err);
                 })
             },
+
+            // 按钮权限被选中
+            btnAuth(choosesId, isSelect){
+                console.log("被选中的id:",choosesId);
+                let nodes = [];
+                function _getParentNodes(his, targetId, tree) {
+                    tree.some((list) => {
+                        const children = list.son || [];
+                        if (list.id === targetId) {
+                            nodes = his;
+                            return true;
+                        } else if (children.length > 0) {
+                            const history = [...his];
+                            history.push(list.id);
+                            return _getParentNodes(history, targetId, children);
+                        }
+                    })
+                };
+                _getParentNodes([], choosesId, this.responseData);
+                if (isSelect) {
+                    let arr = [...this.choosesValue, ... nodes];
+                    this.choosesValue =  [...new Set(arr)];
+                }
+            },
+            // 路由被选中
+            routerAuth(choosesId, isSelect){
+                console.log("被选中的id:",choosesId);
+                let returnedItem; //定义一个不不赋值的变量
+                let find = function(arr, id){
+                    arr.forEach((item) => { //利用foreach循环遍历
+                        if(item.id===choosesId)//判断递归结束条件
+                        {
+                            returnedItem = item;
+                            return item;
+                        }
+                        else if(item.son && item.son.length) //判断chlidren是否有数据
+                        {
+                            find(item.son, id);  //递归调用
+                        }
+                    })
+                };
+                find(this.responseData, 7);
+                console.log("吴黎明，",returnedItem);
+                function getSon(arr, ids = []){
+                    arr.map(one => {
+                        if (one.son && one.son.length) {
+                            getSon(one.son, ids);
+                        }
+                        ids.push(one.id);
+                    });
+                    return ids;
+                };
+                let son = getSon([returnedItem], []);
+                console.log("吴黎明2：", son);
+                if (!isSelect) {
+                    let diff = this.choosesValue.filter(function (val) { return son.indexOf(val) === -1 })
+                    this.choosesValue =  [...new Set(diff)];
+                }
+            },
+        },
+        mounted() {
+          this.getList();
         },
         watch: {
             $route: {
                 handler: function(val, oldVal){
-                    console.log(val);
                     if (val.query.role_id){
                         this.getList();
                     }
