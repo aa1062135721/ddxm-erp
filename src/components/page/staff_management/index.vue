@@ -351,7 +351,7 @@
                 this.$router.push({
                     path: '/staffAuth',
                     query: {
-                        role_id: scope.role_id,// 部门id
+                        admin_id_role_id: scope.role_id,// 部门id
                         admin_id: scope.id,// 员工id
                     }
                 })
