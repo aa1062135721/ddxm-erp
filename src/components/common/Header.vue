@@ -11,12 +11,7 @@
                 <span>捣蛋熊</span>
             </div>
             <div class="my-menu">
-                <!-- <ul>
-                    <li v-for="(item,index) in nav" :key="index" @click="navTab(item.id)" :class="{'active' : item.id === sideBarId}" >
-                        {{item.title}}
-                    </li>
-                </ul> -->
-                <el-menu :default-active="activeIndex" class="nav-demo" mode="horizontal" @select="handleSelect">
+                <el-menu :default-active="sideBarId" active-text-color="#fff" text-color="#fff" class="nav-demo" mode="horizontal" @select="handleSelect">
                     <el-menu-item :index="item.id" v-for="(item,index) in nav" :key="index">{{item.title}}</el-menu-item>
                 </el-menu>
             </div>
@@ -77,7 +72,6 @@ export default {
                 id:'0',
                 title:"首页",
             }],
-            activeIndex:'0'
         };
     },
     created () {
@@ -195,30 +189,19 @@ export default {
         line-height: 50px;
     }
     .my-menu {
-        // ul {
-        //     list-style-type: none;
-        //     display: flex;
-        //     li {
-        //         font-size: 16px;
-        //         line-height: 50px;
-        //         height: 50px;
-        //         padding: 0 10px;
-        //         &:hover {
-        //             background: rgba(255, 255, 255, 0.3);
-        //         }
-        //         &.active{
-        //             background: rgba(255, 255, 255, 0.3);
-        //         }
-        //     }
-        // }
+        height: 50px;
+        line-height: 50px;
         .nav-demo{
-            height: 100%;
+            height: 50px;
+            line-height: 50px;
             background-color: #3498DB;
             li{
                 height: 100%;
                 color: #ffffff;
+                border: transparent;
                 &.is-active{
-                    border-bottom:2px solid #ffffff;
+                    /*border-bottom:2px solid #ffffff;*/
+
                     background-color: #2b78ac;
                 }
                 &:hover{
