@@ -4,6 +4,7 @@
     </div>
 </template>
 <script>
+    import { mapActions } from 'vuex';
 export default {
     name: 'App',
     provide() {
@@ -11,12 +12,22 @@ export default {
             reload: this.reload
         };
     },
+    watch: {
+        $route: {
+            handler: function(val, oldVal){
+                console.log('当前页面的按钮权限为：', val.meta.button || []);
+                this.setAuthButtonAction(val.meta.button || []);
+            },
+            deep: true, // 深度观察监听
+        }
+    },
     data() {
         return {
             isRouterAlive: true
         };
     },
     methods: {
+        ...mapActions(['setAuthButtonAction']),
         reload() {
             this.isRouterAlive = false;
             this.$nextTick(() => {

@@ -6,7 +6,8 @@ Vue.use(Vuex);
 
 const state = {
     userInfo: {},
-    sideBarId:0
+    sideBarId: "",// 当前选中的头部id
+    authButton: [],// 当前页面点按钮权限列表
 };
 
 const mutations = {
@@ -15,14 +16,19 @@ const mutations = {
     },
     setId(state,id){
         state.sideBarId = id
-    }
+    },
+    setAuthButton(state, saveData = []) {
+        state.authButton = saveData
+    },
 };
 
 const actions = {
     setSideId({commit},id) {
-        console.log("得到ID",id)
         commit('setId',id)
-    }
+    },
+    setAuthButtonAction({commit}, saveData) {
+        commit('setAuthButton', saveData)
+    },
 };
 
 const getters = {

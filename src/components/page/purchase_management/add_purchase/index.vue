@@ -6,56 +6,43 @@
             </el-breadcrumb>
         </div>
         <div class="container">
-            <div class="search-div">
-                <!-- <supplier @change="supplierChange"></supplier>
-                <supplier @change="supplierChange"></supplier>-->
-                <el-select v-model="value1" placeholder="是否先打款" class="my-input">
-                    <el-option
-                        v-for="(item,index) in payMoney"
-                        :key="index"
-                        :label="item.label"
-                        :value="item.value"
-                    ></el-option>
+            <div class="search-div" v-if="requestData.length">
+                <el-select v-model="requestData[tabIndex].is_price_firse" placeholder="是否先打款" clearable class="my-input">
+                    <el-option label="先发货再打款" value="0"></el-option>
+                    <el-option label="先打款再发货" value="1"></el-option>
                 </el-select>
-                <el-select v-model="value2" placeholder="采购到达" class="my-input">
-                    <el-option
-                        v-for="(item,index) in purchase"
-                        :key="index"
-                        :label="item.label"
-                        :value="item.value"
-                    ></el-option>
+                <el-select v-model="requestData[tabIndex].pick_way" placeholder="发货方式" clearable class="my-input">
+                    <el-option label="发给仓库" value="1"></el-option>
+                    <el-option label="自提" value="2"></el-option>
+                    <el-option label="发给客户" value="3"></el-option>
                 </el-select>
-                <el-input placeholder="请输入运费" class="my-input"></el-input>
-                <el-button type="primary">提交并保存</el-button>
-                <el-button type="primary">保存为草稿</el-button>
-                <el-button type="primary" plain>批量导入</el-button>
+                <el-input placeholder="请输入运费" v-model="requestData[tabIndex].postage" clearable class="my-input"></el-input>
+                <el-input placeholder="备注信息" v-model="requestData[tabIndex].re" clearable class="my-input" style="min-width: 300px;"></el-input>
             </div>
             <div class="addBox">
-                <el-button class="addInput" type="primary" @click="chooeseGoods">选择商品</el-button>
-                <el-button
-                    class="addInput"
-                    type="primary"
-                    @click="supplierDialog.isShow = true"
-                >新增供货商</el-button>
+                <el-button class="addInput" type="primary" plain @click="addSupplierDialog.isShow = true">新增供货商</el-button>
+                <el-button class="addInput" type="primary" plain v-if="requestData.length" @click="choosesGoodsDialog.isShow = true">选择商品</el-button>
+                <el-button type="primary" plain v-show="requestData.length !== 0">保存为草稿</el-button>
+                <el-button type="primary" plain>批量导入</el-button>
+                <el-button type="primary" v-show="requestData.length !== 0">提交并保存</el-button>
             </div>
             <el-tabs
-                v-model="editableTabsValue"
+                v-model="tabIndex"
                 type="card"
                 closable
                 @tab-remove="removeTab"
                 @tab-click="tabClick"
             >
                 <el-tab-pane
-                    v-for="(item, index) in editableTabs"
+                    v-for="(item, index) in requestData"
                     :key="index"
-                    :label="item.title"
-                    :name="item.name"
+                    v-bind:label="supplierIdToName(item.sup_id)"
+                    :name="'' + index"
                 >
                     <div style="margin: 40px 0;">
-                        <el-table style="width: 100%" :data="item.data">
-                            <el-table-column prop="id" label="序号"></el-table-column>
+                        <el-table style="width: 100%" :data="item.items">
+                            <el-table-column prop="id" label="ID"></el-table-column>
                             <el-table-column prop="g_title" label="商品名称"></el-table-column>
-                            <el-table-column prop label="图片"></el-table-column>
                             <el-table-column prop label="规格"></el-table-column>
                             <el-table-column prop="code" label="条形码"></el-table-column>
                             <el-table-column prop="w_stock" label="库存"></el-table-column>
@@ -75,79 +62,48 @@
         </div>
 
         <!-- 选择商品 -->
-        <el-dialog
-            v-dialogDrag
-            title="选择商品"
-            center
-            :visible.sync="setGoodsDialog.isShow"
-            width="40%"
-        >
-            <el-select v-model="value3" placeholder="商品分类" class="input">
-                <el-option
-                    v-for="(item,index) in payMoney"
-                    :key="index"
-                    :label="item.label"
-                    :value="item.value"
-                ></el-option>
+        <el-dialog :visible.sync="choosesGoodsDialog.isShow" v-dialogDrag title="选择商品" center width="40%">
+            <el-input placeholder="商品名称/条形码" class="input" v-model="choosesGoodsDialog.requestData.seach_val" clearable></el-input>
+            <el-select placeholder="供应商" v-model="choosesGoodsDialog.requestData.supplier_id" clearable class="input">
+                <el-option v-for="(item, index) in addSupplierDialog.responseData" :key="index" :label="item.s_name" :value="item.id"></el-option>
             </el-select>
-            <el-select v-model="value4" placeholder="供应商" class="input">
-                <el-option
-                    v-for="(item,index) in purchase"
-                    :key="index"
-                    :label="item.label"
-                    :value="item.value"
-                ></el-option>
-            </el-select>
-            <el-input placeholder="商品名称/条形码" class="input"></el-input>
-            <el-button type="primary">搜索</el-button>
+            <el-button type="primary" @click="choosesGoodsDialogSearchBtn">搜索</el-button>
             <div style="margin: 40px 0;">
-                <el-table
-                    ref="multipleTable"
-                    :data="setGoodsDialog.data"
-                    max-height="400"
-                    @selection-change="handleSelectionChange"
-                >
-                    <el-table-column type="selection" width="55"></el-table-column>
-                    <el-table-column prop="s_name" label="供应商"></el-table-column>
-                    <el-table-column prop="order_sn" label="分类"></el-table-column>
+                <el-table ref="multipleTable" max-height="400" :data="choosesGoodsDialog.responseData.data" @selection-change="choosesGoodsDialogChosesGoods">
+                    <el-table-column type="selection"></el-table-column>
+                    <el-table-column prop="code" label="条形码"></el-table-column>
                     <el-table-column prop="g_title" label="商品名称"></el-table-column>
                     <el-table-column prop="key_name" label="规格"></el-table-column>
-                    <el-table-column prop="code" label="条形码"></el-table-column>
+                    <el-table-column prop="s_name" label="供应商"></el-table-column>
                     <el-table-column prop="w_stock" label="库存"></el-table-column>
                 </el-table>
             </div>
             <div>
                 <el-pagination
                     layout="prev, pager, next"
-                    :total="setGoodsDialog.count"
-                    :page-size="setGoodsDialog.page_size"
                     background
                     small
-                    @current-change="handleCurrentChange"
+                    @current-change="choosesGoodsDialogHandleCurrentChange"
+                    :total="choosesGoodsDialog.responseData.total"
                 ></el-pagination>
             </div>
             <div slot="footer" class="dialog-footer">
-                <el-button @click="setGoodsDialog.isShow = false">取 消</el-button>
-                <el-button type="primary" @click="chooeseComfim">确 定</el-button>
+                <el-button @click="choosesGoodsDialog.isShow = false">取 消</el-button>
+                <el-button type="primary" @click="choosesGoodsDialogConfirmOk">确 定</el-button>
             </div>
         </el-dialog>
 
         <!-- 新增供货商 -->
-        <el-dialog title="新增供货" :visible.sync="supplierDialog.isShow" width="20%" center @close="supplierDialog.idx = null">
-            <el-select
-                v-model="supplierDialog.idx"
-                placeholder="请选择供应商"
-                style="width:150px;margin-left:90px;"
-            >
-                <el-option
-                    v-for="(item,index) in purchase"
+        <el-dialog title="新增供货" :visible.sync="addSupplierDialog.isShow" width="20%" center>
+            <el-select style="width:150px;margin-left:90px;" v-model="addSupplierDialog.id" clearable class="my-input">
+                <el-option v-for="(item, index) in addSupplierDialog.responseData"
                     :key="index"
-                    :label="item.label"
-                    :value="index"
-                ></el-option>
+                    :label="item.s_name"
+                    :value="item.id">
+                </el-option>
             </el-select>
             <div slot="footer" class="dialog-footer">
-                <el-button @click="supplierDialog.isShow = false">取 消</el-button>
+                <el-button @click="addSupplierDialog.isShow = false">取 消</el-button>
                 <el-button type="primary" @click="addTab">确 定</el-button>
             </div>
         </el-dialog>
@@ -155,196 +111,179 @@
 </template>
 
 <script>
-import supplier from '../components/supplier/index';
-import { getGoods } from '@/api/common/index';
+import { getGoods } from '../../../../api/common/index';
+import { listAll as supplierAllList } from '../../../../api/depot/supplier';
 export default {
     name: 'index',
     data() {
         return {
-            value1: '',
-            value2: '',
-            value3: '',
-            value4: '',
-            // 是否打款数据
-            payMoney: [
-                {
-                    value: 'yes',
-                    label: '是'
-                },
-                {
-                    value: 'no',
-                    label: '否'
-                }
-            ],
-            // 采购到达数据
-            purchase: [
-                {
-                    value: '0',
-                    label: '界石仓库'
-                },
-                {
-                    value: '1',
-                    label: '供应商'
-                }
+            tabIndex: "0",
+            requestData: [
+                // {
+                //     sup_id: '1',    //供应商ID
+                //     is_price_firse: '',    //是否先打款：1先打款再发货，0先发货再打款
+                //     pick_way: '',    //发货方式：1发给仓库，2自提，3发给客户
+                //     postage: '',    //运费
+                //     remarks: '', // 备注
+                //     items: [ //选择的商品
+                //         {
+                //             item_id: 1,   //商品ID
+                //             title: "商品标题",    //商品标题
+                //             pic: "商品图片的地址",    //图片地址
+                //             attr_ids: "12-14",    //规格对应的ID组
+                //             attr_name: "规格中文名,没有就不传",   //
+                //             bar_code: "BR10545",  //条形码
+                //             price: 100,   //采购单价
+                //             num: 1,       //采购数量
+                //             remarks: "商品的备注" //商品的备注
+                //         }
+                //     ],
+                // },
             ],
 
-            // 选择商品临时数组
-            goodArr: [],
-
-            // 供货商标签相关数据
-            editableTabsValue: 0,
-            editableTabs: [],
-            tabIndex: 0,
-            activeIdx: 0,
-
-            // 选择商品
-            setGoodsDialog: {
+            // 新增供货商弹框
+            addSupplierDialog: {
                 isShow: false,
-                reqData: {
-                    page: 1
-                },
-                data: [
-                    {
-                        order_sn: 0,
-                        num: 0,
-                        create_time: 0
-                    }
-                ],
-                time: null,
-                count: 1,
-                page_size: 0
+                id: '', //  当前选择的供货商id
+                responseData: [], // 供应商列表
             },
 
-            // 新增供货商
-            supplierDialog: {
+            // 选择商品弹框
+            choosesGoodsDialog: {
                 isShow: false,
-                idx: null
+                requestData: {
+                    page: 1,
+                    seach_val:'',
+                    supplier_id: ''
+                },
+                responseData: {
+                    total: 0,
+                    per_page: 0,
+                    current_page: 0,
+                    last_page: 0,
+                    data: []
+                },
+                choosesGoods: []
             }
         };
     },
     created() {
-        this.getAllgoods();
+        supplierAllList().then(res => {
+            if (res.code === 200) {
+                this.addSupplierDialog.responseData = res.data
+            }
+        })
     },
     methods: {
-        supplierChange() {
-            console.log(1);
-        },
-
-        // 获取所有商品
-        getAllgoods() {
-            getGoods(this.setGoodsDialog.reqData).then(res => {
-                if (res.code == 200) {
-                    this.setGoodsDialog.data = res.data.data;
-                    this.setGoodsDialog.count = res.data.total;
-                    this.setGoodsDialog.page_size = res.data.per_page;
-                }
-            });
-        },
-
         // 标签点击
         tabClick(target) {
-            let idx = target.index;
-            this.activeIdx = idx;
+            this.tabIndex = target.index;
         },
-
         // 新增标签
-        addTab(targetName) {
-            if (this.editableTabs.length == 0) {
-                this.tabInsert();
-            } else {
-                let index = this.supplierDialog.idx
-                let id = this.purchase[index].value
-                this.editableTabs.forEach(item => {
-                    if (item.id == id) {
-                        console.log('重复',item)
+        addTab() {
+            let isFlag = false;
+            if (this.addSupplierDialog.id) {
+                this.requestData.map(item => {
+                    if (item.sup_id == this.addSupplierDialog.id){
                         this.$message({
-                            message: '该供货商已新增,请重新选择',
+                            message: '该采购单已存在你选择点供应商,请重新选择',
                             type: 'warning'
                         });
-                        throw new Error()
+                        isFlag = true;
                     }
-                });
-                this.tabInsert()
-            }
-        },
-        tabInsert() {
-            let newTabName = ++this.tabIndex + '';
-            let index = this.supplierDialog.idx;
-            let tabName = this.purchase[index].label;
-            let id = this.purchase[index].value;
-            this.editableTabs.push({
-                id,
-                title: tabName,
-                name: newTabName,
-                content: 'New Tab content',
-                data: []
-            });
-            this.editableTabsValue = newTabName;
-            this.supplierDialog.idx = null;
-            this.supplierDialog.isShow = false;
-        },
-        removeTab(targetName) {
-            let tabs = this.editableTabs;
-            let activeName = this.editableTabsValue;
-            if (activeName === targetName) {
-                tabs.forEach((tab, index) => {
-                    if (tab.name === targetName) {
-                        let nextTab = tabs[index + 1] || tabs[index - 1];
-                        if (nextTab) {
-                            activeName = nextTab.name;
-                        }
-                    }
-                });
-            }
-
-            this.editableTabsValue = activeName;
-            this.editableTabs = tabs.filter(tab => tab.name !== targetName);
-        },
-
-        // 选择商品
-        chooeseGoods() {
-            if (this.editableTabs.length == 0) {
-                this.$message({
-                    message: '请先选择供货商再选择商品!',
-                    type: 'warning'
-                });
+                })
+                if (isFlag) {
+                    return
+                }
+                let temp = {
+                    sup_id: this.addSupplierDialog.id,    //供应商ID
+                    is_price_firse: '', //是否先打款：1先打款再发货，0先发货再打款
+                    pick_way: '',    //发货方式：1发给仓库，2自提，3发给客户
+                    postage: '',    //运费
+                    remarks: '', // 备注
+                    items: [],
+                };
+                this.requestData.push(temp);
+                this.addSupplierDialog.isShow = false;
             } else {
-                this.setGoodsDialog.isShow = true;
+                this.$message({
+                    message: '请选择供应商',
+                    type: 'error'
+                });
             }
         },
-
-        // 选择确定
-        chooeseComfim() {
-            this.activeIdx = this.tabIndex - 1;
-            let idx = this.activeIdx;
-            console.log(idx);
-            this.goodArr.forEach(item => {
-                this.editableTabs[idx].data.push(item);
+        // 移除标签
+        removeTab(targetName) {
+            this.$confirm('本次新增采购单将移除此供应商, 是否继续?', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(() => {
+                this.requestData.splice(targetName, 1);
+                this.tabIndex = this.requestData.length ? (this.requestData.length - 1 + "") : "0";
+                this.$message({
+                    type: 'success',
+                    message: '移除成功!'
+                });
+            }).catch(() => {
+                this.$message({
+                    type: 'info',
+                    message: '已取消移除'
+                });
             });
-            console.log(this.editableTabs[idx].data);
-            this.goodArr = [];
-            this.setGoodsDialog.isShow = false;
         },
 
-        handleCurrentChange(val) {
-            this.setGoodsDialog.reqData.page = val;
-            this.getAllgoods();
+        // 供应商id转为供应商名
+        supplierIdToName(value){
+            let returnData = '';
+            this.addSupplierDialog.responseData.map(item => {
+                if (item.id == value) {
+                    returnData = item.s_name
+                }
+            })
+            return returnData;
         },
-        handleSelectionChange(val) {
-            this.goodArr = val;
-        }
-    },
-    beforeMount() {
-        // noGoodsStatus().then(res => {
-        //     if (res.code === 200) {
-        //         this.setNoGoodsDialog.responseData.noGoodsStatusList = res.data.data;
-        //     }
-        // }).catch(err => {
-        //     console.log(err);
-        // });
+
+        // 选择商品弹框 搜索按钮
+        choosesGoodsDialogSearchBtn(){
+            getGoods(this.choosesGoodsDialog.requestData).then(res => {
+                if (res.code === 200) {
+                    this.choosesGoodsDialog.responseData = res.data
+                }
+            }).catch(err => {
+                console.log(err);
+            })
+        },
+        //选择商品弹框 改变页码
+        choosesGoodsDialogHandleCurrentChange(val) {
+            this.choosesGoodsDialog.requestData.page = val;
+            this.choosesGoodsDialogSearchBtn();
+        },
+        //选择商品弹框 选择商品
+        choosesGoodsDialogChosesGoods(val) {
+            this.choosesGoodsDialog.choosesGoods = val;
+        },
+        //选择商品弹框 确定选择
+        choosesGoodsDialogConfirmOk() {
+            if (this.requestData.length) {
+                this.requestData[this.tabIndex].items.push(... this.choosesGoodsDialog.choosesGoods);
+                // 去重
+                let obj = {};
+                this.requestData[this.tabIndex].items = this.requestData[this.tabIndex].items.reduce(function(item, next) {
+                    obj[next.id] ? '' : obj[next.id] = true && item.push(next);
+                    return item;
+                }, []);
+                this.choosesGoodsDialog.choosesGoods = []
+                this.choosesGoodsDialog.responseData.data = []
+                this.choosesGoodsDialog.responseData.total = 0
+                this.choosesGoodsDialog.isShow = false
+            } else {
+                this.$message.error('请选择供应商后添加商品');
+            }
+        },
     },
     components: {
-        supplier
+
     }
 };
 </script>
@@ -356,6 +295,7 @@ export default {
     .my-input {
         width: 150px;
         margin-right: 10px;
+        margin-bottom: 10px;
     }
 }
 .addBox {

@@ -12,25 +12,16 @@
                           style="width: 100%;"
                           border
                           default-expand-all
-                          :tree-props="{children: 'son', hasChildren: 'hasChildren'}"
+                          :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
                 >
                     <el-table-column label="菜单列表">
                         <template slot-scope="scope">
                             {{scope.row.a_name}}
                         </template>
                     </el-table-column>
-                    <el-table-column label="路由权限">
+                    <el-table-column label="选择权限">
                         <template slot-scope="scope">
-                            <template v-if="scope.row.type_id !== 1">
-                                <el-checkbox :label="scope.row.id" @change="routerAuth(scope.row.id, $event)">选择</el-checkbox>
-                            </template>
-                        </template>
-                    </el-table-column>
-                    <el-table-column label="按钮权限">
-                        <template slot-scope="scope">
-                            <template v-if="scope.row.type_id === 1">
-                                <el-checkbox :label="scope.row.id" @change="btnAuth(scope.row.id, $event)">选择</el-checkbox>
-                            </template>
+                            <el-checkbox :label="scope.row.id" @change="routerAuth(scope.row.id, $event)">选择</el-checkbox>
                         </template>
                     </el-table-column>
                 </el-table>
@@ -59,37 +50,25 @@
                 const requestData = {
                     role_id: this.$route.query.admin_id_role_id,
                     admin_id: this.$route.query.admin_id,
-                }
+                    type: 0, // 查询
+                };
                 setAuth(requestData).then(res => {
                     if (res.code === 200) {
-                        this.choosesValue = this.getChoosesValue(res.data, []);
-                        this.responseData = res.data;
+                        this.choosesValue = res.data.is_set;
+                        this.responseData = res.data.router;
                     }
                 }).catch(err => {
                     console.log(err);
                 })
             },
-            getChoosesValue(arr, ids = []){
-                arr.map(one => {
-                    if (one.son && one.son.length) {
-                        this.getChoosesValue(one.son, ids);
-                    }
-                    if (one.is_set){
-                        ids.push(one.id);
-                    }
-                });
-                return ids;
-            },
+
             saveAuth(){
                 const requestData = {
                     ids: this.choosesValue.join(','),
-                    admin_id: this.$route.query.admin_id_role_id,
-                    role_id: this.$route.query.role_id,
+                    role_id: this.$route.query.admin_id_role_id,
+                    admin_id: this.$route.query.admin_id,
+                    type: 1, // 编辑
                 };
-                if (this.choosesValue.length === 0){
-                    this.$message.error('请选择权限或路由');
-                    return;
-                }
                 setAuth(requestData).then(res => {
                     if (res.code === 200) {
                         this.$message.success('保存成功！');
@@ -100,60 +79,52 @@
                 })
             },
 
-            // 按钮权限被选中
-            btnAuth(choosesId, isSelect){
-                console.log("被选中的id:",choosesId);
-                let nodes = [];
-                function _getParentNodes(his, targetId, tree) {
-                    tree.some((list) => {
-                        const children = list.son || [];
-                        if (list.id === targetId) {
-                            nodes = his;
-                            return true;
-                        } else if (children.length > 0) {
-                            const history = [...his];
-                            history.push(list.id);
-                            return _getParentNodes(history, targetId, children);
-                        }
-                    })
-                };
-                _getParentNodes([], choosesId, this.responseData);
+            // 权限被选中  或  取消选中
+            routerAuth(choosesId, isSelect){
                 if (isSelect) {
+                    console.log("选中的id:",choosesId);
+                    let nodes = [];
+                    function _getParentNodes(his, targetId, tree) {
+                        tree.some((list) => {
+                            const children = list.children || [];
+                            if (list.id === targetId) {
+                                nodes = his;
+                                return true;
+                            } else if (children.length > 0) {
+                                const history = [...his];
+                                history.push(list.id);
+                                return _getParentNodes(history, targetId, children);
+                            }
+                        })
+                    };
+                    _getParentNodes([], choosesId, this.responseData);
                     let arr = [...this.choosesValue, ... nodes];
                     this.choosesValue =  [...new Set(arr)];
-                }
-            },
-            // 路由被选中
-            routerAuth(choosesId, isSelect){
-                console.log("被选中的id:",choosesId);
-                let returnedItem; //定义一个不不赋值的变量
-                let find = function(arr, id){
-                    arr.forEach((item) => { //利用foreach循环遍历
-                        if(item.id===choosesId)//判断递归结束条件
-                        {
-                            returnedItem = item;
-                            return item;
-                        }
-                        else if(item.son && item.son.length) //判断chlidren是否有数据
-                        {
-                            find(item.son, id);  //递归调用
-                        }
-                    })
-                };
-                find(this.responseData, 7);
-                console.log("吴黎明，",returnedItem);
-                function getSon(arr, ids = []){
-                    arr.map(one => {
-                        if (one.son && one.son.length) {
-                            getSon(one.son, ids);
-                        }
-                        ids.push(one.id);
-                    });
-                    return ids;
-                };
-                let son = getSon([returnedItem], []);
-                console.log("吴黎明2：", son);
-                if (!isSelect) {
+                } else {
+                    console.log("取消选中id:",choosesId);
+                    let returnedItem; //定义一个不不赋值的变量
+                    let find = function(arr, id){
+                        arr.forEach((item) => {
+                            if(item.id === id) {
+                                returnedItem = item;
+                                return item;
+                            } else if(item.children && item.children.length) {
+                                find(item.children, id);  //递归调用
+                            }
+                        })
+                    };
+                    find(this.responseData, choosesId);
+                    console.log("取消选择本节点及其后面点所有节点：", returnedItem);
+                    function getSon(arr, ids = []){
+                        arr.map(one => {
+                            if (one.children && one.children.length) {
+                                getSon(one.children, ids);
+                            }
+                            ids.push(one.id);
+                        });
+                        return ids;
+                    };
+                    let son = getSon([returnedItem], []);
                     let diff = this.choosesValue.filter(function (val) { return son.indexOf(val) === -1 })
                     this.choosesValue =  [...new Set(diff)];
                 }
@@ -165,7 +136,7 @@
         watch: {
             $route: {
                 handler: function(val, oldVal){
-                    if (val.query.admin_id){
+                    if (val.query.role_id){
                         this.getList();
                     }
                 },

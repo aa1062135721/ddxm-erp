@@ -7,14 +7,12 @@
         </div>
         <div class="container">
             <div style="margin-bottom:20px;">
-                <el-button type="primary" plain @click="openAdd">添加</el-button>
+                <el-button type="primary" plain @click="addDialogShow" v-if="$_has('add')">添加</el-button>
             </div>
             <div>
                 <el-tree
                     :data="menu"
                     :props="defaultProps"
-                    @node-click="handleNodeClick(menu)"
-                    :show-checkbox="true"
                     node-key="id"
                     default-expand-all
                     :expand-on-click-node="false"
@@ -23,63 +21,73 @@
             </div>
         </div>
 
-        <el-dialog
-            v-dialogDrag
-            :title="val == 1 ? '添加菜单' : '更改菜单'"
-            center
-            :visible.sync="addDepartmentDialog.visible"
-            width="40%"
-            @close="addClose"
-        >
-            <el-form
-                :model="addDepartmentDialog.ruleForm"
-                :rules="addDepartmentDialog.rules"
-                ref="ruleForm"
-                label-width="150px"
-                class="demo-ruleForm"
-            >
-                <el-form-item label="父级ID" prop="a_pid">
-                    <el-select v-model="addDepartmentDialog.ruleForm.a_pid" placeholder="请选择">
-                        <el-option
-                            v-for="item in options"
-                            :key="item.id"
-                            :label="item.a_name"
-                            :value="item.id"
-                            size="medium"
-                        ></el-option>
+        <el-dialog v-dialogDrag title="编辑" center :visible.sync="editDialog.visible" width="40%">
+            <el-form :model="editDialog.ruleForm" :rules="editDialog.rules" ref="editDialog" label-width="150px" class="demo-ruleForm">
+                <el-form-item label="名称" prop="a_name">
+                    <el-input clearable v-model="editDialog.ruleForm.a_name"></el-input>
+                </el-form-item>
+                <el-form-item label="模块" prop="a_module">
+                    <el-input clearable v-model="editDialog.ruleForm.a_module"></el-input>
+                </el-form-item>
+                <el-form-item label="控制器" prop="a_controller">
+                    <el-input clearable v-model="editDialog.ruleForm.a_controller"></el-input>
+                </el-form-item>
+                <el-form-item label="操作方法" prop="a_action">
+                    <el-input clearable v-model="editDialog.ruleForm.a_action"></el-input>
+                </el-form-item>
+                <el-form-item label="文件请求地址" prop="a_component">
+                    <el-input clearable v-model="editDialog.ruleForm.a_component"></el-input>
+                </el-form-item>
+                <el-form-item label="页面请求路由" prop="a_page_url">
+                    <el-input clearable v-model="editDialog.ruleForm.a_page_url"></el-input>
+                </el-form-item>
+                <el-form-item>
+                    <el-button type="primary" @click="editDialogSubmitForm('editDialog')">编辑</el-button>
+                    <el-button @click="resetForm('editDialog')">重置</el-button>
+                </el-form-item>
+            </el-form>
+        </el-dialog>
+
+        <el-dialog v-dialogDrag title="新增" center :visible.sync="addDialog.isShow" width="40%">
+            <el-form :model="addDialog.requestData" :rules="addDialog.rules" ref="addDialog" label-width="150px">
+                <el-form-item label="父级" prop="a_pid">
+                    <el-cascader
+                            v-model="addDialog.requestData.a_pid"
+                            placeholder="未选择表示新增为顶级"
+                            :options="menu"
+                            :props="{ checkStrictly: true, value: 'id', label: 'a_name', children: 'children' }">
+                    </el-cascader>
+                </el-form-item>
+                <el-form-item label="类型" prop="type_id">
+                    <el-select v-model="addDialog.requestData.type_id" @change="addDialogTypeChange" clearable placeholder="请选择" size="medium">
+                        <el-option v-for="(item, index) in addDialog.responseData"
+                                   :key="index"
+                                   :label="item.h_title"
+                                   :value="item.id">
+                        </el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item label="名称" prop="a_name">
-                    <el-input clearable v-model="addDepartmentDialog.ruleForm.a_name"></el-input>
+                    <el-input clearable v-model="addDialog.requestData.a_name"></el-input>
                 </el-form-item>
                 <el-form-item label="模块" prop="a_module">
-                    <el-input clearable v-model="addDepartmentDialog.ruleForm.a_module"></el-input>
+                    <el-input clearable v-model="addDialog.requestData.a_module"></el-input>
                 </el-form-item>
                 <el-form-item label="控制器" prop="a_controller">
-                    <el-input clearable v-model="addDepartmentDialog.ruleForm.a_controller"></el-input>
+                    <el-input clearable v-model="addDialog.requestData.a_controller"></el-input>
                 </el-form-item>
                 <el-form-item label="操作方法" prop="a_action">
-                    <el-input clearable v-model="addDepartmentDialog.ruleForm.a_action"></el-input>
-                </el-form-item>
-                <el-form-item label="层级" prop="a_level">
-                    <el-input clearable v-model="addDepartmentDialog.ruleForm.a_level"></el-input>
+                    <el-input clearable v-model="addDialog.requestData.a_action" disabled></el-input>
                 </el-form-item>
                 <el-form-item label="文件请求地址" prop="a_component">
-                    <el-input clearable v-model="addDepartmentDialog.ruleForm.a_component"></el-input>
+                    <el-input clearable v-model="addDialog.requestData.a_component"></el-input>
                 </el-form-item>
                 <el-form-item label="页面请求路由" prop="a_page_url">
-                    <el-input clearable v-model="addDepartmentDialog.ruleForm.a_page_url"></el-input>
-                </el-form-item>
-                <el-form-item label="类型" prop="type_id">
-                    <el-select v-model="addDepartmentDialog.ruleForm.type_id" clearable placeholder="请选择">
-                        <el-option label="按钮" value="1" size="medium"></el-option>
-                        <el-option label="路由" value="2" size="medium"></el-option>
-                    </el-select>
+                    <el-input clearable v-model="addDialog.requestData.a_page_url"></el-input>
                 </el-form-item>
                 <el-form-item>
-                    <el-button type="primary" @click="submitForm('ruleForm')" v-if="val == 1">立即创建</el-button>
-                    <el-button type="primary" @click="submitForm('ruleForm')" v-else>立即更改</el-button>
-                    <el-button @click="resetForm('ruleForm')">重置</el-button>
+                    <el-button type="primary" @click="addDialogSubmitForm('addDialog')">立即创建</el-button>
+                    <el-button @click="resetForm('addDialog')">重置</el-button>
                 </el-form-item>
             </el-form>
         </el-dialog>
@@ -92,21 +100,9 @@ import { addMenu, editMenu, listMenu, delMenu } from '../../../api/menu';
 export default {
     name: 'index',
     data() {
-        var validateForm = (rule, value, callback) => {
-            if (value === '') {
-                return callback(new Error('新增不能为空'));
-            } else {
-                if (!/^[5A-Za-z0-9-\_]+$/.test(value)) {
-                    callback(new Error('只能输入数字和英文下划线'));
-                } else {
-                    callback();
-                }
-            }
-            callback();
-        };
         return {
-            val: 1,
-            addDepartmentDialog: {
+            // 编辑对话框
+            editDialog: {
                 visible: false,
                 ruleForm: {
                     a_pid: '', // 父级id
@@ -120,203 +116,215 @@ export default {
                     type_id: '' // 类型
                 },
                 rules: {
-                    a_pid: [{ required: true, validator: validateForm, trigger: 'blur' }],
                     a_name: [{ required: true, message: '请输入菜单名称', trigger: 'blur' }],
-                    a_module: [{ required: true, validator: validateForm, trigger: 'blur' }],
-                    a_controller: [{ required: true, validator: validateForm, trigger: 'blur' }],
-                    a_action: [{ required: true, validator: validateForm, trigger: 'blur' }],
-                    a_level: [{ required: true, validator: validateForm, trigger: 'blur' }],
+                    a_module: [{ required: true, message: '请输入菜单名称', trigger: 'blur' }],
+                    a_controller: [{ required: true, message: '请输入菜单名称', trigger: 'blur' }],
+                    a_action: [{ required: true, message: '请输入菜单名称', trigger: 'blur' }],
                     a_component: [{ required: true, message: '请输入路由地址', trigger: 'blur' }],
                     a_page_url: [{ required: true, message: '请输入路由地址', trigger: 'blur' }],
-                    type_id: [{ required: true, validator: validateForm, trigger: 'blur' }]
                 }
             },
 
-            menu: [
-                {
-                    label: '一级 1',
-                    children: [
-                        {
-                            label: '二级 1-1',
-                            children: [
-                                {
-                                    label: '三级 1-1-1'
-                                }
-                            ]
-                        }
-                    ]
-                },
-                {
-                    label: '一级 2',
-                    children: [
-                        {
-                            label: '二级 2-1',
-                            children: [
-                                {
-                                    label: '三级 2-1-1'
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ],
+            menu: [],
             defaultProps: {
-                children: 'son',
+                children: 'children',
                 label: 'a_name'
             },
-            options: [
-                {
-                    id: 0,
-                    a_name: '设置顶级',
-                    a_level: 1
+
+            // 新增菜单对话框
+            addDialog: {
+                isShow: false,
+                responseData: [],// 新增栏目是菜单还是按钮
+                requestData: {
+                    a_pid: [], // 父级id
+                    a_name: '', // 名称
+                    a_module: '', // 模块
+                    a_controller: '', // 控制器
+                    a_action: '', // 操作方法
+                    a_component: '', // 文件请求路径
+                    a_page_url: '', // 页面请求路由
+                    a_level: '',
+                    type_id: '' // 类型
+                },
+                rules: {
+                    a_name: [{ required: true, message: '请输入菜单名称', trigger: 'blur' }],
+                    a_action: [{ required: true, message: '请输入选择类型', trigger: 'blur' }],
+                    a_component: [{ required: true, message: '请输入组件地址', trigger: 'blur' }],
+                    a_page_url: [{ required: true, message: '请输入路由地址', trigger: 'blur' }],
+                    type_id: [{ required: true, message: '请选择类型', trigger: 'blur' }]
                 }
-            ]
+            },
         };
     },
     created() {
         this.getMenu();
-        this.getFathers();
     },
-    inject: ['reload'], // 页面刷新
     methods: {
+        // 获取菜单
         getMenu() {
             listMenu().then(res => {
-                console.log('列表', res);
                 if (res.code == 200) {
                     this.menu = res.data;
                 }
             });
         },
 
-        getFathers() {
-            addMenu().then(res => {
-                console.log(res.data.parents);
+        // 重置表单
+        resetForm(formName) {
+            this.$refs[formName].resetFields();
+        },
+
+        // 编辑对话框显示
+        editDialogShow(node, data) {
+            let id = node.data.id;
+            editMenu({ id }).then(res => {
                 if (res.code == 200) {
-                    res.data.parents.forEach(item => {
-                        this.options.push(item);
-                    });
+                    this.editDialog.ruleForm = res.data.info;;
+                    this.editDialog.visible = true;
                 }
             });
         },
-
-        openAdd() {
-            this.val = 1;
-            this.addDepartmentDialog.visible = true;
-        },
-
-        submitForm(formName) {
+        // 编辑对话框
+        editDialogSubmitForm(formName) {
             this.$refs[formName].validate(valid => {
                 if (valid) {
-                    if (this.val == 1) {
-                        addMenu(this.addDepartmentDialog.ruleForm).then(res => {
-                            console.log('返回结果', res);
-                            if (res.code == 200) {
-                                this.addDepartmentDialog.visible = false;
-                                this.reload();
-                            }
-                        });
-                    } else {
-                        editMenu(this.addDepartmentDialog.ruleForm).then(res => {
-                            if (res.code == 200) {
-                                this.addDepartmentDialog.visible = false;
-                                this.reload();
-                            }
-                        });
-                    }
+                    editMenu(this.editDialog.ruleForm).then(res => {
+                        if (res.code == 200) {
+                            this.editDialog.visible = false;
+                            this.getMenu();
+                        }
+                    });
                 } else {
-                    console.log('error submit!!');
                     return false;
                 }
             });
         },
 
+        // 渲染树形结构
         renderContent(h, { node, data, store }) {
             return (
-                <span class="custom-tree-node">
+                <span class = "custom-tree-node">
                     <span style="margin-right:10px;size:16px;">{node.label}</span>
                     <span>
-                        <el-button size="mini" type="text" on-click={() => this.append(node, data)}>
-                            编辑
-                        </el-button>
-                        <el-button size="mini" type="text" on-click={() => this.remove(node, data)}>
-                            删除
-                        </el-button>
+                        {   this.$_has('edit') ? (<el-button size="mini" type="text" on-click={() => this.editDialogShow(node, data)}>编辑 </el-button>): null}
+                        {   this.$_has('del') ? (<el-button size="mini" type="text" on-click={() => this.remove(node, data)} >删除 </el-button>) : null}
+                        {
+                            data.meta.button_array && data.meta.button_array.length ?
+                            data.meta.button_array.map(tag => {
+                                return (
+                                    this.$_has('del') ? ( <el-tag style={{margin:'0 5px'}} type="danger" closable  on-close={() => this.removeBtn(tag)}>{tag.name}</el-tag>): null
+                                )
+                            }) : null
+                        }
                     </span>
                 </span>
             );
         },
 
-        addClose() {
-            this.addDepartmentDialog.ruleForm = {
-                a_pid: '', // 父级id
-                a_name: '', // 名称
-                a_module: '', // 模块
-                a_controller: '', // 控制器
-                a_action: '', // 操作方法
-                a_level: '', // 层级
-                a_component: '', // 数据请求路由
-                a_page_url: '', // 页面请求路由
-                type_id: '' // 类型
-            };
-        },
-
-        resetForm(formName) {
-            this.$refs[formName].resetFields();
-        },
-
-        handleNodeClick(data) {
-            console.log(data);
-        },
-
-        append(node, data) {
-            console.log('编辑', node);
-            let id = node.data.id;
-            editMenu({
-                id
-            }).then(res => {
-                if (res.code == 200) {
-                    let obj = res.data.info[`${id}`];
-                    this.addDepartmentDialog.ruleForm = obj;
-                    this.val = 2;
-                    this.addDepartmentDialog.visible = true;
-                }
-            });
-        },
-
+        // 删除栏目
         remove(node, data) {
-            console.log('删除', node);
-            console.log('删2', data);
             let id = node.data.id;
             this.$confirm('此操作将删除其所有子节点, 是否继续?', '提示', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
                 type: 'warning'
-            })
-                .then(() => {
-                    delMenu({
-                        id
-                    })
-                        .then(res => {
-                            if (res.code === 200) {
-                                this.$message({
-                                    type: 'success',
-                                    message: '删除成功!'
-                                });
-                                this.reload();
-                            }
-                        })
-                        .catch(err => {
-                            console.log(err);
-                            this.$message.error('操作失败');
+            }).then(() => {
+                delMenu({ id }).then(res => {
+                    if (res.code == 200) {
+                        this.$message({
+                            type: 'success',
+                            message: '删除成功!'
                         });
-                })
-                .catch(() => {
-                    this.$message({
-                        type: 'info',
-                        message: '已取消删除'
-                    });
+                        this.getMenu();
+                    }
+                }).catch(err => {
+                    console.log(err);
+                    this.$message.error('操作失败');
                 });
-        }
+            }).catch(() => {
+                this.$message({
+                    type: 'info',
+                    message: '已取消删除'
+                });
+            });
+        },
+        // 删除某个栏目下点按钮
+        removeBtn(tag){
+            this.$confirm('此操作将删除该栏目下的该按钮, 是否继续?', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(() => {
+                delMenu({ id: tag.id }).then(res => {
+                    if (res.code == 200) {
+                        this.$message({
+                            type: 'success',
+                            message: '删除成功!'
+                        });
+                        this.getMenu();
+                    }
+                }).catch(err => {
+                    console.log(err);
+                    this.$message.error('操作失败');
+                });
+            }).catch(() => {
+                this.$message({
+                    type: 'info',
+                    message: '已取消删除'
+                });
+            });
+        },
+
+        // 新增栏目对话框显示，并得到所有的按钮类型
+        addDialogShow(){
+            addMenu().then(res => {
+                if (res.code == 200){
+                    this.addDialog.responseData = res.data
+                    this.addDialog.isShow = true;
+                }
+            }).catch(err => {
+                console.log(err);
+            })
+        },
+        // 新增栏目对话框，选择新增类型
+        addDialogTypeChange(e){
+            this.addDialog.responseData.map(item => {
+                if (item.id == e) {
+                    this.addDialog.requestData.a_action = item.h_tag;
+                    if (item.h_tag.toLowerCase() != 'getlist') {
+                        this.addDialog.requestData.a_name = item.h_title;
+                    } else {
+                        this.addDialog.requestData.a_name = '';
+                    }
+                }
+            })
+        },
+        // 新增栏目 确定新增
+        addDialogSubmitForm(formName) {
+            this.$refs[formName].validate(valid => {
+                if (valid) {
+                    if (this.addDialog.requestData.a_pid.length){
+                        this.addDialog.requestData.a_level = this.addDialog.requestData.a_pid.length;
+                        this.addDialog.requestData.a_pid = this.addDialog.requestData.a_pid[this.addDialog.requestData.a_pid.length - 1];
+                    } else {
+                        this.addDialog.requestData.a_pid = 0;
+                        this.addDialog.requestData.a_level = 0;
+                    }
+                    addMenu(this.addDialog.requestData).then(res => {
+                        if (res.code == 200) {
+                            this.getMenu();
+                            this.resetForm(formName);
+                            this.addDialog.requestData.a_pid = [];
+                            this.addDialog.isShow = false;
+                        }
+                    }).catch(err => {
+                        console.log(err);
+                    })
+                } else {
+                    return false;
+                }
+            });
+        },
     }
 };
 </script>

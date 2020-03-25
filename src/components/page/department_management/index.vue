@@ -7,7 +7,7 @@
         </div>
         <div class="container">
             <div>
-                <el-button type="primary" plain @click="addDialogShow">添加</el-button>
+                <el-button type="primary" plain @click="addDialogShow" v-if="$_has('add')">添加</el-button>
             </div>
             <div style="margin: 40px 0;">
                 <el-table
@@ -32,8 +32,8 @@
                 <el-table-column label="操作">
                     <template slot-scope="scope">
                         <el-button type="text" @click="goToAuth(scope.row)">权限管理</el-button>
-                        <el-button type="text" @click="editDialogShow(scope.row)">编辑</el-button>
-                        <el-button type="text" @click="deleteDepartment(scope.row)">删除</el-button>
+                        <el-button type="text" @click="editDialogShow(scope.row)" v-if="$_has('edit')">编辑</el-button>
+                        <el-button type="text" @click="deleteDepartment(scope.row)" v-if="$_has('del')">删除</el-button>
                     </template>
                 </el-table-column>
             </el-table>

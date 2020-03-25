@@ -11,8 +11,8 @@
                 <span>捣蛋熊</span>
             </div>
             <div class="my-menu">
-                <el-menu :default-active="sideBarId" active-text-color="#fff" text-color="#fff" class="nav-demo" mode="horizontal" @select="handleSelect">
-                    <el-menu-item :index="item.id" v-for="(item,index) in nav" :key="index">{{item.title}}</el-menu-item>
+                <el-menu :default-active="'' + sideBarId" active-text-color="#fff" text-color="#fff" class="nav-demo" mode="horizontal" @select="handleSelect">
+                    <el-menu-item v-for="(item, index) in userInfo.auth" :index="'' + item.id" :key="index">{{item.meta.title}}</el-menu-item>
                 </el-menu>
             </div>
         </div>
@@ -67,15 +67,10 @@ export default {
         return {
             collapse: false,
             fullscreen: false,
-            message: 2,
-            nav:[{
-                id:'0',
-                title:"首页",
-            }],
+            message: "",
         };
     },
     created () {
-       this.getNav()
     },
     computed: {
         ...mapState(['userInfo', 'sideBarId']),
@@ -99,20 +94,7 @@ export default {
         },
 
         handleSelect(key, keyPath){
-            this.setSideId(key)
-        },
-        // 获取导航
-        getNav(){
-            let router = window.localStorage.getItem("router")
-            let nav = JSON.parse(router)
-            nav.forEach(item=>{
-                console.log("导航",item)
-                let obj = {
-                    id:item.id,
-                    title:item.meta.title
-                }
-                this.nav.push(obj)
-            })
+            this.setSideId('' + key)
         },
 
         // 侧边栏折叠

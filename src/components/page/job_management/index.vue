@@ -14,13 +14,13 @@
                         clearable>
                 </el-input>
                 <el-button type="primary" @click="getList">查询</el-button>
-                <el-button type="primary" plain @click=" addDialog.visible= true">添加</el-button>
+                <el-button type="primary" plain @click=" addDialog.visible= true" v-if="$_has('add')">添加</el-button>
             </div>
             <div style="margin: 40px 0;">
                 <el-table :data="responseData.data" style="width: 100%">
                     <el-table-column prop="rg_name" label="岗位名称"></el-table-column>
                     <el-table-column prop="creata_time" label="添加时间"></el-table-column>
-                    <el-table-column label="是否启用">
+                    <el-table-column label="是否启用" v-if="$_has('edit')">
                         <template slot-scope="scope">
                             <el-switch
                                     v-model="scope.row.is_switch"
@@ -34,8 +34,8 @@
                     </el-table-column>
                     <el-table-column label="操作">
                         <template slot-scope="scope">
-                            <el-button type="text" @click="editDialog.ruleForm.id = scope.row.id; editDialog.ruleForm.rg_name = scope.row.rg_name; editDialog.visible = true;">编辑</el-button>
-                            <el-button type="text" @click="deleteJob(scope.row)">删除</el-button>
+                            <el-button type="text" @click="editDialog.ruleForm.id = scope.row.id; editDialog.ruleForm.rg_name = scope.row.rg_name; editDialog.visible = true;" v-if="$_has('edit')">编辑</el-button>
+                            <el-button type="text" @click="deleteJob(scope.row)" v-if="$_has('del')">删除</el-button>
                         </template>
                     </el-table-column>
                 </el-table>

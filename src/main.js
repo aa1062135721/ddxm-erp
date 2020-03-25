@@ -89,7 +89,11 @@ function getObjArr(name) { //localStorage 获取数组对象的方法
     return JSON.parse(window.localStorage.getItem(name));
 }
 
-
+// 按钮权限
+const hasPermission = userPermission => {
+    return store.state.authButton.indexOf(userPermission) !== -1
+}
+Vue.prototype.$_has = hasPermission
 
 new Vue({
     router,

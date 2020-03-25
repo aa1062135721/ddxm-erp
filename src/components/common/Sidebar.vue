@@ -11,40 +11,39 @@
             unique-opened
             router
         >
-            <template v-for="(item,index) in items">
-                <template v-if="item.children">
-                    <el-submenu :index="item.path" :key="index">
+            <template v-for="(oneItem, oneIndex) in items">
+                <el-submenu v-if="oneItem.children" :index="oneItem.path" :key="oneIndex">
                         <template slot="title">
-                            <i class="el-icon-lx-copy"></i>
-                            <span slot="title">{{ item.meta.title }}</span>
+                            <!--<i class="el-icon-lx-copy"></i>-->
+                            <span slot="title">{{ oneItem.meta.title }}</span>
                         </template>
-                        <template v-for="subItem in item.children">
-                            <el-submenu
-                                v-if="subItem.children"
-                                :index="subItem.path"
-                                :key="subItem.index"
-                            >
-                                <template slot="title">{{ subItem.meta.title }}</template>
-                                <el-menu-item
-                                    v-for="(threeItem,i) in subItem.children"
-                                    :key="i"
-                                    :index="threeItem.index"
-                                >{{ threeItem.title }}</el-menu-item>
+                        <template v-for="(twoItem, twoIndex) in oneItem.children">
+                            <el-submenu v-if="twoItem.children" :index="twoItem.path" :key="twoIndex">
+                                <template slot="title">
+                                    <!--<i class="el-icon-lx-copy"></i>-->
+                                    <span slot="title">{{ twoItem.meta.title }}</span>
+                                </template>
+                                <el-menu-item v-for="(threeItem, threeIndex) in twoItem.children" :key="threeIndex" :index="threeItem.path">
+                                    <template slot="title">
+                                        <!--<i class="el-icon-lx-copy"></i>-->
+                                        <span slot="title">{{ threeItem.title }}</span>
+                                    </template>
+                                </el-menu-item>
                             </el-submenu>
-                            <el-menu-item
-                                v-else
-                                :index="subItem.path"
-                                :key="subItem.index"
-                            >{{ subItem.meta.title }}</el-menu-item>
+                            <el-menu-item v-else :index="twoItem.path" :key="twoIndex">
+                                <template slot="title">
+                                    <!--<i class="el-icon-lx-copy"></i>-->
+                                    <span slot="title">{{ twoItem.meta.title }}</span>
+                                </template>
+                            </el-menu-item>
                         </template>
                     </el-submenu>
-                </template>
-                <template v-else>
-                    <el-menu-item :index="item.path" :key="item.index">
-                        <i class="el-icon-lx-copy"></i>
-                        <span slot="title">{{ item.meta.title }}</span>
-                    </el-menu-item>
-                </template>
+                <el-menu-item v-else :index="oneItem.path" :key="oneIndex">
+                    <template slot="title">
+                        <!--<i class="el-icon-lx-copy"></i>-->
+                        <span slot="title">{{ oneItem.meta.title }}</span>
+                    </template>
+                </el-menu-item>
             </template>
         </el-menu>
     </div>
@@ -57,122 +56,7 @@ export default {
     data() {
         return {
             collapse: false,
-            items: [
-                {
-                    icon: 'el-icon-lx-home',
-                    index: 'dashboard',
-                    title: '系统首页'
-                },
-                {
-                    icon: 'el-icon-lx-cascades',
-                    index: 'table',
-                    title: '基础表格'
-                },
-                {
-                    icon: 'el-icon-lx-copy',
-                    index: 'tabs',
-                    title: 'tab选项卡'
-                },
-                {
-                    icon: 'el-icon-lx-calendar',
-                    index: '3',
-                    title: '表单相关',
-                    subs: [
-                        {
-                            index: 'form',
-                            title: '基本表单'
-                        },
-                        {
-                            index: '3-2',
-                            title: '三级菜单',
-                            subs: [
-                                {
-                                    index: 'editor',
-                                    title: '富文本编辑器'
-                                },
-                                {
-                                    index: 'markdown',
-                                    title: 'markdown编辑器'
-                                }
-                            ]
-                        },
-                        {
-                            index: 'upload',
-                            title: '文件上传'
-                        }
-                    ]
-                },
-                {
-                    icon: 'el-icon-lx-emoji',
-                    index: 'icon',
-                    title: '自定义图标'
-                },
-                {
-                    icon: 'el-icon-pie-chart',
-                    index: 'charts',
-                    title: 'schart图表'
-                },
-                {
-                    icon: 'el-icon-rank',
-                    index: '6',
-                    title: '拖拽组件',
-                    subs: [
-                        {
-                            index: 'drag',
-                            title: '拖拽列表'
-                        },
-                        {
-                            index: 'dialog',
-                            title: '拖拽弹框'
-                        }
-                    ]
-                },
-                {
-                    icon: 'el-icon-lx-warn',
-                    index: '7',
-                    title: '错误处理',
-                    subs: [
-                        {
-                            index: 'permission',
-                            title: '权限测试'
-                        },
-                        {
-                            index: '404',
-                            title: '404页面'
-                        }
-                    ]
-                },
-                {
-                    icon: 'el-icon-lx-copy',
-                    index: 'logManagement',
-                    title: '登录日志'
-                },
-                {
-                    icon: 'el-icon-lx-copy',
-                    index: 'departmentManagement',
-                    title: '部门管理'
-                },
-                {
-                    icon: 'el-icon-lx-copy',
-                    index: 'jobManagement',
-                    title: '岗位管理'
-                },
-                {
-                    icon: 'el-icon-lx-copy',
-                    index: 'staffManagement',
-                    title: '员工管理'
-                },
-                {
-                    icon: 'el-icon-lx-copy',
-                    index: 'menu',
-                    title: '菜单管理'
-                },
-                {
-                    icon: 'el-icon-lx-copy',
-                    index: 'shouldPurchase',
-                    title: '待采购单'
-                },
-            ]
+            items: []
         };
     },
     watch:{
@@ -184,7 +68,7 @@ export default {
     computed: {
         ...mapState(['userInfo','sideBarId']),
         onRoutes() {
-            return this.$route.path.replace('/', '');
+            return '/' + this.$route.path.replace('/', '');
         }
     },
     created() {
@@ -200,7 +84,6 @@ export default {
         getSideBar(){
             this.userInfo.auth.forEach(item => {
                 if(item.id == this.sideBarId){
-                    console.log(item.children)
                     this.items = item.children
                 }
             });
