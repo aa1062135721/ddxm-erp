@@ -75,7 +75,7 @@
 </template>
 
 <script>
-    import {list, add, edit, del, isSwitch } from '../../../api/job'
+    import {list, add, edit, del, isSwitch } from '@/api/auth/job'
 
     export default {
         name: 'index',

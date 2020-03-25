@@ -27,7 +27,7 @@
 </template>
 
 <script>
-import { logMenu } from '../../../api/log';
+import { logMenu } from '@/api/auth/log';
 
     export default {
         name: 'index',

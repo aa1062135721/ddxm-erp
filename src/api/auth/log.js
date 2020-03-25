@@ -1,6 +1,6 @@
-import request from '../utils/request';
+import request from '../../utils/request';
 
-/** 
+/**
  * 日志列表
 */
 export const logMenu = query => {

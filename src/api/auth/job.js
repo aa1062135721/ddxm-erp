@@ -1,7 +1,7 @@
 /**
  *  岗位管理
  **/
-import request from '../utils/request';
+import request from '../../utils/request';
 
 export const list = query => {
     return request({

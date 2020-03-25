@@ -34,7 +34,7 @@
 </template>
 
 <script>
-    import { setAuth, } from '../../../api/department';
+    import { setAuth, } from '@/api/auth/department';
 
     export default {
         name: 'auth',

@@ -95,7 +95,7 @@
 </template>
 
 <script>
-import { addMenu, editMenu, listMenu, delMenu } from '../../../api/menu';
+import { addMenu, editMenu, listMenu, delMenu } from '@/api/auth/menu';
 
 export default {
     name: 'index',

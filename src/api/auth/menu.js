@@ -1,6 +1,6 @@
-import request from '../utils/request';
+import request from '../../utils/request';
 
-/** 
+/**
  * 新增菜单
 */
 export const addMenu = query => {
@@ -11,7 +11,7 @@ export const addMenu = query => {
     });
 };
 
-/** 
+/**
  * 菜单编辑
 */
 export const editMenu = query => {
@@ -22,7 +22,7 @@ export const editMenu = query => {
     });
 };
 
-/** 
+/**
  * 菜单列表
 */
 export const listMenu = query => {
@@ -33,7 +33,7 @@ export const listMenu = query => {
     });
 };
 
-/** 
+/**
  * 删除列表
 */
 export const delMenu = query => {

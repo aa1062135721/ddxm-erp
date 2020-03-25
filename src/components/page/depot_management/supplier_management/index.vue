@@ -9,7 +9,7 @@
             <div class="search-div">
                 <el-input class="my-input" placeholder="供应商名" clearable v-model="requestData.seach_val"></el-input>
                 <el-button type="primary">查询</el-button>
-                <el-button type="primary" plain @click="addDialogShow()">新增</el-button>
+                <el-button type="primary" plain @click="addDialogShow()" v-if="$_has('add')">新增</el-button>
             </div>
             <div style="margin: 40px 0;">
                 <el-table style="width: 100%" :data="responseData.data">
@@ -22,8 +22,8 @@
                     <el-table-column prop="desc" label="备注"></el-table-column>
                     <el-table-column label="操作">
                         <template slot-scope="scope">
-                            <el-button type="text" @click="editDialogShow(scope.row)">编辑</el-button>
-                            <el-button type="text" @click="myDelete(scope.row)">删除</el-button>
+                            <el-button type="text" @click="editDialogShow(scope.row)" v-if="$_has('edit')">编辑</el-button>
+                            <el-button type="text" @click="myDelete(scope.row)" v-if="$_has('del')">删除</el-button>
                         </template>
                     </el-table-column>
                 </el-table>

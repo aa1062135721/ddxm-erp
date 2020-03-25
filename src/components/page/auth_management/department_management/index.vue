@@ -17,7 +17,7 @@
                 <el-table-column prop="p_name" label="上级部门"></el-table-column>
                 <el-table-column prop="r_desc" label="职能描述"></el-table-column>
                 <el-table-column prop="create_time" label="添加时间"></el-table-column>
-                <el-table-column label="是否启用">
+                <el-table-column label="是否启用" v-if="$_has('edit')">
                     <template slot-scope="scope">
                         <el-switch
                                 active-color="#13ce66"
@@ -81,7 +81,7 @@
 </template>
 
 <script>
-    import { list, add, edit, del, isSwitch } from '../../../api/department';
+    import { list, add, edit, del, isSwitch } from '@/api/auth/department';
 
     export default {
         name: 'index',

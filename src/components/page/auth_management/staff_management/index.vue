@@ -116,7 +116,7 @@
 </template>
 
 <script>
-    import { list, add, edit, del, isSwitch } from '../../../api/staff';
+    import { list, add, edit, del, isSwitch } from '@/api/auth/staff';
 
     export default {
         name: 'index',

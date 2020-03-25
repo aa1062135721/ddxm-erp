@@ -13,7 +13,7 @@
                 <depot placeholder="选择仓库"></depot>
                 <el-input class="my-input" placeholder="商品名/条形码" clearable v-model="requestData.seach_val"></el-input>
                 <el-button type="primary">查询</el-button>
-                <el-button type="primary" plain>导出</el-button>
+                <el-button type="primary" plain v-if="$_has('export')">导出</el-button>
             </div>
             <div style="margin: 40px 0;">
                 <el-table style="width: 100%" :data="responseData.data">

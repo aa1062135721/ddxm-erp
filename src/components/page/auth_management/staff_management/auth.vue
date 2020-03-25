@@ -34,7 +34,7 @@
 </template>
 
 <script>
-    import { setAuth, } from '../../../api/staff';
+    import { setAuth, } from '@/api/auth/staff';
 
     export default {
         name: 'auth',
@@ -136,7 +136,7 @@
         watch: {
             $route: {
                 handler: function(val, oldVal){
-                    if (val.query.role_id){
+                    if (val.query.admin_id_role_id && val.query.admin_id){
                         this.getList();
                     }
                 },
