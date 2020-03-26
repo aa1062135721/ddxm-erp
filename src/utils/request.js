@@ -1,5 +1,6 @@
 import axios from 'axios';
-import { Message } from 'element-ui';
+import { Message, Loading } from 'element-ui';
+let loading;
 
 const service = axios.create({
     // process.env.NODE_ENV === 'development' 来判断是否开发环境
@@ -9,6 +10,12 @@ const service = axios.create({
 
 service.interceptors.request.use(
     config => {
+        loading = Loading.service({
+            lock: true,
+            text: 'Loading',
+            spinner: 'el-icon-loading',
+            background: 'rgba(0, 0, 0, 0.7)'
+        });
         return config;
     },
     error => {
@@ -19,6 +26,7 @@ service.interceptors.request.use(
 
 service.interceptors.response.use(
     response => {
+        loading.close();
         if (response.status === 200) {
             if (response.data.code != 200){
                 Message.closeAll();
@@ -33,6 +41,7 @@ service.interceptors.response.use(
         }
     },
     error => {
+        loading.close();
         console.log(error);
         return Promise.reject();
     }
