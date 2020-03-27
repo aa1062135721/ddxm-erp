@@ -19,7 +19,7 @@
                 </el-select>
                 <el-date-picker
                         v-model="requestData.time"
-                        value-format="yyyy-MM-dd HH:mm:ss"
+                        value-format="yyyy-MM-dd"
                         @change="changeRequestTime"
                         style="margin-right: 10px;"
                         type="datetimerange"
@@ -27,46 +27,68 @@
                         start-placeholder="采购开始时间"
                         end-placeholder="采购结束时间">
                 </el-date-picker>
-                <depot placeholder="采购到达仓库" v-model="requestData.sup_id"></depot>
                 <el-button type="primary" @click="getList">搜索</el-button>
                 <el-button type="primary" plain>导出</el-button>
             </div>
             <div style="margin: 40px 0;">
                 <el-table :data="responseData.data" style="width: 100%">
                     <el-table-column type="index" width="50" label="序号"></el-table-column>
-                    <el-table-column prop="id" label="采购单ID"></el-table-column>
-                    <el-table-column prop="sn" label="采购单订单编号"></el-table-column>
-                    <el-table-column prop="sup_name" label="供应商"></el-table-column>
-                    <el-table-column label="采购单商品信息">
+                    <el-table-column label="采购单信息" width="280">
                         <template slot-scope="scope">
-                            <el-table :data="scope.row.items" style="width: 100%">
-                                <el-table-column type="index" label="序号"></el-table-column>
-                                <el-table-column prop="item_id" label="商品ID"></el-table-column>
-                                <el-table-column prop="bar_code" label="条形码"></el-table-column>
-                                <el-table-column prop="title" label="商品名"></el-table-column>
-                                <el-table-column prop="price" label="采购成本"></el-table-column>
-                                <el-table-column prop="num" label="采购数量"></el-table-column>
-                                <el-table-column prop="amount" label="采购总计"></el-table-column>
-                                <el-table-column prop="refund_num" label="退货数量"></el-table-column>
-                                <el-table-column prop="deliver_status" label="发货状态"></el-table-column>
-                                <el-table-column prop="refund_status" label="退货状态"></el-table-column>
-                                <el-table-column prop="deliver_num" label="已发货数量"></el-table-column>
-                            </el-table>
+                            <div>采购人：{{scope.row.user_name}}</div>
+                            <div>采购单ID：{{scope.row.id}}</div>
+                            <div>采购单订单编号：{{scope.row.sn}}</div>
+                            <div>采购时间：{{scope.row.create_time}}</div>
                         </template>
                     </el-table-column>
-                    <el-table-column prop="price_firse" label="是否先打款"></el-table-column>
-                    <el-table-column prop="pick_way_name" label="采购到达"></el-table-column>
+                    <el-table-column label="供应商" width="200">
+                        <template slot-scope="scope">
+                            <div>供应商：{{scope.row.sup_name}}</div>
+                            <div>是否先打款：{{scope.row.price_firse}}</div>
+                            <div>采购到达：{{scope.row.pick_way_name}}</div>
+                        </template>
+                    </el-table-column>
+                    <el-table-column label="商品条形码" width="200">
+                        <template slot-scope="scope">
+                            <div v-for="(item, index) in scope.row.items" :key="index">{{item.bar_code}}</div>
+                        </template>
+                    </el-table-column>
+                    <el-table-column label="商品名称" width="200">
+                        <template slot-scope="scope">
+                            <div v-for="(item, index) in scope.row.items" :key="index">{{item.title}}</div>
+                        </template>
+                    </el-table-column>
+                    <el-table-column label="商品规格">
+                        <template slot-scope="scope">
+                            <div v-for="(item, index) in scope.row.items" :key="index">{{item.attr_name}}</div>
+                        </template>
+                    </el-table-column>
+                    <el-table-column label="采购单价">
+                        <template slot-scope="scope">
+                            <div v-for="(item, index) in scope.row.items" :key="index">{{item.price}}</div>
+                        </template>
+                    </el-table-column>
+                    <el-table-column label="采购数量">
+                        <template slot-scope="scope">
+                            <div v-for="(item, index) in scope.row.items" :key="index">{{item.num}}</div>
+                        </template>
+                    </el-table-column>
+                    <el-table-column label="退货数量">
+                        <template slot-scope="scope">
+                            <div v-for="(item, index) in scope.row.items" :key="index">{{item.refund_num}}</div>
+                        </template>
+                    </el-table-column>
+                    <el-table-column label="合计金额">
+                        <template slot-scope="scope">
+                            <div v-for="(item, index) in scope.row.items" :key="index">{{item.amount}}</div>
+                        </template>
+                    </el-table-column>
                     <el-table-column prop="postage" label="运费"></el-table-column>
-                    <el-table-column prop="amount" label="采购单总金额（包含运费）"></el-table-column>
-                    <el-table-column prop="remarks" label="采购单备注"></el-table-column>
-                    <el-table-column prop="is_pay" label="是否已经打款"></el-table-column>
-                    <el-table-column prop="status_name" label="采购单状态"></el-table-column>
-                    <el-table-column prop="refund_status" label="采购单退货状态"></el-table-column>
-                    <el-table-column prop="create_time" label="采购时间"></el-table-column>
+                    <el-table-column prop="remarks" label="备注"></el-table-column>
+                    <el-table-column prop="status_name" label="状态"></el-table-column>
                     <el-table-column label="操作">
                         <template slot-scope="scope">
-                            <el-button type="text" @click="myEditDialogShow(scope.row)">编辑</el-button>
-                            <el-button type="text" @click="myDelete(scope.row)">删除</el-button>
+                            <el-button type="text" @click="cancel(scope.row)">取消采购</el-button>
                         </template>
                     </el-table-column>
                 </el-table>
@@ -74,6 +96,7 @@
             <div>
                 <el-pagination
                         :total="responseData.count"
+                        @current-change="handleCurrentChange"
                         background
                         layout="prev, pager, next">
                 </el-pagination>
@@ -85,7 +108,7 @@
 <script>
     import supplier from '../components/supplier/index'
     import depot from '../components/depot/index'
-    import { list, del, } from '../../../../api/purchase/purchaseLog';
+    import { list, purCancel, } from '../../../../api/purchase/purchaseLog';
     export default {
         name: 'index',
         data() {
@@ -119,7 +142,36 @@
                 }).catch(err => {
                     console.log(err);
                 })
-            }
+            },
+            // 分页
+            handleCurrentChange(val) {
+                this.requestData.page = val;
+                this.getList();
+            },
+            cancel(scope){
+                const requestData = {
+                    id: scope.id
+                };
+                this.$confirm('此操作将取消该采购单, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    purCancel(requestData).then(res => {
+                        if (res.code === 200) {
+                            this.$message.success('取消成功');
+                            this.getList();
+                        }
+                    }).catch(err => {
+                        console.log(err);
+                    })
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消取消采购单操作！'
+                    });
+                });
+            },
         },
         components: {
             supplier,

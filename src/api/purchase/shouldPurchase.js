@@ -23,7 +23,7 @@ export const setNoGoods = query => {
 
 export const list = query => {
     return request({
-        url: '/purchase/Be_purchase/purList',
+        url: '/purchase/Be_purchase/getList',
         method: 'post',
         data: query
     });

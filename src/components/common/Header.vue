@@ -87,6 +87,9 @@ export default {
                     this.$router.push({
                         path: '/login'
                     });
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 200)
                 }).catch(err => {
                     console.log(err)
                 })

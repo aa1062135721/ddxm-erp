@@ -25,7 +25,7 @@ export const purchaseHistoryList = query => {
 // 新增采购单
 export const addPurchase = query => {
     return request({
-        url: '/Purchase/Purchase/addPurchase',
+        url: '/Purchase/Purchase/add',
         method: 'post',
         data: query
     });

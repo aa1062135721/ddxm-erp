@@ -5,15 +5,16 @@ import request from '@/utils/request';
 
 export const list = query => {
     return request({
-        url: '/purchase/Purchase_record/purchaseList',
+        url: '/purchase/Purchase_record/getList',
         method: 'post',
         data: query
     });
 };
 
-export const del = query => {
+// 取消采购
+export const purCancel = query => {
     return request({
-        url: '/purchase/Purchase_record/delList',
+        url: '/purchase/Purchase_record/purCancel',
         method: 'post',
         data: query
     });

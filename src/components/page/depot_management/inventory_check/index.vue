@@ -7,10 +7,6 @@
         </div>
         <div class="container">
             <div class="search-div">
-                <el-select placeholder="选择商品一级分类" style="margin-right: 10px;">
-                    <el-option label="item.r_name" value="item.id"></el-option>
-                </el-select>
-                <depot placeholder="选择仓库"></depot>
                 <el-input class="my-input" placeholder="商品名/条形码" clearable v-model="requestData.seach_val"></el-input>
                 <el-button type="primary">查询</el-button>
                 <el-button type="primary" plain v-if="$_has('export')">导出</el-button>
