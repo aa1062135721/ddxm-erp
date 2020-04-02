@@ -283,10 +283,16 @@ export default {
                 if (isFlag) {
                     return
                 }
+                let supplier;
+                this.addSupplierDialog.responseData.map(item => {
+                    if (item.id === this.addSupplierDialog.id) {
+                        supplier = item
+                    }
+                });
                 let temp = {
                     sup_id: this.addSupplierDialog.id,    //供应商ID
-                    is_price_firse: '', //是否先打款：1先打款再发货，0先发货再打款
-                    pick_way: '',    //发货方式：1发给仓库，2自提，3发给客户
+                    is_price_firse: '' + supplier.pay_type, //是否先打款：1先打款再发货，0先发货再打款
+                    pick_way: '' + supplier.send_type,    //发货方式：1发给仓库，2自提，3发给客户
                     postage: '',    //运费
                     remarks: '', // 备注
                     amount: '',// 该供应商下 单实际支付金额 (不包含运费)
@@ -453,11 +459,6 @@ export default {
                     flag = false;
                     break;
                 }
-                if (!item.amount) {
-                    this.$message.error(`请输入【${this.supplierIdToName(item.sup_id)}】供应商的采购单实际支付金额！`);
-                    flag = false;
-                    break;
-                }
                 if (item.items.length === 0) {
                     this.$message.error(`【${this.supplierIdToName(item.sup_id)}】供应商没有要采购的商品！`);
                     flag = false;
@@ -479,6 +480,7 @@ export default {
                         title: goods.g_title,
                         pic: goods.imgurl,
                         attr_name: goods.key_name,
+                        attr_ids: goods.attr_ids,
                         bar_code: goods.code,
                         price: goods.price,
                         num: goods.num,

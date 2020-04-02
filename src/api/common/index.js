@@ -10,3 +10,14 @@ export const getGoods = query => {
         params: query
     });
 };
+
+/**
+ * 获取七牛云上传文件token
+ **/
+export const getQiNiuToken = query => {
+    return request({
+        url: '/system/Common/getQiNiuToken',
+        method: 'get',
+        params: query
+    });
+};

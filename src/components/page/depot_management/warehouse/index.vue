@@ -143,8 +143,15 @@
                 <el-divider content-position="left">
                     所入仓库：{{item.shop_name}} &nbsp;&nbsp;<el-divider direction="vertical"></el-divider>
                     入库人员：{{item.user_name}}&nbsp;&nbsp;<el-divider direction="vertical"></el-divider>
-                    入库时间：{{item.create_time}}&nbsp;&nbsp;<el-divider direction="vertical"></el-divider>
-                    <el-button type="text" @click="warehouseLogDialogCancel(item.id)">取消入库</el-button>
+                    入库时间：{{item.create_time}}&nbsp;&nbsp;
+                    <template v-if="item.status != 2">
+                        <el-divider direction="vertical"></el-divider>
+                        <el-button type="text" @click="warehouseLogDialogCancel(item.id)">取消入库</el-button>
+                    </template>
+                    <template v-else>
+                        <el-divider direction="vertical"></el-divider>
+                        <span style="color: red;">已取消</span>
+                    </template>
                 </el-divider>
                 <el-table style="width: 100%;" max-height="250px" :data="item.items">
                     <el-table-column prop="title" label="商品名"></el-table-column>
