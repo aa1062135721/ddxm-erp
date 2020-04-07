@@ -29,7 +29,7 @@
                     <el-table-column prop="amount" label="金额"></el-table-column>
                     <el-table-column label="操作">
                         <template slot-scope="scope">
-                            <el-button type="text" @click="detailsDialogShow(scope.row.supplier_id)">查看明细</el-button>
+                            <el-button type="text" v-if="$_has('find')" @click="detailsDialogShow(scope.row.supplier_id)">查看明细</el-button>
                         </template>
                     </el-table-column>
                 </el-table>
@@ -160,7 +160,7 @@
                     <el-table-column label="打款人" prop="a_username"></el-table-column>
                     <el-table-column label="操作">
                         <template slot-scope="scope">
-                            <el-button type="text" @click="detailsDialogCancel(scope.row.id, scope.row.purchase_id)">取消打款</el-button>
+                            <el-button type="text" v-if="$_has('removeRemittance')" @click="detailsDialogCancel(scope.row.id, scope.row.purchase_id)">取消打款</el-button>
                         </template>
                     </el-table-column>
                 </el-table>

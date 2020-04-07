@@ -9,7 +9,7 @@
             <div class="search-div">
                 <el-input class="my-input" placeholder="商品名/条形码" clearable v-model="requestData.seach_val"></el-input>
                 <el-button type="primary">查询</el-button>
-                <el-button type="primary" plain v-if="$_has('export')">导出</el-button>
+                <el-button type="primary" plain v-if="$_has('export')" @click="myExport">导出</el-button>
             </div>
             <div style="margin: 40px 0;">
                 <el-table style="width: 100%" :data="responseData.data">
@@ -29,7 +29,8 @@
                     <el-table-column prop="w_stock" label="库存"></el-table-column>
                     <el-table-column label="操作">
                         <template slot-scope="scope">
-                            <el-button type="text">商品轨迹</el-button>
+                            <el-button type="text" v-if="$_has('costLocus')" @click="goodsCostLocusDialogShow(scope.row)">商品成本轨迹</el-button>
+                            <el-button type="text" v-if="$_has('goodsLocus')" @click="goodsLocusDialogShow(scope.row)">商品轨迹</el-button>
                         </template>
                     </el-table-column>
                 </el-table>
@@ -44,37 +45,38 @@
             </div>
         </div>
 
-        <el-dialog v-dialogDrag title="某某商品成本轨迹" center width="30%">
+        <el-dialog v-dialogDrag :title="goodsCostLocusDialog.goods_name + '的成本轨迹'" center width="30%" :visible.sync="goodsCostLocusDialog.isShow">
             <div style="margin: 40px 0;">
-                <el-table style="width: 100%"  height="300">
-                    <el-table-column prop="a_account" label="成本"></el-table-column>
-                    <el-table-column prop="a_username" label="时间"></el-table-column>
+                <el-table style="width: 100%"  height="300" :data="goodsCostLocusDialog.responseData.data">
+                    <el-table-column prop="wpc_cost" label="成本"></el-table-column>
+                    <el-table-column prop="create_time" label="时间"></el-table-column>
                 </el-table>
             </div>
             <div style="text-align: center;">
                 <el-pagination
                         background
                         layout="prev, pager, next"
-                        :total="100">
+                        @current-change="goodsCostLocusDialogHandleCurrentChange"
+                        :total="goodsCostLocusDialog.responseData.total">
                 </el-pagination>
             </div>
         </el-dialog>
 
-        <el-dialog v-dialogDrag title="某某商品轨迹" center width="30%">
+        <el-dialog v-dialogDrag :title="goodsLocusDialog.goods_name + '的商品轨迹'" center width="30%" :visible.sync="goodsLocusDialog.isShow">
             <div style="margin: 40px 0;">
-                <el-table style="width: 100%" height="300">
-                    <el-table-column prop="a_account" label="数量"></el-table-column>
-                    <el-table-column prop="a_account" label="进入/进出"></el-table-column>
-                    <el-table-column prop="a_account" label="方式"></el-table-column>
-                    <el-table-column prop="a_username" label="时间"></el-table-column>
+                <el-table style="width: 100%" height="300" :data="goodsLocusDialog.responseData.data">
+                    <el-table-column prop="num" label="数量"></el-table-column>
+                    <el-table-column prop="type" label="进入/进出"></el-table-column>
+                    <el-table-column prop="status" label="方式"></el-table-column>
+                    <el-table-column prop="create_time" label="时间"></el-table-column>
                 </el-table>
             </div>
             <div style="text-align: center;">
                 <el-pagination
                         background
                         layout="prev, pager, next"
-                        @current-change=""
-                        :total="100">
+                        @current-change="goodsLocusDialogHandleCurrentChange"
+                        :total="goodsLocusDialog.responseData.total">
                 </el-pagination>
             </div>
         </el-dialog>
@@ -82,8 +84,9 @@
 </template>
 
 <script>
-    import { list, } from '../../../../api/depot/inventoryCheck';
+    import { list, costLocus, goodsLocus, exportFile} from '../../../../api/depot/inventoryCheck';
     import depot from '../../purchase_management/components/depot/index';
+    import { downloadFile } from '@/utils/index.js';
 
     export default {
         name: 'index',
@@ -97,6 +100,39 @@
                     total: 0,
                     data: []
                 },
+                // 商品轨迹
+                goodsLocusDialog: {
+                    goods_name: '',
+                    isShow: false,
+                    requestData: {
+                        page: 1,
+                        limit: 10,
+                        goods_id: 0,//商品ID
+                        specs_key: 0,//规格（没有规格，默认传0）
+                        warehouse_id: 0,//仓库id
+                    },
+                    responseData: {
+                        total: 0,
+                        data: []
+                    }
+                },
+
+                // 商品成本轨迹
+                goodsCostLocusDialog: {
+                    goods_name: '',
+                    isShow: false,
+                    requestData: {
+                        page: 1,
+                        limit: 10,
+                        goods_id: 0,//商品ID
+                        specs_key: 0,//规格（没有规格，默认传0）
+                        warehouse_id: 0,//仓库id
+                    },
+                    responseData: {
+                        total: 0,
+                        data: []
+                    }
+                }
             }
         },
         methods: {
@@ -115,6 +151,73 @@
                     console.log(err);
                 });
             },
+            // 导出
+            myExport(){
+                exportFile().then(res => {
+                    downloadFile(res, 'file.xlsx');
+                })
+            },
+
+            // 商品轨迹对话框   显示
+            goodsLocusDialogShow(scope){
+                console.log(scope);
+                this.goodsLocusDialog.goods_name = scope.g_title;
+                this.goodsLocusDialog.requestData = {
+                    page: 1,
+                    limit: 10,
+                    warehouse_id: scope.id,
+                    goods_id: scope.goods_id,
+                    specs_key: scope.key || 0,
+                };
+                this.goodsLocusDialogGetList();
+            },
+            // 商品轨迹对话框   获取列表
+            goodsLocusDialogGetList(){
+                goodsLocus(this.goodsLocusDialog.requestData).then(res => {
+                    if (res.code === 200) {
+                        this.goodsLocusDialog.responseData = res.data;
+                        this.goodsLocusDialog.isShow = true;
+                    }
+                }).catch(err => {
+                    console.log(err);
+                })
+            },
+            // 商品轨迹对话框  页码切换
+            goodsLocusDialogHandleCurrentChange(val){
+                this.goodsLocusDialog.requestData.page = val;
+                this.goodsLocusDialogGetList();
+            },
+
+
+            // 商品成本轨迹对话框   显示
+            goodsCostLocusDialogShow(scope){
+                this.goodsCostLocusDialog.goods_name = scope.g_title;
+                this.goodsCostLocusDialog.requestData = {
+                    page: 1,
+                    limit: 10,
+                    warehouse_id: scope.id,
+                    goods_id: scope.goods_id,
+                    specs_key: scope.key || 0,
+                };
+                this.goodsCostLocusDialogGetList();
+            },
+            // 商品成本轨迹对话框   获取列表
+            goodsCostLocusDialogGetList(){
+                costLocus(this.goodsCostLocusDialog.requestData).then(res => {
+                    if (res.code === 200) {
+                        this.goodsCostLocusDialog.responseData = res.data;
+                        this.goodsCostLocusDialog.isShow = true;
+                    }
+                }).catch(err => {
+                    console.log(err);
+                })
+            },
+            // 商品成本轨迹对话框  页码切换
+            goodsCostLocusDialogHandleCurrentChange(val){
+                this.goodsCostLocusDialog.requestData.page = val;
+                this.goodsCostLocusDialogGetList();
+            },
+
         },
         mounted() {
             this.getList();
