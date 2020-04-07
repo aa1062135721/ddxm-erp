@@ -29,7 +29,7 @@ export const details = query => {
 
 export const cancel = query => {
     return request({
-        url: '/remittance_flow/removeRemittance',
+        url: '/finance/remittance_flow/removeRemittance',
         method: 'post',
         data: query
     });

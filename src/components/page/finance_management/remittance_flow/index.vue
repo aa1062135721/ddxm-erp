@@ -154,12 +154,13 @@
                     <el-table-column label="序号" type="index"></el-table-column>
                     <el-table-column label="采购金额"  prop="purchase_amount"></el-table-column>
                     <el-table-column label="打款金额"  prop="rf_amount"></el-table-column>
+                    <el-table-column label="抵扣金额"  prop="rf_deduct_amount"></el-table-column>
                     <el-table-column label="打款时间" width="150" prop="create_time"></el-table-column>
                     <el-table-column label="备注" width="150" prop="desc"></el-table-column>
                     <el-table-column label="打款人" prop="a_username"></el-table-column>
                     <el-table-column label="操作">
                         <template slot-scope="scope">
-                            <el-button type="text" @click="detailsDialogCancel(scope.row.id)">取消打款</el-button>
+                            <el-button type="text" @click="detailsDialogCancel(scope.row.id, scope.row.purchase_id)">取消打款</el-button>
                         </template>
                     </el-table-column>
                 </el-table>
@@ -345,7 +346,8 @@
                         purchase_id: item.id,
                         purchase_amount: item.items.reduce((totalPrice, goods) => totalPrice + parseFloat(goods.amount), 0),
                         rf_amount: parseFloat(item.rf_amount),
-                        rf_deduct_amount: parseFloat(item.rf_deduct_amount)
+                        rf_deduct_amount: parseFloat(item.rf_deduct_amount),
+                        supplier_id: this.addDialog.table.requestData.sup_id,
                     })
                 }
                 if (remittance_flow.length !== this.addDialog.table.multipleSelectionAll.length) {
@@ -411,13 +413,13 @@
                 })
             },
             // 明细弹框 取消打款
-            detailsDialogCancel(id){
+            detailsDialogCancel(id, purchase_id){
                 this.$confirm('本次操作将取消打款, 是否继续?', '提示', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
-                    cancel({id}).then(res => {
+                    cancel({id, purchase_id}).then(res => {
                         if (res.code === 200) {
                             this.detailsDialogGetList();
                         }
