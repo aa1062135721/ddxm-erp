@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { Message, Loading } from 'element-ui';
+import store from '../store/index.js';
 let loading;
 
 const service = axios.create({
@@ -28,6 +29,14 @@ service.interceptors.response.use(
     response => {
         loading.close();
         if (response.status === 200) {
+            if (response.data.code == -1) {
+                store.commit('setUserInfo', {});
+                window.localStorage.removeItem('router');
+                window.location.href = '#/login';
+                setTimeout(() => {
+                    window.location.reload();
+                }, 150)
+            }
             if (response.data.code != 200){
                 Message.closeAll();
                 Message({

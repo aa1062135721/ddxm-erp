@@ -20,3 +20,14 @@ export const logistics = query => {
         params: query
     });
 };
+
+/**
+ * 客户资料
+ */
+export const customerList = query => {
+    return request({
+        url: '/system/common/getCustomer',
+        method: 'post',
+        params: query
+    });
+};

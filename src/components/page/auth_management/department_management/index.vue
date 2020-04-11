@@ -17,7 +17,7 @@
                 <el-table-column prop="p_name" label="上级部门"></el-table-column>
                 <el-table-column prop="r_desc" label="职能描述"></el-table-column>
                 <el-table-column prop="create_time" label="添加时间"></el-table-column>
-                <el-table-column label="是否启用" v-if="$_has('edit')">
+                <el-table-column label="是否启用" v-if="$_has('isSwitch')">
                     <template slot-scope="scope">
                         <el-switch
                                 active-color="#13ce66"
@@ -31,7 +31,7 @@
                 </el-table-column>
                 <el-table-column label="操作">
                     <template slot-scope="scope">
-                        <el-button type="text" @click="goToAuth(scope.row)">权限管理</el-button>
+                        <el-button type="text" @click="goToAuth(scope.row)" v-if="$_has('setAuth')">权限管理</el-button>
                         <el-button type="text" @click="editDialogShow(scope.row)" v-if="$_has('edit')">编辑</el-button>
                         <el-button type="text" @click="deleteDepartment(scope.row)" v-if="$_has('del')">删除</el-button>
                     </template>
