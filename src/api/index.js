@@ -22,6 +22,18 @@ export const logistics = query => {
 };
 
 /**
+ * 查看所有物流公司
+ */
+export const logisticsCompany = query => {
+    return request({
+        baseURL: '/aShop',
+        url: '/system/Common/selectCompany',
+        method: 'post',
+        params: query
+    });
+};
+
+/**
  * 客户资料
  */
 export const customerList = query => {

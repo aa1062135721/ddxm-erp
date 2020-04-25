@@ -2,7 +2,7 @@
     <el-dialog v-dialogDrag title="查看物流信息" center :visible.sync="show" width="30%">
         <div class="title">
             <div class="title-item">
-                <span>物流：</span>{{code | codeToString}}
+                <span>物流：</span>{{codeToString(code)}}
             </div>
             <div class="title-item">
                 <span>快递单号：</span>{{sn}}
@@ -20,12 +20,14 @@
 
 <script>
     import { logistics, } from '../../api/index';
+    import { logisticsCompany } from '@/api/index.js';
 
     export default {
         name: 'logistics',
         data() {
             return {
                 show: false,
+                // 返回的物流信息
                 responseData: [
                     {
                         Date: "2020-03-11 17:28:46",
@@ -46,7 +48,9 @@
                         checkpoint_status: "transit",
                         ItemNode: "ItemReceived"
                     }
-                ]
+                ],
+                // 返回的所有快递公司
+                list:[],
             };
         },
         props: {
@@ -76,39 +80,42 @@
             },
             show: function(newVal, oldValue) {
                 if (!newVal) {
+                    console.log('子组件改变父组件的值');
                     this.$emit("update:isShow", false); // 当弹出层被关闭的时候，发送消息给父组件，取消显示对话框
                 }
             },
         },
-        filters: {
-            codeToString: function(value) {
-                let str = '';
-                switch (value) {
-                    case 'jd':
-                        str = '京东快递';
-                        break;
-                    default:
-                        str = '未知快点公司';
-                        break;
+        methods: {
+            getData(){
+                const requestData = {
+                    sn: this.sn,
+                    code: this.code
+                };
+                logistics(requestData).then(res => {
+                   if (res.code === 200) {
+                       this.responseData = res.data;
+                   }
+                }).catch(err => {
+                    console.log(err);
+                });
+            },
+            codeToString(value) {
+                for (const company of this.list) {
+                    if (value.toLowerCase() == company.code.toLowerCase()){
+                        return company.title;
+                    }
                 }
-                return str;
             }
         },
-        methods: {
-          getData(){
-            const requestData = {
-                sn: this.sn,
-                code: this.code
-            };
-            logistics(requestData).then(res => {
-               if (res.code === 200) {
-                   // this.responseData = res.data;
-               }
+        beforeCreate() {
+            logisticsCompany().then(res => {
+                if (res.code === 200) {
+                    this.list = res.data
+                }
             }).catch(err => {
                 console.log(err);
-            });
-          },
-        },
+            })
+        }
     };
 </script>
 

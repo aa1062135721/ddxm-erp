@@ -11,6 +11,13 @@ module.exports = {
                 pathRewrite:{
                     '/api':''
                 }
+            },
+            '/aShop':{
+                target:'http://ddxm661.com:8088',
+                changeOrigin:true,
+                pathRewrite:{
+                    '/aShop':''
+                }
             }
         }
     }
