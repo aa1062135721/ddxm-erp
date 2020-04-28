@@ -21,9 +21,9 @@
                 <el-input placeholder="采购单实际支付金额 (不包含运费)" v-model="requestData[tabIndex].amount" clearable class="my-input" style="min-width: 300px;"></el-input>
             </div>
             <div class="addBox">
-                <el-button class="addInput" type="primary" plain @click="addSupplierDialog.isShow = true">新增供货商</el-button>
+                <el-button class="addInput" type="primary" plain @click="addSupplierDialog.isShow = true">选择供货商</el-button>
                 <el-button class="addInput" type="primary" plain v-if="requestData.length" @click="choosesGoodsDialog.isShow = true">选择商品</el-button>
-                <el-button type="primary" plain>批量导入</el-button>
+<!--                <el-button type="primary" plain>批量导入</el-button>-->
                 <el-button type="primary" v-show="requestData.length !== 0" @click="addPurchaseOrderSubmit">提交并保存</el-button>
             </div>
             <el-tabs

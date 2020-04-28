@@ -94,6 +94,7 @@
                             <div v-for="(item, index) in scope.row.items" :key="index">{{item.num}}</div>
                         </template>
                     </el-table-column>
+                    <el-table-column label="邮费" prop="postage"></el-table-column>
                     <el-table-column label="总金额">
                         <template slot-scope="scope">
                             <div v-for="(item, index) in scope.row.items" :key="index">{{item.amount}}</div>

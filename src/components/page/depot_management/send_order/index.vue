@@ -19,16 +19,6 @@
             </div>
             <div style="margin: 40px 0;">
                 <el-table :data="responseData.data" style="width: 100%" border>
-<!--                    <el-table-column label="订单信息" width="280">-->
-<!--                        <template slot-scope="scope">-->
-<!--                            <div>订单ID：{{scope.row.id}}</div>-->
-<!--                            <div>订单号：{{scope.row.o_sn}}</div>-->
-<!--                            <div>订单类型：{{scope.row.type_name}}</div>-->
-<!--                            <div>付款金额(包含运费)：{{scope.row.o_pay_amount}}</div>-->
-<!--                            <div>订单运费：{{scope.row.o_freight}}</div>-->
-<!--                            <div>付款方式：{{scope.row.pay_type_name}}</div>-->
-<!--                        </template>-->
-<!--                    </el-table-column>-->
                     <el-table-column label="收货信息" width="280">
                         <template slot-scope="scope">
                             <div>收件人：{{scope.row.o_receiving_realname}}</div>
@@ -48,7 +38,12 @@
                     </el-table-column>
                     <el-table-column label="商品规格">
                         <template slot-scope="scope">
-                            <div v-for="(item, index) in scope.row.items" :key="index">{{item.og_goods_key}}</div>
+                            <div v-for="(item, index) in scope.row.items" :key="index">{{item.og_goods_key_name}}</div>
+                        </template>
+                    </el-table-column>
+                    <el-table-column label="购买数量">
+                        <template slot-scope="scope">
+                            <div v-for="(item, index) in scope.row.items" :key="index">{{item.og_num}}</div>
                         </template>
                     </el-table-column>
                     <el-table-column label="发货数量">
@@ -61,6 +56,7 @@
                             <div v-for="(item, index) in scope.row.items" :key="index">{{item.og_sent_num}}</div>
                         </template>
                     </el-table-column>
+                    <el-table-column label="下单时间" prop="create_time"></el-table-column>
                     <el-table-column label="状态">
                         <template slot-scope="scope">
                             <div v-for="(item, index) in scope.row.items" :key="index">{{item.og_send_status_name}}</div>
@@ -203,8 +199,8 @@
                     },
                     requestData: {
                         order_id: 0, //订单ID
-                        os_logistics_sn: "sdfasdfadfa",    //物流编号
-                        os_logistics_code: "JD",  //物流公司码
+                        os_logistics_sn: "",    //物流编号
+                        os_logistics_code: "",  //物流公司码
                         os_freight: '',// 运费
                         warehouse_id: '',  //发货仓库
                         items: [  //选择的发货商品

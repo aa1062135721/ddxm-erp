@@ -31,6 +31,7 @@
                     <el-table-column label="图片">
                         <template slot-scope="scope">
                             <el-image
+                                    style="width: 80px;height: 80px;margin: 10px;"
                                     class="table-td-thumb"
                                     :src="scope.row.pic"
                                     :preview-src-list="[scope.row.pic]"
@@ -41,8 +42,8 @@
                     <el-table-column prop="num" label="缺货量"></el-table-column>
                     <el-table-column prop="l_browser" label="操作信息">
                         <template slot-scope="scope">
-                            <el-button type="text">立即采购</el-button>
-                            <el-button type="text" @click="setNoGoodsDialogShow(scope.row)">设置无货</el-button>
+<!--                            <el-button type="text">立即采购</el-button>-->
+<!--                            <el-button type="text" @click="setNoGoodsDialogShow(scope.row)">设置无货</el-button>-->
                             <el-button type="text" @click="noGoodsTrackDialogShow(scope.row)">缺货轨迹</el-button>
                         </template>
                     </el-table-column>

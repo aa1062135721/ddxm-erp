@@ -17,6 +17,15 @@ service.interceptors.request.use(
             spinner: 'el-icon-loading',
             background: 'rgba(0, 0, 0, 0.7)'
         });
+
+        if (process.env.NODE_ENV === 'production') {
+            if (config.baseURL === '/api') {
+                config.baseURL = 'http://testadmin2.ddxm661.com'
+            }
+            if (config.baseURL === '/aShop') {
+                config.baseURL = 'http://ddxm661.com:8088'
+            }
+        }
         return config;
     },
     error => {

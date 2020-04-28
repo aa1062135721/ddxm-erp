@@ -43,7 +43,11 @@
             visible: {
                 type: Boolean,
                 default: false
-            }
+            },
+            requestData: {
+                type: Object,
+                default: {}
+            },
         },
         watch: {
             visible: {
@@ -59,6 +63,17 @@
                 if (!newVal) {
                     this.$emit("update:visible", false); // 当弹出层被关闭的时候，发送消息给父组件，取消显示对话框
                 }
+            },
+            requestData: {
+                handler:function(val, oldval){
+                    if (val.warehouse_id) {
+                        this.choosesGoodsDialog.requestData.warehouse_id = val.warehouse_id
+                    }
+                    if (val.supplier_id) {
+                        this.choosesGoodsDialog.requestData.supplier_id = val.supplier_id
+                    }
+                },
+                deep:true//对象内部的属性监听，也叫深度监听
             }
         },
         data() {
@@ -69,7 +84,8 @@
                     requestData: {
                         page: 1,
                         seach_val:'',
-                        supplier_id: ''
+                        supplier_id: '',
+                        warehouse_id: '',
                     },
                     responseData: {
                         total: 0,

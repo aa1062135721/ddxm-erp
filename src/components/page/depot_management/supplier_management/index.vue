@@ -55,7 +55,7 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item label="付款时间" prop="pay_time">
-                    <el-input v-model="addDialog.requestData.pay_time" placeholder="付款时间" class="my-input"></el-input>
+                    <el-input v-model="addDialog.requestData.pay_time" placeholder="请输入0或正整数。0为立即付款，单位为天" class="my-input"></el-input>
                 </el-form-item>
                 <el-form-item label="发货方式" prop="send_type">
                     <el-select  placeholder="请选择" v-model="addDialog.requestData.send_type">
@@ -87,7 +87,7 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item label="付款时间" prop="pay_time">
-                    <el-input v-model="editDialog.requestData.pay_time" placeholder="付款时间" class="my-input"></el-input>
+                    <el-input v-model="editDialog.requestData.pay_time" placeholder="请输入0或正整数。0为立即付款，单位为天" class="my-input"></el-input>
                 </el-form-item>
                 <el-form-item label="发货方式" prop="send_type">
                     <el-select  placeholder="请选择" v-model="editDialog.requestData.send_type">
