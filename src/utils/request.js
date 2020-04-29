@@ -24,8 +24,7 @@ const service = axios.create({
      * 打包成shop系统
      * 开发环境也要把vue.config.js中的/api代理成http://ddxm661.com:8088重启项目 TODO
      */
-    // baseURL: process.env.NODE_ENV === 'development' ? '/api' : 'http://ddxm661.com:8088',
-    // baseURL: 'http://ddxm661.com:8088',
+    // baseURL: process.env.NODE_ENV === 'development' ? '/aShop' : 'http://ddxm661.com:8088',
     timeout: 5000
 });
 

@@ -38,7 +38,7 @@
 
 <script>
     import { list, } from '@/api/statistics/transaction';
-    import depot from '@/components/page/purchase_management/components/depot/index'
+    import depot from '@/components/common/Depot.vue'
 
     export default {
         name: 'index',

@@ -106,9 +106,10 @@
 </template>
 
 <script>
-    import supplier from '../components/supplier/index'
-    import depot from '../components/depot/index'
-    import { list, purCancel, } from '../../../../api/purchase/purchaseLog';
+    import supplier from '@/components/common/Supplier.vue';
+    import depot from '@/components/common/Depot.vue';
+    import { list, purCancel, } from '@/api/purchase/purchaseLog';
+
     export default {
         name: 'index',
         data() {

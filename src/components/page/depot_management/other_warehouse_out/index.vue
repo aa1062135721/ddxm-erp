@@ -143,7 +143,7 @@
 <script>
     import {list, add, cancel, exportFile, reconciliation } from '@/api/depot/otherWarehouseOut.js';
     import { customerList } from '@/api/index.js';
-    import depot from '../../purchase_management/components/depot/index';
+    import depot from '@/components/common/Depot.vue';
     import choosesGoods from '@/components/common/ChoosesGoods.vue';
     import { downloadFile } from '@/utils/index.js';
 

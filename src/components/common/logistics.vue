@@ -19,7 +19,7 @@
 </template>
 
 <script>
-    import { logistics, } from '../../api/index';
+    import { logistics, } from '@/api/index';
     import { logisticsCompany } from '@/api/index.js';
 
     export default {

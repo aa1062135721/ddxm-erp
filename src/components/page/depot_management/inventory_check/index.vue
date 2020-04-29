@@ -84,8 +84,8 @@
 </template>
 
 <script>
-    import { list, costLocus, goodsLocus, exportFile} from '../../../../api/depot/inventoryCheck';
-    import depot from '../../purchase_management/components/depot/index';
+    import { list, costLocus, goodsLocus, exportFile} from '@/api/depot/inventoryCheck';
+    import depot from '@/components/common/Depot.vue';
     import { downloadFile } from '@/utils/index.js';
 
     export default {

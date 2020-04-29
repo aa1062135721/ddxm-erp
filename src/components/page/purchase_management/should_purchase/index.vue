@@ -132,8 +132,9 @@
 </template>
 
 <script>
-    import supplier from '../components/supplier/index';
+    import supplier from '@/components/common/Supplier.vue';
     import { noGoodsStatus, setNoGoods, list, noGoodsTrail, } from '@/api/purchase/shouldPurchase';
+
     export default {
         name: 'index',
         data() {

@@ -172,9 +172,10 @@
 </template>
 
 <script>
-    import supplier from '@/components/page/purchase_management/components/supplier/index'
-    import depot from '@/components/page/purchase_management/components/depot/index'
+    import supplier from '@/components/common/Supplier.vue'
+    import depot from '@/components/common/Depot.vue'
     import { list, deliver, deliverLog, deliverCancel } from '@/api/depot/warehouse';
+
     export default {
         name: 'index',
         data() {

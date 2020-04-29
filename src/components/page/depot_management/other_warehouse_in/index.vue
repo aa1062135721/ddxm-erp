@@ -129,8 +129,8 @@
 
 <script>
     import { list, add, cancel, exportFile} from '@/api/depot/otherWarehouseIn.js';
-    import depot from '../../purchase_management/components/depot/index';
-    import supplier from '../../purchase_management/components/supplier/index';
+    import depot from '@/components/common/Depot.vue';
+    import supplier from '@/components/common/Supplier.vue';
     import choosesGoods from '@/components/common/ChoosesGoods.vue';
     import { downloadFile } from '@/utils/index.js';
 

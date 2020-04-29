@@ -167,7 +167,7 @@
 
 <script>
     import { list, sendGoods, sendGoodsLog } from '@/api/depot/sendOrder';
-    import depot from '../../purchase_management/components/depot/index'
+    import depot from '@/components/common/Depot.vue'
     import LogisticsCompany from '@/components/common/LogisticsCompany.vue'
     import logistics from '@/components/common/logistics';
 

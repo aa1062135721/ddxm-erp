@@ -8,22 +8,20 @@
         <el-option
                 v-for="(item, index) in list"
                 :key="index"
-                :label="item.w_name"
+                :label="item.s_name"
                 :value="item.id">
         </el-option>
     </el-select>
 </template>
 
 <script>
-    import { listAll } from '../../../../../api/depot/depot';
-
+    import { listAll } from '@/api/depot/supplier';
     export default {
-
         name: 'index',
         props: {
             placeholder: {
                 type: String,
-                default: '请选择仓库'
+                default: '选择供应商'
             },
             value: null,
         },

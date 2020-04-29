@@ -35,7 +35,7 @@
 
 <script>
     import { getGoods } from '@/api/common/index';
-    import supplier from '@/components/page/purchase_management/components/supplier/index.vue';
+    import supplier from '@/components/common/Supplier.vue';
 
     export default {
         name: 'ChoosesGoods',

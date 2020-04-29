@@ -128,7 +128,7 @@
 
 <script>
     import { list, add, examine } from '@/api/depot/breakOrder';
-    import depot from '@/components/page/purchase_management/components/depot/index.vue'
+    import depot from '@/components/common/Depot.vue'
     import choosesGoods from '@/components/common/ChoosesGoods.vue'
 
     export default {
