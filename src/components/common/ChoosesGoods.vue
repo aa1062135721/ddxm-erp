@@ -46,7 +46,9 @@
             },
             requestData: {
                 type: Object,
-                default: {}
+                default: function() {
+                    return {}
+                }
             },
         },
         watch: {

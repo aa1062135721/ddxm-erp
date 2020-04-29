@@ -334,6 +334,8 @@
                             if (res.code === 200) {
                                 this.resetForm(formName);
                                 this.sendGoodsDialog.isShow = false;
+                                this.sendGoodsDialog.requestData.os_freight = '';
+                                this.sendGoodsDialog.requestData.items = [];
                                 this.getList();
                                 this.$message.success('发货成功');
                             }

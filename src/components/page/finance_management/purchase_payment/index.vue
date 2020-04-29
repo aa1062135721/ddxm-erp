@@ -72,7 +72,9 @@
                     <el-table-column prop="status_name" label="状态"></el-table-column>
                     <el-table-column label="操作">
                         <template slot-scope="scope">
-                            <el-button type="text" v-if="$_has('purItemRecord')" @click="purchaseHistoryDialogShow(scope.row)">采购历史</el-button>
+                            <div v-for="(item, index) in scope.row.items" :key="index">
+                                <el-button type="text" v-if="$_has('purItemRecord')" @click="purchaseHistoryDialogShow(item)">采购历史</el-button>
+                            </div>
                         </template>
                     </el-table-column>
                 </el-table>
@@ -197,8 +199,8 @@
 
             // 采购历史  弹框展示
             purchaseHistoryDialogShow(scope){
-                this.purchaseHistoryDialog.requestData.item_id = scope.id;
-                this.purchaseHistoryDialog.requestData.attr_ids = scope.key;
+                this.purchaseHistoryDialog.requestData.item_id = scope.item_id;
+                this.purchaseHistoryDialog.requestData.attr_ids = scope.attr_ids;
                 this.purchaseHistoryDialogSearchBtn();
             },
             // 采购历史  选择 开始时间和结束时间

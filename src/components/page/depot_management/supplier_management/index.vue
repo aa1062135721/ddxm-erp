@@ -40,9 +40,6 @@
 
         <el-dialog v-dialogDrag title="新增供应商" center :visible.sync="addDialog.isShow" width="30%">
             <el-form label-width="120px" :model="addDialog.requestData" :rules="addDialog.rules" ref="addDialog">
-                <el-form-item label="供应商编码" prop="s_code">
-                    <el-input v-model="addDialog.requestData.s_code" placeholder="供应商编码" class="my-input"></el-input>
-                </el-form-item>
                 <el-form-item label="供应商名字" prop="s_name">
                     <el-input v-model="addDialog.requestData.s_name" placeholder="供应商名字" class="my-input"></el-input>
                 </el-form-item>
@@ -72,9 +69,6 @@
         </el-dialog>
         <el-dialog v-dialogDrag title="编辑供应商" center :visible.sync="editDialog.isShow" width="30%">
             <el-form label-width="120px" :model="editDialog.requestData" :rules="editDialog.rules" ref="editDialog">
-                <el-form-item label="供应商编码" prop="s_code">
-                    <el-input v-model="editDialog.requestData.s_code" placeholder="供应商编码" class="my-input"></el-input>
-                </el-form-item>
                 <el-form-item label="供应商名字" prop="s_name">
                     <el-input v-model="editDialog.requestData.s_name" placeholder="供应商名字" class="my-input"></el-input>
                 </el-form-item>
@@ -128,9 +122,6 @@
                         send_list: [],
                     },
                     rules: {
-                        s_code: [
-                            { required: true, message: '供应商编码', trigger: 'blur' },
-                        ],
                         s_name: [
                             { required: true, message: '请输入供应商名', trigger: 'blur' },
                         ],
@@ -153,7 +144,6 @@
                         pay_type: '',
                         pay_time: '',
                         send_type: '',
-                        s_code: '',
                         desc: '',// 备注
                     }
                 },
@@ -164,9 +154,6 @@
                         send_list: [],
                     },
                     rules: {
-                        s_code: [
-                            { required: true, message: '供应商编码', trigger: 'blur' },
-                        ],
                         s_name: [
                             { required: true, message: '请输入供应商名', trigger: 'blur' },
                         ],
@@ -189,7 +176,6 @@
                         pay_type: '',
                         pay_time: '',
                         send_type: '',
-                        s_code: '',
                         desc: '',// 备注
                     }
                 },

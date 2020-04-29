@@ -50,7 +50,11 @@ export default {
         submitForm() {
             this.$refs.login.validate(valid => {
                 if (valid) {
-                    login(this.param).then(res => {
+                    const requestData = {
+                        ...this.param,
+                        username: this.param.account,// 这儿为了兼容shop系统
+                    };
+                    login(requestData).then(res => {
                         if (res.code === 200){
                             this.$message.success('登录成功');
                             this.setUserInfo(res.data);

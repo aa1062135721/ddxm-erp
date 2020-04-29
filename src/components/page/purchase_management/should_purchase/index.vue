@@ -28,6 +28,7 @@
                     <el-table-column prop="sup_name" label="供应商"></el-table-column>
                     <el-table-column prop="item_id" label="商品ID"></el-table-column>
                     <el-table-column prop="title" label="商品名称"></el-table-column>
+                    <el-table-column prop="attr_name" label="规格"></el-table-column>
                     <el-table-column label="图片">
                         <template slot-scope="scope">
                             <el-image

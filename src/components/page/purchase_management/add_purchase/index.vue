@@ -480,7 +480,7 @@ export default {
                         title: goods.g_title,
                         pic: goods.imgurl,
                         attr_name: goods.key_name,
-                        attr_ids: goods.attr_ids,
+                        attr_ids: goods.key,
                         bar_code: goods.code,
                         price: goods.price,
                         num: goods.num,

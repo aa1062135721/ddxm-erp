@@ -371,6 +371,17 @@
                                 type: 'success',
                                 message: '新增成功!'
                             });
+                            this.addDialog.requestData = {
+                                remittance: {
+                                    r_total_amount: 0,//总采购金额
+                                    r_total_remittance: 0,//总打款金额
+                                    r_deduct_amount: 0,//抵扣金额
+                                    r_voucher_img: "",//凭证图片(字符串以逗号隔开)
+                                    supplier_id: 0, //供应商ID
+                                    desc: '',//备注
+                                },
+                                remittance_flow: []
+                            };
                         }
                     }).catch(err => {
                         console.log(err);

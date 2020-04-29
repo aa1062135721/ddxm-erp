@@ -3,9 +3,29 @@ import { Message, Loading } from 'element-ui';
 import store from '../store/index.js';
 let loading;
 
+/**
+ * process.env.NODE_ENV === 'development' 来判断是否开发环境，利用代理解决跨越问题，在vue.config.js文件里配置的
+ * 开发人员特别注意，本系统分有2个子系统，，erp和shop
+ * erp测试服请求地址为：http://testadmin2.ddxm661.com，其中有api部分地址是http://ddxm661.com:8088
+ *
+ * shop
+ * 测试服请求地址为：http://ddxm661.com:8088
+ * 主要独立模块为page/order_management
+ * 比如说登录啊，权限管理啊，动态路由啊都是公用的erp中的。
+ */
 const service = axios.create({
-    // process.env.NODE_ENV === 'development' 来判断是否开发环境
+    /**
+     * 打包成erp系统
+     * 开发环境也要把vue.config.js中的/api代理成http://testadmin2.ddxm661.com重启 TODO
+     */
     baseURL: process.env.NODE_ENV === 'development' ? '/api' : 'http://testadmin2.ddxm661.com',
+
+    /**
+     * 打包成shop系统
+     * 开发环境也要把vue.config.js中的/api代理成http://ddxm661.com:8088重启项目 TODO
+     */
+    // baseURL: process.env.NODE_ENV === 'development' ? '/api' : 'http://ddxm661.com:8088',
+    // baseURL: 'http://ddxm661.com:8088',
     timeout: 5000
 });
 
@@ -18,10 +38,12 @@ service.interceptors.request.use(
             background: 'rgba(0, 0, 0, 0.7)'
         });
 
+        /**
+         * erp
+         * 如果打包成erp,则这个if不要注释了。
+         * 如果打包成shop 这个if要注释起来
+         */
         if (process.env.NODE_ENV === 'production') {
-            if (config.baseURL === '/api') {
-                config.baseURL = 'http://testadmin2.ddxm661.com'
-            }
             if (config.baseURL === '/aShop') {
                 config.baseURL = 'http://ddxm661.com:8088'
             }

@@ -30,7 +30,6 @@
             <div style="margin: 40px 0;">
                 <el-table :data="responseData.data" style="width: 100%">
                     <el-table-column type="index" width="50" label="序号"></el-table-column>
-                    <el-table-column label="商品来源"></el-table-column>
                     <el-table-column label="采购信息" width="280">
                         <template slot-scope="scope">
                             <div>采购人：{{scope.row.user_name}}</div>

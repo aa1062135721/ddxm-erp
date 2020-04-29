@@ -8,7 +8,7 @@
         <div class="container">
             <div class="search-div">
                 <el-input class="my-input" placeholder="商品名/条形码" clearable v-model="requestData.seach_val"></el-input>
-                <el-button type="primary">查询</el-button>
+                <el-button type="primary" @click="getList">查询</el-button>
                 <el-button type="primary" plain v-if="$_has('export')" @click="myExport">导出</el-button>
             </div>
             <div style="margin: 40px 0;">
@@ -25,7 +25,7 @@
                             ></el-image>
                         </template>
                     </el-table-column>
-                    <el-table-column prop="gs_title" label="规格"></el-table-column>
+                    <el-table-column prop="key_name" label="规格"></el-table-column>
                     <el-table-column prop="w_stock" label="库存"></el-table-column>
                     <el-table-column label="操作">
                         <template slot-scope="scope">
@@ -108,7 +108,7 @@
                         page: 1,
                         limit: 10,
                         goods_id: 0,//商品ID
-                        specs_key: 0,//规格（没有规格，默认传0）
+                        specs_key: "",//规格（没有规格，默认传""）
                         warehouse_id: 0,//仓库id
                     },
                     responseData: {
@@ -125,7 +125,7 @@
                         page: 1,
                         limit: 10,
                         goods_id: 0,//商品ID
-                        specs_key: 0,//规格（没有规格，默认传0）
+                        specs_key: "",//规格
                         warehouse_id: 0,//仓库id
                     },
                     responseData: {
@@ -167,7 +167,7 @@
                     limit: 10,
                     warehouse_id: scope.id,
                     goods_id: scope.goods_id,
-                    specs_key: scope.key || 0,
+                    specs_key: scope.specs_id || "",
                 };
                 this.goodsLocusDialogGetList();
             },
@@ -197,7 +197,7 @@
                     limit: 10,
                     warehouse_id: scope.id,
                     goods_id: scope.goods_id,
-                    specs_key: scope.key || 0,
+                    specs_key: scope.specs_id || "",
                 };
                 this.goodsCostLocusDialogGetList();
             },
