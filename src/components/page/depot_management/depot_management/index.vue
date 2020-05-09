@@ -12,7 +12,13 @@
                 <el-button type="primary" plain @click="addDialog.isShow = true" v-if="$_has('add')">新增</el-button>
             </div>
             <div style="margin: 40px 0;">
-                <el-table style="width: 100%" :data="responseData.data">
+                <el-table style="width: 100%"
+                          :data="responseData.data"
+                          row-key="id"
+                          border
+                          default-expand-all
+                          :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
+                >
                     <el-table-column prop="id" label="ID"></el-table-column>
                     <el-table-column prop="w_name" label="仓库名"></el-table-column>
                     <el-table-column prop="w_address" label="仓库地址"></el-table-column>
@@ -39,6 +45,9 @@
 
         <el-dialog v-dialogDrag title="新增仓库" center :visible.sync="addDialog.isShow" width="30%">
             <el-form label-width="100px" :model="addDialog.requestData" :rules="addDialog.rules" ref="addDialog">
+                <el-form-item label="父级仓库" prop="pid">
+                    <depot v-if="addDialog.isShow" ref="depot" v-model="addDialog.requestData.pid" placeholder="不选为顶级仓库"></depot>
+                </el-form-item>
                 <el-form-item label="仓库名字" prop="w_name">
                     <el-input v-model="addDialog.requestData.w_name" placeholder="请输入仓库名字" class="my-input"></el-input>
                 </el-form-item>
@@ -86,6 +95,7 @@
 
 <script>
     import {list, add, edit, del } from '@/api/depot/depot.js'
+    import depot from '@/components/common/Depot.vue'
 
     export default {
         name: 'index',
@@ -108,7 +118,6 @@
                     rules: {
                         w_name: [
                             { required: true, message: '请输入仓库名', trigger: 'blur' },
-                            // { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
                         ],
                         w_contacts: [
                             { required: true, message: '请输入仓库联系人名', trigger: 'blur' },
@@ -126,6 +135,8 @@
                         w_contacts_phone: '',// 电话
                         w_address: '',// 地址
                         desc: '',// 备注
+                        pid: 0, // 父级ID
+                        w_level: 0,//父级层级（顶级默认为0）
                     }
                 },
                 editDialog: {
@@ -162,6 +173,24 @@
             },
 
             addDialogSubmit(formName){
+                // 获取当前选中的仓库节点
+                let choosesDepot = null;
+                function _getNode(targetId, tree) {
+                    tree.some((list) => {
+                        const children = list.children || [];
+                        if (list.id === targetId) {
+                            choosesDepot = list;
+                            return true;
+                        } else if (children.length > 0) {
+                            return _getNode(targetId, children);
+                        }
+                    })
+                }
+                _getNode(this.addDialog.requestData.pid, this.$refs['depot'].list);
+                if (choosesDepot) {
+                    this.addDialog.requestData.w_level = choosesDepot.w_level;
+                }
+
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
                         add(this.addDialog.requestData).then(res => {
@@ -253,6 +282,9 @@
                 this.requestData.page = val;
                 this.getList();
             },
+        },
+        components: {
+            depot,
         },
         created() {
             this.getList();

@@ -1,17 +1,12 @@
 <template>
-    <el-select
-            :placeholder="placeholder"
+    <el-cascader
             v-model="choosesValue"
-            @change="change"
+            :placeholder="placeholder"
+            :options="list"
             clearable
-            class="my-input">
-        <el-option
-                v-for="(item, index) in list"
-                :key="index"
-                :label="item.w_name"
-                :value="item.id">
-        </el-option>
-    </el-select>
+            @change="change"
+            :props="{ checkStrictly: true, value: 'id', label: 'w_name', children: 'children' }">
+    </el-cascader>
 </template>
 
 <script>
@@ -28,20 +23,39 @@
         },
         data(){
             return {
-                choosesValue: '',
+                choosesValue: [],
                 list: []
             }
         },
         methods: {
             change(){
-                this.$emit('input', this.choosesValue);
+                this.$emit('input', this.choosesValue[this.choosesValue.length - 1]);
             }
         },
         watch: {
             value: {
                 immediate:true,
                 handler:function(newVal){
-                    this.choosesValue = newVal;
+                    if (newVal) {
+                        let nodes = [];
+                        function _getParentNodes(his, targetId, tree) {
+                            tree.some((list) => {
+                                const children = list.children || [];
+                                if (list.id === targetId) {
+                                    nodes = his;
+                                    return true;
+                                } else if (children.length > 0) {
+                                    const history = [...his];
+                                    history.push(list.id);
+                                    return _getParentNodes(history, targetId, children);
+                                }
+                            })
+                        };
+                        _getParentNodes([], newVal, this.list);
+                        this.choosesValue = [newVal, ...nodes].sort();
+                    } else {
+                        this.choosesValue = [];
+                    }
                 }
             },
         },
