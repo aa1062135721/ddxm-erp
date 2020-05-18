@@ -81,10 +81,10 @@
 
         <el-dialog v-dialogDrag title="新增其他入库单" center :visible.sync="addDialog.isShow" width="50%">
             <div  class="search-div">
-                <depot v-model="addDialog.requestData.shop_id"></depot>
+                <depot v-model="addDialog.requestData.shop_id" class="my-input"></depot>
                 <supplier ref="supplier" v-model="addDialog.requestData.sup_id"></supplier>
                 <el-input v-model="addDialog.requestData.remarks" placeholder="请输入备注" class="my-input"></el-input>
-                <el-button type="primary" style="margin: 0 0 10px 10px;" plain v-show="addDialog.isShow" @click="addDialog.choosesGoodsDialogIsShow = true">选择商品</el-button>
+                <el-button type="primary" style="margin: 0 0 10px 10px;" plain v-show="addDialog.isShow" @click="addDialogChoosesGoodsDialogShow">选择商品</el-button>
             </div>
             <el-table style="width: 100%" height="300" :data="addDialog.requestData.items">
                 <el-table-column label="序号" type="index"></el-table-column>
@@ -123,7 +123,9 @@
                 <el-button type="primary" @click="addDialogSubmit">提交</el-button>
             </div>
         </el-dialog>
-        <chooses-goods :visible.sync="addDialog.choosesGoodsDialogIsShow" @sendChoosesGoods="addDialogGetChoosesGoods" />
+        <chooses-goods :visible.sync="addDialog.choosesGoodsDialogIsShow"
+                       :requestData="{warehouse_id: addDialog.requestData.shop_id}"
+                       @sendChoosesGoods="addDialogGetChoosesGoods" />
     </div>
 </template>
 
@@ -220,7 +222,14 @@
                 }).catch(() => {});
             },
 
-
+            // 选择商品
+            addDialogChoosesGoodsDialogShow(){
+                if (!this.addDialog.requestData.shop_id) {
+                    this.$message.error('请先选择仓库在选择商品')
+                    return
+                }
+                this.addDialog.choosesGoodsDialogIsShow = true
+            },
             // 新增弹框 得到选择的商品
             addDialogGetChoosesGoods(data){
                 let nowChoosesArr = [], allChoosesArr = [];
@@ -308,6 +317,11 @@
             supplier,
             choosesGoods,
         },
+        watch: {
+            "addDialog.requestData.shop_id": function(newValue, oldValue) {
+                this.addDialog.requestData.items = []
+            },
+        }
     };
 </script>
 
