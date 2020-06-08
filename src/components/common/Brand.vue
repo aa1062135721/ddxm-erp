@@ -57,6 +57,11 @@
                 immediate:true,
                 handler:function(newVal){
                     this.choosesValue = newVal;
+                    if(newVal===""){
+                    getBrand().then(res => {
+                        this.list = res.data.data
+                    })
+                }
                 }
             },
         },

@@ -8,7 +8,7 @@
         <div class="container">
             <div class="search-div">
                 <div class="choose">
-                    <el-button  >全部商品<span style="color:red;">({{total}})</span></el-button>
+                    <el-button  @click="all_goods" class="active">全部商品<span>({{total}})</span></el-button>
                     <el-button  >已上架</el-button>
                     <el-button  >未上架</el-button>
                     <el-button  >待审核</el-button>
@@ -157,7 +157,7 @@
                             <div class="kucun_info">
                                 <div style="display:flex; line-height:40px;">
                                     <span>商品货号：</span>
-                                    <span v-for="(item,index) in sukinfo" :key="index">
+                                    <span v-for="(item,index) in sukinfo" :key="index" v-if="index<1">
                                         <span>{{item.bar_code}}</span>
                                     </span>
                                     
@@ -264,6 +264,12 @@
             Brand,
         },
         methods:{
+            // 获取全部商品
+            all_goods(){
+              goodsList().then((res)=>{
+                  this.tableData=res.data.data
+              })
+            },
             // 控制全选与不全选
             toggleSelection(rows) {
                 if (rows) {
@@ -463,5 +469,9 @@
                 }
             }
         }
+    }
+    .active{
+        background:#1ABC9C;
+        color: #fff; 
     }
 </style>
