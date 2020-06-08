@@ -21,3 +21,14 @@ export const getQiNiuToken = query => {
         params: query
     });
 };
+
+/**
+ * 选择品牌
+ **/
+export const getBrand = query => {
+    return request({
+        url: '/goods/goods_brand/getList',
+        method: 'post',
+        params: query
+    });
+};

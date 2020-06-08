@@ -5,6 +5,11 @@ import ElementUI from 'element-ui';
 Vue.use(ElementUI, {
     size: 'small'
 });
+import axios from 'axios';//引入axios插件
+Vue.prototype.axios=axios;
+
+import qs from 'qs';
+Vue.prototype.qs=qs;
 
 import 'element-ui/lib/theme-chalk/index.css'; // 默认主题
 // import './assets/css/theme-green/index.css'; // 浅绿色主题

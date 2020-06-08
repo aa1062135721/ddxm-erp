@@ -6,34 +6,13 @@ Vue.use(Router);
 import layout from './layout'
 
 export const constantRoutes = [
-{
-    path: '/',
-    component: layout,
-    meta: { title: '自述文件' },
-    redirect:'home',
-    children: [
-        {
-            path: '/home',
-            component: () => import('../components/page/Dashboard'),
-            meta: { title: '首页' }
-        },
-        {
-            path: '/departmentAuth',
-            component: () => import('../components/page/auth_management/department_management/auth'),
-            meta: { title: '部门权限管理' }
-        },
-        {
-            path: '/staffAuth',
-            component: () => import('../components/page/auth_management/staff_management/auth'),
-            meta: { title: '员工权限管理' }
-        },
+{path: '/',component: layout,meta: { title: '自述文件' },redirect:'home',children: [
+        {path: '/home',component: () => import('../components/page/Dashboard'),meta: { title: '首页' }},
+        {path: '/departmentAuth',component: () => import('../components/page/auth_management/department_management/auth'),meta:{ title: '部门权限管理' }},
+        {path: '/staffAuth',component: () => import('../components/page/auth_management/staff_management/auth'),meta: { title: '员工权限管理' }},
     ]
 },
-{
-    path: '/login',
-    component: () => import('../components/page/Login.vue'),
-    meta: { title: '登录' }
-},
+{path: '/login',component: () => import('../components/page/Login.vue'),meta: { title: '登录' }},
 // {
 //     path: '*',
 //     redirect: '/404'
@@ -50,6 +29,5 @@ export function resetRouter() {
     router.matcher = newRouter.matcher // reset router
 }
 
-const router = createRouter()
 
-export default router
+export default createRouter()
