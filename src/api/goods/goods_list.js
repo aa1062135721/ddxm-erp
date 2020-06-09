@@ -51,3 +51,24 @@ export const deleteGoods = query => {
         data: query
     });
 };
+/**
+ *  添加商品- 商品分类列表
+ **/
+export const getGoodsList = query => {
+    return request({
+        url: '/goods/goods_category/getList',
+        method: 'post',
+        data: query
+    });
+};
+/**
+ *  添加商品- 商品分类二级列表
+ **/
+export const findGoodsList = query => {
+    return request({
+        url: '/goods/goods_category/find',
+        method: 'post',
+        data: query
+    });
+};
+

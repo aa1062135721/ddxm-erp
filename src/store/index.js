@@ -8,6 +8,7 @@ const state = {
     userInfo: {},
     sideBarId: "",// 当前选中的头部id
     authButton: [],// 当前页面点按钮权限列表
+    goodsinfo_id:{},//商品分类选中id
 };
 
 const mutations = {
@@ -20,6 +21,9 @@ const mutations = {
     setAuthButton(state, saveData = []) {
         state.authButton = saveData
     },
+    setGoodsinfoId(state,data){
+        state.goodsinfo_id = data
+    }
 };
 
 const actions = {
