@@ -23,7 +23,7 @@ const mutations = {
     },
     setGoodsinfoId(state,data){
         state.goodsinfo_id = data
-    }
+    },
 };
 
 const actions = {

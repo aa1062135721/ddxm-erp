@@ -71,4 +71,25 @@ export const findGoodsList = query => {
         data: query
     });
 };
+/**
+ *  添加商品- 规格列表
+ **/
+export const goodsSpecs= query => {
+    return request({
+        url: '/goods/goods_specs/getList',
+        method: 'post',
+        data: query
+    });
+};
+/**
+ *  商品评论-列表/筛选查询
+ **/
+export const goodsComment= query => {
+    return request({
+        url: '/goods/goods_comment/getList',
+        method: 'post',
+        data: query
+    });
+};
+
 
