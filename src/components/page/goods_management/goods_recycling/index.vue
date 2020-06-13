@@ -214,7 +214,9 @@
 
 <style scoped lang="scss">
     .container{
+        width: 100%;
         .search-div{
+            width: 100%;
             .SearchBar{
                 border: 1px solid rgb(224, 224, 224);
                 padding: 10px;

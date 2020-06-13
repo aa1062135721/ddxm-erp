@@ -244,8 +244,6 @@
             return{
                 currentPage: 1,//当前页
                 goods_id:'',
-                is_shelf:1,//控制是否显示
-                is_show:1,//控制是否推荐
                 requestData: {
                     title: '', //商品名称/商品条形码
                     brand:'',//商品品牌
@@ -286,18 +284,19 @@
             },
             // 标签下的上架与推荐
             changeSwitch (row) {
-                this.is_shelf=row.is_shelf
-                this.is_show=row.is_show
+               console.log(row)
+               let data={is_shelf:row.is_shelf}
+               goodsList(data).then((res)=>{
+                  this.$message({
+                        message: res.msg,
+                        type: 'success'
+                    });
+                })
             },
             // 获取商品列表数据
             getgoods(){
-                let data={
-                    is_shelf:this.is_shelf
-                }
-                goodsList(data).then((res)=>{
+                goodsList().then((res)=>{
                     this.tableData=res.data.data//获取商品列表
-                    this.is_shelf=res.data.data.is_shelf//获取上架数据
-                    this.is_show=res.data.data.is_show//获取推荐数据
                     this.total= res.data.total//获取总条数
                     // console.log(res)
                 })

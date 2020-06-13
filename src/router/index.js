@@ -10,6 +10,8 @@ export const constantRoutes = [
         {path: '/home',component: () => import('../components/page/Dashboard'),meta: { title: '首页' }},
         {path: '/departmentAuth',component: () => import('../components/page/auth_management/department_management/auth'),meta:{ title: '部门权限管理' }},
         {path: '/staffAuth',component: () => import('../components/page/auth_management/staff_management/auth'),meta: { title: '员工权限管理' }},
+        {path: '/toView',component: () => import('../components/page/goods_management/goods_comments/toView'),meta: { title: '评论详情' }},
+        {path: '/addClass',component: () => import('../components/page/goods_management/goods_classification/addClass'),meta: { title: '添加分类' }},
     ]
 },
 {path: '/login',component: () => import('../components/page/Login.vue'),meta: { title: '登录' }},

@@ -11,20 +11,14 @@
                     <div>
                         输入搜索：<el-input  placeholder="评价关键词(回车键查看)" style="width: 220px; margin-right: 10px;" v-model="goods_id" @keyup.enter="searchGoods"></el-input>
                     </div>
-                    <!-- <div>
-                        商品分类：<Classification v-model="requestData.title"></Classification>
-                    </div> -->
                     <div>
-                        商品品牌：<Brand v-model="requestData.brand" @input='input'></Brand>
+                        手机号：<el-input placeholder="输入用户手机号"  style="width: 220px; margin-right: 10px;" v-model="goods_Mobile"></el-input>
+                        <el-button @click="mobilePhone">搜索</el-button>
                     </div>
                 </div>
                 <div class="goodsBox">
                     <div class="mTitle">
                         <span>数据列表</span>
-                        <div>
-                            <el-button>修改基本信息</el-button>
-                            <el-button>修改商品详情</el-button>
-                        </div>
                     </div>
                     <el-table
                         ref="multipleTable"
@@ -32,10 +26,6 @@
                         border
                         tooltip-effect="dark"
                         style="width: 100%;">
-                        <el-table-column
-                        type="selection"
-                        width="60">
-                        </el-table-column>
                         <el-table-column
                         label="编号"
                         width="120"
@@ -71,6 +61,11 @@
                         prop="add_time">
                         </el-table-column>
 
+                         <el-table-column
+                        label="电话号码"
+                        prop="mobile">
+                        </el-table-column>
+
                         <el-table-column                      
                         label="是否显示"
                         width="120">
@@ -90,13 +85,12 @@
                         width="130"
                         label="操作">
                             <template slot-scope="scope">
-                                <el-button style="color:#1ABC9C" @click="handleClick(scope.row)" type="text" size="small">查看</el-button>
+                                <el-button style="color:#1ABC9C" @click="handleClick(scope.row)" v-if="$_has('find')" type="text" size="small">查看</el-button>
                                 <el-button style="color:#1ABC9C" type="text" size="small">删除</el-button>
                             </template>
                         </el-table-column>
                     </el-table>
                     <div class="footer" >
-                        <el-button @click="toggleSelection(tableData)">全选</el-button>
                         <div class="block">
                             <el-pagination
                             @current-change="handleCurrentChange"
@@ -113,9 +107,8 @@
 </template>
 
 <script>
-    //商品品牌
-    import Brand from '@/components/common/Brand.vue';
-    import {goodsComment} from '@/api/goods/goods_list.js'
+    import {goodsComment,goodsList} from '@/api/goods/goods_list.js'
+    import {commentSwitch} from '@/api/goods/goods_classification.js'
     export default {
         created(){
             this.getgoods()
@@ -129,11 +122,8 @@
         data(){
             return{
                 currentPage: 1,//当前页
-                goods_id:'',
-                requestData: {
-                    title: '', //商品名称/商品条形码
-                    brand:'',//商品品牌
-                },
+                goods_id:'',//绑定商品id
+                goods_Mobile:'',//绑定用户手机号
                 tableData: [],//商品列表
                 recommendedPrice:'',//推荐价格
                 salesPrice:'',//销售价格
@@ -142,32 +132,23 @@
                 total:1,//计算总页数
             }
         }, 
-        components: {
-            // Classification,
-            Brand,
-        },
         methods:{
-            // 控制全选与不全选
-            toggleSelection(rows) {
-                if (rows) {
-                rows.forEach(row => {
-                    this.$refs.multipleTable.toggleRowSelection(row);
-                });
-                } else {
-                    this.$refs.multipleTable.clearSelection();
-                }
-             },
             //操作--查看
              handleClick(row) {
                 console.log(row);
                 this.$router.push({
                       path: '/toView',
+                      query: {
+                       id:row.id
+                    }
                 })
             },
             // 获取商品列表数据
             getgoods(){
                 goodsComment().then((res)=>{
                     this.tableData=res.data.data//获取商品列表
+                    this.total=res.data.total
+                    console.log(res)
                 })  
             },
             // 上下页
@@ -190,18 +171,24 @@
                    this.tableData=res.data.data
                 })
             },
-            //获取子组件传递的id
-            input(val){
-                console.log(val)
-               let data={gb_title:val }
-                goodsComment(data).then((res)=>{
-                  this.tableData=res.data.data
-                    // console.log(res.data.data)
-                })
+            //搜索用户昵称
+            mobilePhone(){
+               let data={
+                   mobile:this.goods_Mobile
+               }
+               goodsComment(data).then((res)=>{
+                   this.tableData=res.data.data
+               })
             },
             //是否显示
             changeSwitch(val){
-                console.log(val)
+                let data={
+                    id:val.id,
+                    is_switch:val.is_switch
+                }
+                commentSwitch(data).then((res)=>{
+                    console.log(res)
+                })
             }
         },
     }
@@ -209,7 +196,9 @@
 
 <style scoped lang="scss">
     .container{
+        width: 100%;
         .search-div{
+            width: 100%;
             .SearchBar{
                 border: 1px solid rgb(224, 224, 224);
                 padding: 10px;
@@ -234,16 +223,11 @@
                     >span{
                         margin-left: 10px;
                     }
-                    >div{
-                        button{
-                            border: 1px solid rgb(175, 175, 175);
-                        }
-                    }
                 }
                 .footer{
-                    display: flex;
-                    justify-content: space-between;
+                    text-align: right;
                     padding: 10px;
+                    padding-right: 40px;
                 }
             }
         }
