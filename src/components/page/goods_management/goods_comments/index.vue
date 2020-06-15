@@ -182,6 +182,7 @@
             },
             //是否显示
             changeSwitch(val){
+                console.log(val)
                 let data={
                     id:val.id,
                     is_switch:val.is_switch

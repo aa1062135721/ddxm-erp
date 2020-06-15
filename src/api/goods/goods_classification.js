@@ -42,7 +42,7 @@ export const goodsClassAdd = query => {
     });
 };
 /**
- *  商品分类- 新增
+ *  商品分类- 转移商品
  **/
 export const shiftGoods = query => {
     return request({

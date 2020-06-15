@@ -12,6 +12,9 @@ export const constantRoutes = [
         {path: '/staffAuth',component: () => import('../components/page/auth_management/staff_management/auth'),meta: { title: '员工权限管理' }},
         {path: '/toView',component: () => import('../components/page/goods_management/goods_comments/toView'),meta: { title: '评论详情' }},
         {path: '/addClass',component: () => import('../components/page/goods_management/goods_classification/addClass'),meta: { title: '添加分类' }},
+        {path: '/multipleIsup',component: () => import('../components/page/goods_management/goods_batchChange/multipleIsup'),meta: { title: '批量自动上下架' }},
+        {path: '/moreEditor',component: () => import('../components/page/goods_management/goods_batchChange/moreEditor'),meta: { title: '统一编辑' }},
+        {path: '/singleEditor',component: () => import('../components/page/goods_management/goods_batchChange/singleEditor'),meta: { title: '逐个编辑' }},
     ]
 },
 {path: '/login',component: () => import('../components/page/Login.vue'),meta: { title: '登录' }},

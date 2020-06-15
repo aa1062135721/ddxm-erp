@@ -144,7 +144,7 @@
                             <template slot-scope="scope">
                                 <el-button style="color:#1ABC9C" @click="handleClick(scope.row)" type="text" size="small">查看</el-button>
                                 <el-button style="color:#1ABC9C" type="text" size="small">编辑</el-button>
-                                <el-button style="color:#1ABC9C" type="text" size="small">删除</el-button>
+                                <el-button style="color:#1ABC9C" @click="delGoods(scope.row)" type="text" size="small">删除</el-button>
                             </template>
                         </el-table-column>
                     </el-table>
@@ -230,6 +230,7 @@
     //商品品牌
     import Brand from '@/components/common/Brand.vue';
     import {goodsList,goodsInfo} from '@/api/goods/goods_list.js'
+    import {goodsListDel} from '@/api/goods/goods_classification.js'
     export default {
         created(){
             this.getgoods()
@@ -356,6 +357,14 @@
                         type: 'success'
                     });
                 })
+            },
+            //删除商品
+            delGoods(val){
+                console.log(val)
+                goodsListDel({id:val.id}).then((res)=>{
+                    console.log(res)
+                })
+                
             }
         },
         computed:{

@@ -134,7 +134,7 @@
 
 <script>
     import {getGoodsList,findGoodsList} from '@/api/goods/goods_list.js'
-    import {goodsListDel,shiftGoods} from '@/api/goods/goods_classification.js'
+    import {goodsListDel,shiftGoods,commentSwitch} from '@/api/goods/goods_classification.js'
     export default {
         created(){
             this.getgoods()
@@ -148,7 +148,6 @@
                 salesPrice:'',//销售价格
                 warning:'',//预警值
                 rate:null,//绑定评分
-                value:1,//显示
                 total:1,//总页数
                 flag:false,//默认关闭
                 rod:false,//控制转移商品
@@ -213,7 +212,15 @@
             },
             //是否显示
             changeSwitch(val){
-                console.log(val)
+                console.log(val.id)
+                // console.log(val.gc_status)
+                // let data = {
+                //     id:val.id,
+                //     is_switch:val.gc_status
+                // }
+                // commentSwitch(data).then((res)=>{
+                //     console.log(res)
+                // })
             },
             //删除
             deleteGoods(val){

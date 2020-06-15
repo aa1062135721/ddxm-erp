@@ -5,10 +5,6 @@
             @change="change"
             clearable
             class="my-input">
-            <!-- <div style="display:flex;padding:5px;text-align: center;">
-                 <el-input style="width:120px" v-model="searchBrand" placeholder="请输入商品"></el-input>
-                 <el-button @click="searchBtn" style="margin-left:5px">搜索</el-button>
-            </div> -->
       
         <el-option
                 v-for="(item, index) in list"
