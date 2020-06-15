@@ -33,8 +33,10 @@
                  <div class="edit_box">
                     <table>
                         <thead>
-                            <tr>
-                                <td v-for="(item,index) in specifications" :key="index">{{item}}</td>
+                            <tr >
+                                <td  v-for="(item,index) in ruleForm.list" :key="index">
+                                    <div  v-for="(type,id) in item" :key="id">{{id}}</div>
+                                </td>
                                 <td>商品原价</td>
                                 <td><span style="color:red;">*</span>销售价格</td>
                                 <td><span style="color:red;">*</span>上传图片</td>  
@@ -45,11 +47,17 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="(item,index) in child" :key="index">
-                                <td v-for="(title,c) in item" :key="c">
-                                    <div>{{title}}</div>
+                            <tr>
+                                <td v-for="(item,index) in ruleForm.list" :key="index">
+                                    <div v-for="(type,id) in item" :key="id">
+                                        <tr v-for="(t,c) in type" :key="c">
+                                            <td>
+                                                {{t}}
+                                            </td>
+                                        </tr>
+                                    </div>
                                 </td>
-                                <td><el-input></el-input></td>
+                                 <td><el-input></el-input></td>
                                 <td><el-input></el-input></td>
                                 <td>
                                     <el-upload
@@ -102,6 +110,7 @@ export default {
        return{
             ruleForm: {
                 type: [],
+                list: []
             },  
             rules: {
             type: [{ type: 'array', required: true, message: '请至少选择一个活动性质', trigger: 'change' }],
@@ -121,18 +130,22 @@ export default {
    },
    methods:{
         addSpecifications(){
-            this.child.push(this.ruleForm.type)
+            this.ruleForm.list = [];
+            this.PropertyList.forEach(i => {
+                for (let g in i) {
+                    let arr = [];
+                    i[g].forEach(t => {
+                        if (this.ruleForm.type.includes(t.gs_title)) {
+                            arr.push(t.gs_title)
+                        }
+                    })
+                    this.ruleForm.list.push({[g]:arr});
+                }
+            })
+            console.log(this.ruleForm.list)
+            // this.child.push(this.ruleForm.type)
         },
         input(val){
-            let arr=[];
-            let arr1;
-            arr.push(val)
-            arr.forEach((v,i)=>{
-               arr1=v
-            })
-            for(var key in arr1){
-                this.specifications.push(key)
-            }
             this.PropertyList.push(val );
         },
         handleExceed(files, fileList) {
