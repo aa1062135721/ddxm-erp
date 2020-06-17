@@ -8,70 +8,29 @@
         <div class="container">
             <div class="search-div">
                 <div class="goodsBox">
-                    <el-table
-                        ref="multipleTable"
-                        :data="tableData"
-                        border
-                        tooltip-effect="dark"
-                        style="width: 100%;">
-                        <el-table-column
-                        label="货号"
-                        width="150"
-                        prop="code">
-                        </el-table-column>
-                        <el-table-column
-                        label="商品名称"
-                        width="200"
-                        prop="g_title"
-                        >
-                        </el-table-column>
-                        <el-table-column
-                        label="销售价格"
-                        prop="price"
-                        width="120"
-                        show-overflow-tooltip>
-                            <template>
-                                <el-input></el-input>
-                            </template>
-                        </el-table-column>
-                        <el-table-column
-                        label="促销价格"
-                        width="120">
-                            <template  slot-scope="scope">
-                                <el-input></el-input>
-                            </template>
-                        </el-table-column>
-                         <el-table-column
-                        label="赠送优币"
-                        width="120">
-                            <template  slot-scope="scope">
-                                <el-input></el-input>
-                            </template>
-                        </el-table-column>
-                         <el-table-column
-                        label="优币购买金额"
-                        width="120">
-                            <template  slot-scope="scope">
-                                <el-input></el-input>
-                            </template>
-                        </el-table-column>
-                         <el-table-column
-                        label="库存"
-                        width="120">
-                            <template  slot-scope="scope">
-                                <el-input></el-input>
-                            </template>
-                        </el-table-column>
-                        <el-table-column
-                        label="品牌">
-                           <template>
-                                <Brand @input="input"></Brand>
-                           </template>
-                        </el-table-column>
-                    </el-table>
+                   <table class="table">
+                       <thead>
+                           <tr>
+                               <td>货号</td>
+                               <td>商品名称</td>
+                               <td>销售价格</td>
+                               <td>推荐价格</td>
+                               <td>预警值</td>
+                           </tr>
+                       </thead>
+                       <tbody>
+                           <tr v-for="(item,index) in tableData" :key="index">
+                               <td>{{item.code}}</td>
+                               <td>{{item.g_title}}</td>
+                               <td><el-input v-model="item.is_show"></el-input></td>
+                               <td><el-input v-model="item.is_shelf"></el-input></td>
+                               <td><el-input v-model="item.w_stock"></el-input></td>
+                           </tr>
+                       </tbody>
+                   </table>
                 </div>
                 <div class="foot">
-                    <el-button>确定</el-button>
+                    <el-button @click="submit">确定</el-button>
                 </div>
             </div>
         </div>
@@ -79,29 +38,85 @@
 </template>
 
 <script>
-import Brand from "@/components/common/Brand"
+
+import {batchChange} from "@/api/goods/goods_list"
 export default {
       data(){
           return{
-              tableData:{},
+              tableData:[],
+              
           }
       },
-      components:{
-          Brand
-      },
+
       methods:{
-          input(val){
-              console.log(val)
+          /*
+            [
+                {
+                    id:'0',
+                    recommendprice:0,
+                    price:0,
+                    warning_value:0
+                }
+            ]
+          */
+          submit(){
+              let data={end_type:1,datas:[]}
+            
+              this.tableData.forEach(v=>{
+                 let temp={
+                    id:v.id,
+                    price:v.is_show,
+                    recommendprice:v.is_shelf,
+                    warning_value:v.w_stock
+                  }
+                data.datas.push(temp)
+              })
+            batchChange(data).then((res)=>{
+                if(res.code===200){
+                    this.$message({
+                        message:res.msg,
+                        type:"success"
+                    })
+                }
+            })
           }
       },
       created(){
-        this.tableData = this.$route.query.data
-        console.log(this.tableData)
+          this.$route.query.data.forEach(v => {
+             this.tableData.push(v)
+             console.log(v)
+          });
       }
   }
 </script>
 
 <style scoped lang="scss">
+    .table{
+        border-collapse: collapse;
+        margin:5px;
+        thead{
+            >tr{
+                td{
+                    border: 1px solid #ccc;
+                    background: #F9FAFC;
+                    width: 300px;
+                    padding: 10px;
+                    text-align: center;
+                    font-weight: bold;
+                }
+            }
+        }
+        >tbody{
+            >tr{
+                td{
+                    border: 1px solid #ccc;
+                    width: 300px;
+                    padding: 10px;
+                    text-align: center;
+                }
+            }
+        }
+    }
    .foot{
        text-align: center;
        padding-top: 20px;

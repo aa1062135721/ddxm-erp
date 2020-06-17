@@ -92,4 +92,14 @@ export const goodsComment= query => {
     });
 };
 
+/**
+ *  商品批量修改基本信息
+ **/
+export const batchChange= query => {
+    return request({
+        url: '/goods/goods_bulk_edit/editGoodsInfo',
+        method: 'post',
+        data: query
+    });
+};
 

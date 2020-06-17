@@ -45,13 +45,8 @@
                             已选择
                             <span style="color:red;">{{all}}</span>条
                         </p>
-                        <el-checkbox-group
-                            class="checkbox"
-                            v-model="suretype"
-                            v-for="(item,index) in num"
-                            :key="index"
-                        >
-                            <el-checkbox :label="item" name="type">{{item.g_title}}</el-checkbox>
+                        <el-checkbox-group  v-for="(item,index) in num" :key="index" class="checkbox" v-model="suretype">
+                            <el-checkbox  :label="item" name="type">{{item.g_title}}</el-checkbox>
                         </el-checkbox-group>
                         <div style="margin-top:20px">
                             <el-button>全选</el-button>
@@ -111,8 +106,7 @@ export default {
         },
         //移除
         remove() {
-           console.log(this.num)
-           console.log("选择项",this.suretype)
+        
         },
         //获取子组件传值
         input(val) {
@@ -141,9 +135,6 @@ export default {
                 });
             }
         },
-        change(val) {
-            console.log(val);
-        }
     },
     created() {
         this.getGoodsList();
@@ -161,7 +152,7 @@ export default {
             }
         }
     },
-    components: {
+    components:{
         Brand
     }
 };

@@ -30,94 +30,103 @@
             </div>
             <div class="EditInfo">
                 <p style="margin:20px 0;">编辑信息</p>
-                  <el-table
-                        border
-                        tooltip-effect="dark"
-                        :data="goodsData"
-                        style="width: 100%;">
-                        <el-table-column
-                        label="货号"
-                        width="150"
-                        >
-                        <template>
-                            <span>多个货号</span>
-                        </template>
-                        </el-table-column>
-                        <el-table-column
-                        label="商品数量"
-                        width="200"
-                        prop="num"
-                        >
-                        </el-table-column>
-                        <el-table-column
-                        label="销售价格"
-                        show-overflow-tooltip>
-                            <template>
-                                <el-input></el-input>
-                            </template>
-                        </el-table-column>
-                        <el-table-column
-                        label="促销价格"
-                        width="200">
-                            <template >
-                                <el-input></el-input>
-                            </template>
-                        </el-table-column>
-                         <el-table-column
-                        label="赠送优币"
-                        width="200">
-                            <template>
-                                <el-input></el-input>
-                            </template>
-                        </el-table-column>
-                         <el-table-column
-                        label="优币购买金额"
-                        width="200">
-                            <template>
-                                <el-input></el-input>
-                            </template>
-                        </el-table-column>
-                         <el-table-column
-                        label="库存"
-                        width="200">
-                            <template>
-                                <el-input></el-input>
-                            </template>
-                        </el-table-column>
-                         <el-table-column
-                        label="品牌">
-                           <template>
-                                <Brand></Brand>
-                           </template>
-                        </el-table-column>
-                    </el-table>
+                   <table class="table">
+                       <thead>
+                           <tr>
+                               <td>货号</td>
+                               <td>商品数量</td>
+                               <td>销售价格</td>
+                               <td>推荐价格</td>
+                               <td>预警值</td>
+                           </tr>
+                       </thead>
+                       <tbody>
+                           <tr>
+                               <td>多个货号</td>
+                               <td>{{all}}</td>
+                               <td><el-input v-model="changeInfo.price"></el-input></td>
+                               <td><el-input v-model="changeInfo.recommendprice"></el-input></td>
+                               <td><el-input v-model="changeInfo.warning"></el-input></td>
+                           </tr>
+                       </tbody>
+                   </table>
             </div>
              <div class="foot">
-                <el-button>确定</el-button>
+                <el-button @click="submit">确定</el-button>
             </div>
         </div>
     </div>
 </template>
 
 <script>
-import Brand from "@/components/common/Brand"
+import {batchChange} from "@/api/goods/goods_list"
 export default {
       data(){
           return{
               tableData:{},
-              goodsData:[{id:'多个货号',num:0}]
+              changeInfo:{
+                  id:[],
+                  price:null,
+                  recommendprice:null,
+                  warning:null,
+              }
           }
       },
-      components:{
-          Brand,
+      computed:{
+          all(){
+              return this.tableData.length
+          }
+      },
+      methods:{
+          submit(){
+              let data={
+                  end_type:2,
+                  ids:this.changeInfo.id,
+                  recommendprice:this.changeInfo.recommendprice,
+                  price:this.changeInfo.price,
+                  warning_value:this.changeInfo.warning
+              }
+              console.log(data)
+             batchChange(data).then(res=>{
+                 console.log(res)
+             })
+          }
       },
       created(){
         this.tableData = this.$route.query.data
-        console.log(this.tableData)
+        this.tableData.forEach(v => {
+            this.changeInfo.id.push(v.id)
+        });
       }
   }
 </script>
 <style scoped lang="scss">
+ .table{
+        border-collapse: collapse;
+        margin:5px;
+        thead{
+            >tr{
+                td{
+                    border: 1px solid #ccc;
+                    background: #F9FAFC;
+                    width: 300px;
+                    padding: 10px;
+                    text-align: center;
+                    font-weight: bold;
+                }
+            }
+        }
+        >tbody{
+            >tr{
+                td{
+                    border: 1px solid #ccc;
+                    width: 300px;
+                    padding: 10px;
+                    text-align: center;
+                }
+            }
+        }
+    }
   .foot{
        text-align: center;
        padding-top: 20px;
