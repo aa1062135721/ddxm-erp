@@ -13,14 +13,16 @@
                         ref="multipleTable"
                         border
                         tooltip-effect="dark"
+                        :data="tableData"
                         style="width: 100%;">
                         <el-table-column
                         label="货号"
                         width="300"
-                        prop="id">
+                        prop="code">
                         </el-table-column>
                         <el-table-column
                         label="商品名称"
+                        prop="g_title"
                         >
                         </el-table-column>
                     </el-table>
@@ -29,19 +31,22 @@
             <div class="EditInfo">
                 <p style="margin:20px 0;">编辑信息</p>
                   <el-table
-                        ref="multipleTable"
                         border
                         tooltip-effect="dark"
+                        :data="goodsData"
                         style="width: 100%;">
                         <el-table-column
                         label="货号"
                         width="150"
-                        prop="id">
+                        >
+                        <template>
+                            <span>多个货号</span>
+                        </template>
                         </el-table-column>
                         <el-table-column
                         label="商品数量"
                         width="200"
-                        
+                        prop="num"
                         >
                         </el-table-column>
                         <el-table-column
@@ -54,28 +59,28 @@
                         <el-table-column
                         label="促销价格"
                         width="200">
-                            <template  slot-scope="scope">
+                            <template >
                                 <el-input></el-input>
                             </template>
                         </el-table-column>
                          <el-table-column
                         label="赠送优币"
                         width="200">
-                            <template  slot-scope="scope">
+                            <template>
                                 <el-input></el-input>
                             </template>
                         </el-table-column>
                          <el-table-column
                         label="优币购买金额"
                         width="200">
-                            <template  slot-scope="scope">
+                            <template>
                                 <el-input></el-input>
                             </template>
                         </el-table-column>
                          <el-table-column
                         label="库存"
                         width="200">
-                            <template  slot-scope="scope">
+                            <template>
                                 <el-input></el-input>
                             </template>
                         </el-table-column>
@@ -100,10 +105,15 @@ export default {
       data(){
           return{
               tableData:{},
+              goodsData:[{id:'多个货号',num:0}]
           }
       },
       components:{
           Brand,
+      },
+      created(){
+        this.tableData = this.$route.query.data
+        console.log(this.tableData)
       }
   }
 </script>

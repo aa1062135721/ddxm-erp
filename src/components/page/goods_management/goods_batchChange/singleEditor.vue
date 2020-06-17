@@ -10,22 +10,25 @@
                 <div class="goodsBox">
                     <el-table
                         ref="multipleTable"
+                        :data="tableData"
                         border
                         tooltip-effect="dark"
                         style="width: 100%;">
                         <el-table-column
                         label="货号"
                         width="150"
-                        prop="id">
+                        prop="code">
                         </el-table-column>
                         <el-table-column
                         label="商品名称"
                         width="200"
-                        
+                        prop="g_title"
                         >
                         </el-table-column>
                         <el-table-column
                         label="销售价格"
+                        prop="price"
+                        width="120"
                         show-overflow-tooltip>
                             <template>
                                 <el-input></el-input>
@@ -33,28 +36,28 @@
                         </el-table-column>
                         <el-table-column
                         label="促销价格"
-                        width="200">
+                        width="120">
                             <template  slot-scope="scope">
                                 <el-input></el-input>
                             </template>
                         </el-table-column>
                          <el-table-column
                         label="赠送优币"
-                        width="200">
+                        width="120">
                             <template  slot-scope="scope">
                                 <el-input></el-input>
                             </template>
                         </el-table-column>
                          <el-table-column
                         label="优币购买金额"
-                        width="200">
+                        width="120">
                             <template  slot-scope="scope">
                                 <el-input></el-input>
                             </template>
                         </el-table-column>
                          <el-table-column
                         label="库存"
-                        width="200">
+                        width="120">
                             <template  slot-scope="scope">
                                 <el-input></el-input>
                             </template>
@@ -62,7 +65,7 @@
                         <el-table-column
                         label="品牌">
                            <template>
-                                <Brand></Brand>
+                                <Brand @input="input"></Brand>
                            </template>
                         </el-table-column>
                     </el-table>
@@ -85,6 +88,15 @@ export default {
       },
       components:{
           Brand
+      },
+      methods:{
+          input(val){
+              console.log(val)
+          }
+      },
+      created(){
+        this.tableData = this.$route.query.data
+        console.log(this.tableData)
       }
   }
 </script>

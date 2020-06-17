@@ -25,24 +25,35 @@
                             已选择
                             <span style="color:red;">{{all}}</span>条
                         </p>
-                        <el-checkbox-group class="checkbox" v-model="type"   v-for="(item,index) in goodslist" :key="index" v-if="item.g_title">
-                            <el-checkbox :label="item.g_title" name="type" ></el-checkbox>
+                        <el-checkbox-group
+                            class="checkbox"
+                            v-model="type"
+                            v-for="(item,index) in goodslist"
+                            :key="index"
+                            v-if="item.g_title"
+                        >
+                            <el-checkbox :label="item" name="type">{{item.g_title}}</el-checkbox>
                         </el-checkbox-group>
                         <div style="margin-top:20px">
-                            <el-button >全选</el-button>
+                            <el-button>全选</el-button>
                             <el-button style="background:#42c6ac;color:#fff;" @click="confirm">确定</el-button>
                         </div>
                     </div>
                     <img src="../../../../assets/img/arrow.png">
                     <div class="right_table">
-                         <p>
+                        <p>
                             已选择
                             <span style="color:red;">{{all}}</span>条
                         </p>
-                        <el-checkbox-group class="checkbox" v-model="suretype"  v-for="(item,index) in num" :key="index" >
-                            <el-checkbox :label="item" name="type" :value="item"></el-checkbox>
+                        <el-checkbox-group
+                            class="checkbox"
+                            v-model="suretype"
+                            v-for="(item,index) in num"
+                            :key="index"
+                        >
+                            <el-checkbox :label="item" name="type">{{item.g_title}}</el-checkbox>
                         </el-checkbox-group>
-                         <div style="margin-top:20px">
+                        <div style="margin-top:20px">
                             <el-button>全选</el-button>
                             <el-button style="background:#42c6ac;color:#fff;" @click="remove">移除</el-button>
                         </div>
@@ -54,7 +65,11 @@
                         <el-radio v-model="radio" label="2">统一编辑</el-radio>
                     </div>
                     <div>
-                        <el-button @click="enterEditor" v-if="$_has('find')" style="background:#42c6ac; color:#fff; margin-top:20px; width:120px;height:40px">进入编辑</el-button>
+                        <el-button
+                            @click="enterEditor"
+                            v-if="$_has('find')"
+                            style="background:#42c6ac; color:#fff; margin-top:20px; width:120px;height:40px"
+                        >进入编辑</el-button>
                     </div>
                 </div>
             </div>
@@ -65,15 +80,16 @@
 <script>
 import Brand from '@/components/common/Brand.vue';
 import { goodsList } from '@/api/goods/goods_list.js';
+import { nearer } from 'q';
 export default {
     data() {
         return {
-            goodslist: [],//商品列表
-            num: [],//统计已选项
-            radio:null,//
-            type:[],
-            suretype:[],
-            alltype:[],//统计确认编辑项
+            goodslist: [], //商品列表
+            num: [], //统计已选项
+            radio: null, //
+            type: [],
+            suretype: [],
+            alltype: [] //统计确认编辑项
         };
     },
     methods: {
@@ -90,14 +106,13 @@ export default {
             });
         },
         //确定添加
-        confirm(){
-            this.num=this.type
+        confirm() {
+            this.num = this.type;
         },
         //移除
-        remove(){
-            this.suretype.forEach(v=>{
-              console.log(v)
-           })
+        remove() {
+           console.log(this.num)
+           console.log("选择项",this.suretype)
         },
         //获取子组件传值
         input(val) {
@@ -108,20 +123,26 @@ export default {
             });
         },
         //进入编辑
-        enterEditor(){
-            console.log(this.radio)
-            if(this.radio==="1"){
+        enterEditor() {
+           
+            if (this.radio === '1') {
                 this.$router.push({
-                    path:'/singleEditor'
-                })
-            }else if(this.radio==="2"){
+                    path: '/singleEditor',
+                     query: {
+                       data:this.num
+                    }
+                });
+            } else if (this.radio === '2') {
                 this.$router.push({
-                    path:'/moreEditor'
-                })
+                    path: '/moreEditor',
+                    query: {
+                       data:this.num
+                    }
+                });
             }
         },
-        change(val){
-            console.log(val)
+        change(val) {
+            console.log(val);
         }
     },
     created() {
@@ -132,13 +153,13 @@ export default {
             return this.num.length;
         }
     },
-    watch:{
-          value: {
-                immediate:true,
-                handler:function(newVal){
-                  console.log(newVal) 
-                }
-            },
+    watch: {
+        value: {
+            immediate: true,
+            handler: function(newVal) {
+                console.log(newVal);
+            }
+        }
     },
     components: {
         Brand
@@ -198,22 +219,23 @@ export default {
     .main {
         display: flex;
         margin-bottom: 40px;
-        .left_table,.right_table {
+        .left_table,
+        .right_table {
             min-width: 300px;
             margin-top: 20px;
-            p{
+            p {
                 border: 1px solid #ccc;
                 padding: 10px;
                 background: rgba(226, 226, 226, 0.5);
                 color: rgb(136, 136, 136);
             }
-           .checkbox{
-               border: 1px solid #ccc;
-               padding: 10px 20px;
-               border-top: none;
-           }
+            .checkbox {
+                border: 1px solid #ccc;
+                padding: 10px 20px;
+                border-top: none;
+            }
         }
-        >img{
+        > img {
             width: 60px;
             height: 60px;
             padding-top: 200px;
@@ -221,26 +243,26 @@ export default {
         }
     }
 }
-.foot{
+.foot {
     border-top: 1px solid #ccc;
     padding-top: 40px;
     text-align: center;
 }
-.active{
+.active {
     width: 15px;
     height: 15px;
     border: 1px solid #b8b8b8;
     display: inline-block;
-    span{
+    span {
         color: #ccc;
     }
 }
-.active1{
+.active1 {
     width: 15px;
     height: 15px;
     border: 1px solid #42c6ac;
     display: inline-block;
-    span{
+    span {
         color: #42c6ac;
     }
 }
