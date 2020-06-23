@@ -97,6 +97,7 @@ export default {
         this.tableData.forEach(v => {
             this.changeInfo.id.push(v.id)
         });
+        // console.log(this.tableData)
       }
   }
 </script>

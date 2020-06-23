@@ -32,3 +32,60 @@ export const getBrand = query => {
         params: query
     });
 };
+
+
+/**
+ * 添加新品牌
+ **/
+export const brandAdd = query => {
+    return request({
+        url: '/goods/goods_brand/add',
+        method: 'post',
+        params: query
+    });
+};
+
+
+/**
+ * 删除品牌
+ **/
+export const delBrand = query => {
+    return request({
+        url: '/goods/goods_brand/del',
+        method: 'post',
+        params: query
+    });
+};
+
+/**
+ * 编辑品牌
+ **/
+export const editBrand = query => {
+    return request({
+        url: '/goods/goods_brand/edit',
+        method: 'post',
+        params: query
+    });
+};
+
+/**
+ * 商品图片资源--图片列表
+ **/
+export const resourceList = query => {
+    return request({
+        url: '/goods/goods_resource/getList',
+        method: 'post',
+        params: query
+    });
+};
+
+/**
+ * 商品图片资源--删除图片
+ **/
+export const resourceDel = query => {
+    return request({
+        url: '/goods/goods_resource/del',
+        method: 'post',
+        params: query
+    });
+};

@@ -15,6 +15,10 @@ export const constantRoutes = [
         {path: '/multipleIsup',component: () => import('../components/page/goods_management/goods_batchChange/multipleIsup'),meta: { title: '批量自动上下架' }},
         {path: '/moreEditor',component: () => import('../components/page/goods_management/goods_batchChange/moreEditor'),meta: { title: '统一编辑' }},
         {path: '/singleEditor',component: () => import('../components/page/goods_management/goods_batchChange/singleEditor'),meta: { title: '逐个编辑' }},
+        {path: '/addBrand',component: () => import('../components/page/goods_management/brand/addBrand'),meta: { title: '添加新品牌' }},
+        {path: '/editBrand',component: () => import('../components/page/goods_management/brand/editBrand'),meta: { title: '编辑品牌' }},
+        {path: '/photoAlbumList',component: () => import('../components/page/goods_management/photo_library/photoAlbumList'),meta: { title: '相册列表' }},
+        {path: '/addType',component: () => import('../components/page/goods_management/goods_type/addType'),meta: { title: '新增规格' }},
     ]
 },
 {path: '/login',component: () => import('../components/page/Login.vue'),meta: { title: '登录' }},

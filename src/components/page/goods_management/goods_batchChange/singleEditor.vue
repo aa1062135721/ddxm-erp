@@ -84,7 +84,6 @@ export default {
       created(){
           this.$route.query.data.forEach(v => {
              this.tableData.push(v)
-             console.log(v)
           });
       }
   }

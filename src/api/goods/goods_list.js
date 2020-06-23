@@ -82,6 +82,16 @@ export const goodsSpecs= query => {
     });
 };
 /**
+ *  添加商品- 编辑规格
+ **/
+export const editSpecs= query => {
+    return request({
+        url: '/goods/goods_specs/edit',
+        method: 'post',
+        data: query
+    });
+};
+/**
  *  商品评论-列表/筛选查询
  **/
 export const goodsComment= query => {

@@ -31,17 +31,14 @@
                     </div>
                 </div>
                  <div class="edit_box">
-                    <el-table :data="ruleForm.list" border style="width: 100%">
-                        <el-table-column label="规格ids">
+                    <el-table :data="ruleForm.list" style="width: 100%" border >
+                        <!-- 动态表格 -->
+                        <el-table-column v-for="(item, index) in columnList" :label="item" :key="index" width="150">
                             <template slot-scope="scope">
-                                <el-input v-model="scope.row.key"></el-input>
+                                <el-input v-model="scope.row['val'+index]"></el-input>
                             </template>
                         </el-table-column>
-                        <el-table-column label="规格">
-                            <template slot-scope="scope">
-                                <el-input v-model="scope.row.key_name"></el-input>
-                            </template>
-                        </el-table-column>
+
                         <el-table-column label="原价">
                             <template slot-scope="scope">
                                 <el-input v-model="scope.row.recommendprice"></el-input>
@@ -60,7 +57,7 @@
                                     action="https://jsonplaceholder.typicode.com/posts/"
                                     :before-remove="beforeRemove"
                                     multiple
-                                    :limit="5"
+                                    :limit="1"
                                     :on-exceed="handleExceed">
                                     <el-button size="small" type="primary">点击上传</el-button>
                                 </el-upload>
@@ -102,145 +99,126 @@
     </div>
 </template>
 <script>
-import ChooseProperty from '@/components/common/ChooseProperty'
-import {goodsSpecs} from '@/api/goods/goods_list';
-import {quillEditor} from 'vue-quill-editor'
-import 'quill/dist/quill.core.css'
-import 'quill/dist/quill.snow.css'
-import 'quill/dist/quill.bubble.css'
-import { setTimeout } from 'timers';
-import { log } from 'util';
+import ChooseProperty from '@/components/common/ChooseProperty';
+import { goodsSpecs } from '@/api/goods/goods_list';
+import { quillEditor } from 'vue-quill-editor';
+import 'quill/dist/quill.core.css';
+import 'quill/dist/quill.snow.css';
+import 'quill/dist/quill.bubble.css';
+
 export default {
     name: 'FuncFormsEdit',
-    data(){
-       return{
+    data() {
+        return {
             ruleForm: {
                 type: [],
                 list: [
-                     {
-                        key:"1_3_5",   //规格ID组合，有规格则为ID的组合，用下划线连接，非必填
-                        key_name:"红_大_高",  //规格的名称，非必填
-                        recommendprice:"699.99", //原价，必填
-                        price:"399.99",  //会员价，必填
-                        imgurl:"该规格的展示图",  //商品规格的图片地址，不填则此规格的图片为商品主图，非必填
-                        initial_sales:0, //虚拟销量，不填则为0，非必填
-                        bar_code:"DB565653565"    //商品条形码，非必填
-                    },
-                    {
-                        key:"1_3_6",   //规格ID组合，有规格则为ID的组合，用下划线连接，非必填
-                        key_name:"",  //规格的名称，非必填
-                        recommendprice:"699.99", //原价，必填
-                        price:"399.99",  //会员价，必填
-                        imgurl:"该规格的展示图",  //商品规格的图片地址，不填则此规格的图片为商品主图，非必填
-                        initial_sales:0, //虚拟销量，不填则为0，非必填
-                        bar_code:"DB565653565"    //商品条形码，非必填
-                    },
-                   
                 ]
-            },  
-            rules: {
-            type: [{ type: 'array', required: true, message: '请至少选择一个活动性质', trigger: 'change' }],
             },
-            PropertyList:[],//存放属性规格
-            // attribute:[],
-            child:[],
-            select_name:"规格",
-            specifications:[],//存放商品列
+            rules: {
+                type: [{ type: 'array', required: true, message: '请至少选择一个活动性质', trigger: 'change' }]
+            },
+            PropertyList: [], //存放属性规格
+            columnList: [], //存放动态列
+            child: [],
+            select_name: '规格',
+            specifications: [], //存放商品列
             content: null,
             editorOption: {}
-       }
-   },
-   components:{
-       ChooseProperty,
-       quillEditor
-   },
-   methods:{
-        addSpecifications(){
+        };
+    },
+    components: {
+        ChooseProperty,
+        quillEditor
+    },
+    methods: {
+        addSpecifications() {
             this.ruleForm.list = [];
-            let arr = []
-            for(const item  of this.PropertyList) {
+            let arr = [];
+            for (const item of this.PropertyList) {
                 arr[Object.keys(item)[0]] = [];
                 Object.values(item)[0].map(item2 => {
-                    for(const itemType of this.ruleForm.type){
-                        if(item2.id == itemType.id) {
-                            arr[Object.keys(item)[0]].push(itemType)
+                    for (const itemType of this.ruleForm.type) {
+                        if (item2.id == itemType.id) {
+                            arr[Object.keys(item)[0]].push(itemType);
                         }
                     }
-                })
+                });
             }
             // console.log(this.attribute)
-            console.log("arr", arr);
-            
-        
-            // arr = [
-            //     '颜色': [
-            //         {id: 1, name: '红'},
-            //         {id: 2, name: '绿'}
-            //     ],
-            //     '尺寸': [
-            //         {id: 3, name: '大'},
-            //         {id: 4, name: '小'}
-            //     ],
-            //     '高矮': [
-            //         {id: 5, name: '高'},
-            //         {id: 6, name: '矮'}
-            //     ],
-            //     '其他': []         // 过滤掉        // TODO 过滤 arr中的空    
-            // ]
-            // 红_大_高
-            // 红_大_矮
-            // 红_小_高
-            // 红_小_矮
-            // 绿_大_高
-            // 绿_大_矮
-            // 绿_小_高
-            // 绿_小_矮
-        
-        // console.log("+++++++++++++", Object.keys(arr))
-        // console.log("-------------", Object.values(arr))
-        // for(const item  of Object.keys(arr)) {
-        //     arr[item].forEach(item2 => {
+            console.log('arr', arr);
 
-        //     })
-        // }
-        //     for(const item  of arr) {
-        //         console.log("+++++++++++++", item);
-        //     }
-            
-         return
-            this.PropertyList.forEach(i => {
-                for (let g in i) {
-                    let arr = [];
-                    i[g].forEach(t => {
-                        if (this.ruleForm.type.includes(t.gs_title)) {
-                            arr.push(t.gs_title)
+            let arr1 = Object.values(arr);
+            let combine = function(...chunks) {
+                let res = [];
+                let helper = function(chunkIndex, prev) {
+                    let chunk = chunks[chunkIndex];
+                    let isLast = chunkIndex === chunks.length - 1;
+                    for (let val of chunk) {
+                        let cur = prev.concat(val);
+                        if (isLast) {
+                            res.push(cur);
+                        } else {
+                            helper(chunkIndex + 1, cur);
                         }
-                    })
-                    this.ruleForm.list.push({[g]:arr});
+                    }
+                };
+                helper(0, []);
+                return res;
+            };
+            // // // 得到的结果
+            let result = combine(...arr1);
+            // console.log('结果', result);
+            let result2 = [];
+            for (let item of result) {
+                let obj = { key_values: '', key_ids: '' };
+
+                item.map((item2, index) => {
+                    if (index + 1 === item.length) {
+                        obj.key_values += item2.gs_title;
+                        obj.key_ids += item2.id;
+                    } else {
+                        obj.key_values += item2.gs_title + '_';
+                        obj.key_ids += item2.id + '_';
+                    }
+                });
+                result2.push(obj);
+            }
+            console.log('最终结果', result2);
+            this.ruleForm.list = result2;
+            this.ruleForm.list.forEach(_ => {
+                let msgList = _.key_values.split('_')
+                for (let i = 0; i < msgList.length; i++) {
+                    _['val'+i] = msgList[i]
                 }
             })
-            console.log(this.ruleForm.list)
-            // this.child.push(this.ruleForm.type)
+
+            this.columnList = []
+            this.PropertyList.forEach(_ => {
+                console.log(Object.keys(_)[0])
+                this.columnList.push(Object.keys(_)[0])
+            })
         },
-        input(val){
+        input(val) {
             console.log(val);
             let flag = true;
-            for(const item  of  this.PropertyList){ 
-                 console.log("每一项：",item);
-                 if(item == val) {
-                     flag = false;
-                 }
+            for (const item of this.PropertyList) {
+                console.log('每一项：', item);
+                if (item == val) {
+                    flag = false;
+                }
             }
-            if(flag)
-                this.PropertyList.push(val);
+            if (flag) this.PropertyList.push(val);
         },
         handleExceed(files, fileList) {
-            this.$message.warning(`当前限制选择 5 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`);
+            this.$message.warning(
+                `当前限制选择 5 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`
+            );
         },
         beforeRemove(file, fileList) {
-            return this.$confirm(`确定移除 ${ file.name }？`);
+            return this.$confirm(`确定移除 ${file.name}？`);
         }
-   },
+    }
 };
 </script>
 
@@ -279,74 +257,74 @@ export default {
             }
         }
     }
-    .section{
+    .section {
         margin-top: 50px;
         padding: 20px;
         margin: auto;
-        .specifications{
-            background-color: #F9FAFC;
+        .specifications {
+            background-color: #f9fafc;
             width: 90%;
-            padding:10px 25px;
+            padding: 10px 25px;
             box-sizing: border-box;
             border: 1px solid rgb(221, 221, 221);
-            p{
+            p {
                 font-size: 16px;
                 color: rgb(105, 105, 105);
                 margin-bottom: 10px;
             }
         }
-        .edit_box{
+        .edit_box {
             margin-top: 20px;
             width: 90%;
-           table{
+            table {
                 border-collapse: collapse;
-                td{
-                   width: 110px;
-                   border: 1px solid #ccc;
-                   text-align: center;
-                   padding: 5px;
-                   box-sizing: border-box;
-                   color: rgb(70, 70, 70)
+                td {
+                    width: 110px;
+                    border: 1px solid #ccc;
+                    text-align: center;
+                    padding: 5px;
+                    box-sizing: border-box;
+                    color: rgb(70, 70, 70);
                 }
-                thead{
-                   tr{
-                       td{
-                           background-color: #F9FAFC;
-                           font-weight: bold;
-                       }
-                   }
-               }
-           }
-           .el-upload--text{
-               width: 80px;
-               height: 35px;
-           }
+                thead {
+                    tr {
+                        td {
+                            background-color: #f9fafc;
+                            font-weight: bold;
+                        }
+                    }
+                }
+            }
+            .el-upload--text {
+                width: 80px;
+                height: 35px;
+            }
         }
     }
     .box1 {
-            position: relative;
-            top: 50px;
-            left: -220px;
-            p {
-                padding-left: 30px;
-                box-sizing: border-box;
-                text-align: left;
-                line-height: 50px;
-                width: 200px;
-                height: 50px;
-                background: rgb(161, 174, 194);
-                color: #fff;
-            }
-            .rich_title {
-                position: absolute;
-                top: 0;
-                left: 200px;
-                width: 0;
-                height: 0;
-                border-top: 25px solid transparent;
-                border-left: 25px solid rgb(161, 174, 194);
-                border-bottom: 25px solid transparent;
-            }
+        position: relative;
+        top: 50px;
+        left: -220px;
+        p {
+            padding-left: 30px;
+            box-sizing: border-box;
+            text-align: left;
+            line-height: 50px;
+            width: 200px;
+            height: 50px;
+            background: rgb(161, 174, 194);
+            color: #fff;
         }
+        .rich_title {
+            position: absolute;
+            top: 0;
+            left: 200px;
+            width: 0;
+            height: 0;
+            border-top: 25px solid transparent;
+            border-left: 25px solid rgb(161, 174, 194);
+            border-bottom: 25px solid transparent;
+        }
+    }
 }
 </style>
