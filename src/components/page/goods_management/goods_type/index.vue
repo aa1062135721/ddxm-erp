@@ -5,7 +5,9 @@
                 <div class="goodsBox">
                     <div class="mTitle">
                         <span>数据列表</span>
+                      
                         <div>
+                            <el-button @click="cancel">刷新</el-button>
                             <el-button @click="add()" v-if="$_has('add')">添加</el-button>
                         </div>
                     </div>
@@ -55,7 +57,7 @@
                     <el-card class="box-card">
                         <div slot="header" class="clearfix">
                             <span>添加类型</span>
-                            <el-button style="float: right; padding: 3px 0" type="text" @click="flag=false">X</el-button>
+                            <el-button style="float: right; padding: 3px 0" type="text" @click="flag=false,cancel">X</el-button>
                         </div>
                         <div class="addedit">
                             <div>
@@ -78,7 +80,7 @@
 
 <script>
     import { resourceList,resourceDel } from '@/api/common/index';
-    import {goodsSpecs,editSpecs} from '@/api/goods/goods_list.js'
+    import {goodsSpecs,editSpecs,delSpecs} from '@/api/goods/goods_list.js'
     export default {
         created(){
             this.getgoods()
@@ -110,13 +112,13 @@
             getgoods(){
                 goodsSpecs().then(res=>{
                     this.tableData = res.data.data
+                    this.total = res.data.count
                     this.tableData.forEach(v=>{
                         v.son_name=''
                         v.child.forEach(item=>{
                             v.son_name += item.gs_title+"  "
                         })
                     })
-                    console.log(this.tableData)
                 })  
             },
             //编辑类型
@@ -151,14 +153,32 @@
             },
             // 上下页
             handleCurrentChange(val) {
-                console.log(val)
                let data ={
                    page:val
                }
                 goodsSpecs(data).then(res=>{
                     this.tableData = res.data.data
+                    this.tableData.forEach(v=>{
+                        v.son_name=''
+                        v.child.forEach(item=>{
+                            v.son_name += item.gs_title+"  "
+                        })
+                    })
                 })
             },
+            //删除
+            deleteGoods(val){
+                let data={
+                    ids:[val.id]
+                }
+                delSpecs(data).then(res=>{
+                    this.$message({
+                        meaasge:res.msg,
+                        type:'success'
+                    })
+                })
+                this.getgoods()
+            }
         },
     }
 </script>

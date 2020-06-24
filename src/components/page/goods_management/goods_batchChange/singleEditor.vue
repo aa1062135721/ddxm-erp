@@ -22,9 +22,9 @@
                            <tr v-for="(item,index) in tableData" :key="index">
                                <td>{{item.code}}</td>
                                <td>{{item.g_title}}</td>
-                               <td><el-input v-model="item.is_show"></el-input></td>
-                               <td><el-input v-model="item.is_shelf"></el-input></td>
-                               <td><el-input v-model="item.w_stock"></el-input></td>
+                               <td><el-input v-model="item.price"></el-input></td>
+                               <td><el-input v-model="item.recommendprice"></el-input></td>
+                               <td><el-input v-model="item.warning_value"></el-input></td>
                            </tr>
                        </tbody>
                    </table>
@@ -43,36 +43,29 @@ import {batchChange} from "@/api/goods/goods_list"
 export default {
       data(){
           return{
-              tableData:[],
-              
+              tableData:[],  
+            //   price:[],
+            //   recommendprice:'',
+            //   w_stock:'',
           }
       },
 
       methods:{
-          /*
-            [
-                {
-                    id:'0',
-                    recommendprice:0,
-                    price:0,
-                    warning_value:0
-                }
-            ]
-          */
           submit(){
               let data={end_type:1,datas:[]}
-            
               this.tableData.forEach(v=>{
                  let temp={
-                    id:v.id,
-                    price:v.is_show,
-                    recommendprice:v.is_shelf,
-                    warning_value:v.w_stock
+                    id:v.gsp_id,
+                    price:v.price,
+                    recommendprice:v.recommendprice,
+                    warning_value:v.warning_value
                   }
+                  console.log(temp)
                 data.datas.push(temp)
               })
             batchChange(data).then((res)=>{
                 if(res.code===200){
+                    console.log(this.tableData)
                     this.$message({
                         message:res.msg,
                         type:"success"
@@ -84,6 +77,7 @@ export default {
       created(){
           this.$route.query.data.forEach(v => {
              this.tableData.push(v)
+
           });
       }
   }

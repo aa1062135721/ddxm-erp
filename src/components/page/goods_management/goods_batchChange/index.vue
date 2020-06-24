@@ -22,13 +22,13 @@
                 </div>
                 <div class="main">
                     <div>
-                            <p>
+                        <div class="left_table" id="left_table">
+                              <p>
                                 已选择
                                 <span style="color:red;">{{all}}</span>条
                             </p>
-                        <div class="left_table" id="left_table">
-                            <el-checkbox-group class="checkbox" v-model="type"   v-for="(item,index) in goodslist" :key="index" v-if="item.g_title">
-                                <el-checkbox :label="item" :value="index">{{item.g_title}}</el-checkbox>
+                            <el-checkbox-group class="checkbox" v-model="type"   v-for="(item,index) in goodslist" :key="index" >
+                                <el-checkbox :label="item" :value="index" :disabled.sync="item.gsp_id=='0'">{{item.g_title}}</el-checkbox>
                             </el-checkbox-group>
                          </div>
                         <div style="margin-top:20px">

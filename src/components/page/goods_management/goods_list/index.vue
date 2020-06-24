@@ -7,13 +7,13 @@
         </div>
         <div class="container">
             <div class="search-div">
-                <div class="choose">
+                <!-- <div class="choose">
                     <el-button  @click="all_goods" class="active">全部商品<span>({{total}})</span></el-button>
                     <el-button  >已上架</el-button>
                     <el-button  >未上架</el-button>
                     <el-button  >待审核</el-button>
                     <el-button  >未通过</el-button>
-                </div>
+                </div> -->
                 <div class="SearchBar">
                     <div>
                         输入搜索：<el-input  placeholder="商品名称/条形码(回车键查看)" style="width: 220px; margin-right: 10px;" v-model="goods_id" @keyup.enter="searchGoods"></el-input>
@@ -28,10 +28,6 @@
                 <div class="goodsBox">
                     <div class="mTitle">
                         <span>数据列表</span>
-                        <div>
-                            <el-button>修改基本信息</el-button>
-                            <el-button>修改商品详情</el-button>
-                        </div>
                     </div>
                     <el-table
                         ref="multipleTable"

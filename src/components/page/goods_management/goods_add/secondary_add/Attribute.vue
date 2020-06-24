@@ -82,10 +82,34 @@
                     </el-table>
                 </div>
                 </el-form>
+                <div class="addimg">
+                    <div class="goodsImg">
+                        <div class="box2">
+                            <p>商品相册</p>
+                            <div class="rich_title"></div>
+                        </div>
+                        <div class="imglist">
+                            <ul>
+                                <li>
+                                    <img src="https://t8.baidu.com/it/u=3571592872,3353494284&fm=79&app=86&size=h300&n=0&g=4n&f=jpeg?sec=1593583516&t=8e1e1c0dc5e934158f83f139370be8af">
+                                </li>
+                                 <li>
+                                    <img src="https://t8.baidu.com/it/u=3571592872,3353494284&fm=79&app=86&size=h300&n=0&g=4n&f=jpeg?sec=1593583516&t=8e1e1c0dc5e934158f83f139370be8af">
+                                </li>
+                                 <li>
+                                    <img src="https://t8.baidu.com/it/u=3571592872,3353494284&fm=79&app=86&size=h300&n=0&g=4n&f=jpeg?sec=1593583516&t=8e1e1c0dc5e934158f83f139370be8af">
+                                </li>
+                                 <li>
+                                    <img src="https://t8.baidu.com/it/u=3571592872,3353494284&fm=79&app=86&size=h300&n=0&g=4n&f=jpeg?sec=1593583516&t=8e1e1c0dc5e934158f83f139370be8af">
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
                 <template>
                     <div class="richText">
                     <div class="box1">
-                        <p>商品属性</p>
+                        <p>规格参数</p>
                         <div class="rich_title"></div>
                     </div>
                     <el-card style="height: 400px;width:80%;">
@@ -301,7 +325,7 @@ export default {
             }
         }
     }
-    .box1 {
+    .box1,.box2 {
         position: relative;
         top: 50px;
         left: -220px;
@@ -324,6 +348,23 @@ export default {
             border-top: 25px solid transparent;
             border-left: 25px solid rgb(161, 174, 194);
             border-bottom: 25px solid transparent;
+        }
+    }
+    .addimg{
+        
+        .imglist{
+            padding-left: 50px;
+            ul{
+                list-style: none;
+                display: flex;
+                li{
+                    img{
+                        width: 100px;
+                        height: 100px;
+                        margin-right: 50px;
+                    }
+                }
+            }
         }
     }
 }

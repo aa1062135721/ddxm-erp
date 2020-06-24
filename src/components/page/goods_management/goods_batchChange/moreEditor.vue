@@ -2,7 +2,7 @@
     <div>
        <div class="crumbs">
             <el-breadcrumb separator="/">
-                <el-breadcrumb-item>逐个编辑</el-breadcrumb-item>
+                <el-breadcrumb-item>统一编辑</el-breadcrumb-item>
             </el-breadcrumb>
         </div>
         <div class="container">
@@ -95,7 +95,7 @@ export default {
       created(){
         this.tableData = this.$route.query.data
         this.tableData.forEach(v => {
-            this.changeInfo.id.push(v.id)
+            this.changeInfo.id.push(v.gsp_id)
         });
         // console.log(this.tableData)
       }

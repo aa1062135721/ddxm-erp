@@ -32,6 +32,26 @@ export const commentSwitch = query => {
     });
 };
 /**
+ *  品牌管理- 是否显示
+ **/
+export const brandSwitch = query => {
+    return request({
+        url: '/goods/goods_brand/isSwitch',
+        method: 'post',
+        data: query
+    });
+};
+/**
+ *  商品分类- 是否显示
+ **/
+export const goodsSwitch = query => {
+    return request({
+        url: '/goods/goods_category/isSwitch',
+        method: 'post',
+        data: query
+    });
+};
+/**
  *  商品分类- 新增
  **/
 export const goodsClassAdd = query => {
@@ -47,6 +67,16 @@ export const goodsClassAdd = query => {
 export const shiftGoods = query => {
     return request({
         url: '/goods/goods_category/shiftGoods',
+        method: 'post',
+        data: query
+    });
+};
+/**
+ *  商品管理- 商品批量上下级
+ **/
+export const goodsBulkShelf = query => {
+    return request({
+        url: '/goods/goods_bulk_edit/goodsBulkShelf',
         method: 'post',
         data: query
     });

@@ -134,7 +134,7 @@
 
 <script>
     import {getGoodsList,findGoodsList} from '@/api/goods/goods_list.js'
-    import {goodsListDel,shiftGoods,commentSwitch} from '@/api/goods/goods_classification.js'
+    import {goodsListDel,shiftGoods,goodsSwitch} from '@/api/goods/goods_classification.js'
     export default {
         created(){
             this.getgoods()
@@ -212,15 +212,13 @@
             },
             //是否显示
             changeSwitch(val){
-                console.log(val.id)
-                // console.log(val.gc_status)
-                // let data = {
-                //     id:val.id,
-                //     is_switch:val.gc_status
-                // }
-                // commentSwitch(data).then((res)=>{
-                //     console.log(res)
-                // })
+                let data = {
+                    id:val.id,
+                    gc_status:val.gc_status
+                }
+                goodsSwitch(data).then((res)=>{
+                    console.log(res)
+                })
             },
             //删除
             deleteGoods(val){

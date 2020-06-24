@@ -94,7 +94,7 @@
 
 <script>
     import { getBrand,delBrand } from '@/api/common/index';
-    import {commentSwitch} from '@/api/goods/goods_classification.js'
+    import {brandSwitch} from '@/api/goods/goods_classification.js'
     export default {
         created(){
             this.getgoods()
@@ -166,15 +166,16 @@
             },
             //是否显示
             changeSwitch(val){
-                console.log(val.id)
-                // console.log(val.gc_status)
-                // let data = {
-                //     id:val.id,
-                //     is_switch:val.gc_status
-                // }
-                // commentSwitch(data).then((res)=>{
-                //     console.log(res)
-                // })
+                console.log(val)
+                let data = {
+                    id:val.id,
+                }
+                brandSwitch(data).then((res)=>{
+                    this.$message({
+                        message:res.msg,
+                        type:"success"
+                    })
+                })
             },
             
         },

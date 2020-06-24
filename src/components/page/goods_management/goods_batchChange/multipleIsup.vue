@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="multipleIsup">
        <div class="crumbs">
             <el-breadcrumb separator="/">
                 <el-breadcrumb-item>商品列表</el-breadcrumb-item>
@@ -21,12 +21,17 @@
                 <div class="goodsBox">
                     <div class="mTitle">
                         <span>数据列表</span>
+                        <div>
+                            <el-button style="background:#1ABC9C;color:#fff;" @click="flag=true">批量上架</el-button>
+                            <el-button style="background:#1ABC9C;color:#fff;">批量下架</el-button>
+                        </div>
                     </div>
                     <el-table
                         ref="multipleTable"
                         :data="tableData"
                         border
                         tooltip-effect="dark"
+                        @selection-change="handleSelectionChange"
                         style="width: 100%;">
                         <el-table-column
                         type="selection"
@@ -35,42 +40,32 @@
                         <el-table-column
                         prop="g_title"
                         label="商品名称"
-                        show-overflow-tooltip>
-                        </el-table-column>
-                         <el-table-column
-                        label="价格"
-                        width="200">
-                            <template slot-scope="props">
-                                <p>价格：{{props.row.price}}</p>
-                            </template>
+                       >
                         </el-table-column>
                         <el-table-column
-                        label="货号"
-                        width="200">
-                            <template slot-scope="props">
-                                <p>货号：{{props.row.code}}</p>
+                        label="图片"
+                       >
+                            <template slot-scope="scope">
+                               <el-image
+                                    style="width: 80px;height: 80px;margin: 10px;"
+                                    class="table-td-thumb"
+                                    :src="scope.row.imglist[0]"
+                                    :preview-src-list="scope.row.imglist"
+                            ></el-image>
                             </template>
                         </el-table-column>
                         <el-table-column
                         label="上架时间"
-                        width="120">
-                            <template slot-scope="scope" >
-                              
-                            </template>                  
+                        width="200"
+                        prop="up_time"
+                        >
                         </el-table-column>
 
                         <el-table-column
                         label="下架时间"
-                        width="120"
-                        prop="gb_title">
-                        </el-table-column>
-
-                        <el-table-column
-                        label="操作"
-                        width="120">
-                            <template slot-scope="scope">
-                                <el-button style="color:#1ABC9C" @click="handleClick(scope.row)" type="text" size="small">撤销</el-button>
-                            </template>
+                        width="200"
+                        prop="down_time"
+                        >
                         </el-table-column>
                     </el-table>
                     <div class="footer" >
@@ -84,6 +79,26 @@
                             </el-pagination>
                         </div>
                     </div>
+                    <div class="shelves" v-if="flag">
+                        <el-card class="box-card">
+                            <div slot="header" class="clearfix">
+                                <span>上传时间</span>
+                                <el-button style="float: right; padding: 3px 0" type="text" @click="flag=false">X</el-button>
+                            </div>
+                            <div class="block" style="text-align:center; margin-top:40px;">
+                                <span class="demonstration" style="margin-right:20px;">上架时间:</span>
+                                <el-date-picker
+                                v-model="upTime"
+                                type="datetime"
+                                placeholder="选择日期时间">
+                                </el-date-picker>
+                            </div>
+                            <div style="text-align:right;margin-top:40px;">
+                                <el-button @click="flag = false">取消</el-button>
+                                <el-button style="background:#1ABC9C;color:#fff;" @click="submit">确定</el-button>
+                            </div>
+                        </el-card>
+                    </div>
                 </div>
             </div>
         </div>
@@ -95,8 +110,8 @@
     // import Classification from '@/components/common/Classification.vue';
     //商品品牌
     import Brand from '@/components/common/Brand.vue';
-    import {goodsList,goodsInfo} from '@/api/goods/goods_list.js'
-    import {goodsListDel} from '@/api/goods/goods_classification.js'
+    import {goodsBulkShelfList} from '@/api/goods/goods_list.js'
+    import {goodsBulkShelf} from '@/api/goods/goods_classification.js'
     export default {
         created(){
             this.getgoods()
@@ -117,18 +132,16 @@
                 },
                 tableData: [],//商品列表
                 total:1,//商品总个数
+                upTime:null,//上架时间
+                downTime:null,//下架时间
+                flag:false,//控制上架蒙层
+                ids:[],
             }
         }, 
         components: {
             Brand,
         },
         methods:{
-            // 获取全部商品
-            all_goods(){
-              goodsList().then((res)=>{
-                  this.tableData=res.data.data
-              })
-            },
             // 控制全选与不全选
             toggleSelection(rows) {
                 if (rows) {
@@ -141,10 +154,45 @@
              },
             // 获取商品列表数据
             getgoods(){
-                goodsList().then((res)=>{
+                goodsBulkShelfList().then((res)=>{
                     this.tableData=res.data.data//获取商品列表
                     this.total= res.data.total//获取总条数
-                    // console.log(res)
+                    //处理图片数据
+                    this.tableData.forEach(v=>{
+                        v.imglist = []
+                        v.g_img.forEach(i=>{
+                            v.imglist.push(i.gr_url)
+                        })
+                    })
+                    console.log(this.tableData)
+                })
+            },
+            // 选中checkbox
+             handleSelectionChange(val) {
+                let arr=[]
+                val.forEach(v=>{
+                   arr.push(v.id)
+                })
+                this.ids = arr
+            },
+            // 提交
+            submit(){
+                let data=[]
+                this.tableData.forEach(v=>{
+                   this.ids.forEach(i=>{
+                       let temp={
+                           goods_id:i,
+                           up_time:this.upTime,
+                           down_time:this.downTime,
+                           id:v.gbs_id
+                       }
+                        data.push(temp)
+                        console.log(data)
+                   })
+                })
+              
+                goodsBulkShelf().then(res=>{
+                    console.log(res)
                 })
             },
             // 上下页
@@ -153,7 +201,7 @@
                let data ={
                    page:val
                }
-                goodsList(data).then((res)=>{
+                goodsBulkShelfList(data).then((res)=>{
                     this.tableData=res.data.data
                 })
             },
@@ -162,7 +210,7 @@
                 let data={
                     search_val:this.goods_id
                 }
-                goodsList(data).then((res)=>{
+                goodsBulkShelfList(data).then((res)=>{
                    this.tableData=res.data.data
                 })
             },
@@ -170,23 +218,18 @@
             input(val){
                 console.log(val)
                let data={gb_title:val }
-                goodsList(data).then((res)=>{
+                goodsBulkShelfList(data).then((res)=>{
                   this.tableData=res.data.data
                     // console.log(res.data.data)
                 })
             },
-        },
-        computed:{
-            // 计算全部商品个数
-            allGoods(){
-                return this.tableData.length
-            }
         },
     }
 </script>
 
 <style scoped lang="scss">
     .container{
+       
         .search-div{
             .SearchBar{
                 border: 1px solid rgb(224, 224, 224);
@@ -217,6 +260,14 @@
                     display: flex;
                     justify-content: space-between;
                     padding: 10px;
+                }
+                .shelves{
+                    width: 500px;
+                    position: fixed;
+                    top: 40%;
+                    left: 50%;
+                    margin: auto;
+                    margin-left: -250px;
                 }
             }
         }
