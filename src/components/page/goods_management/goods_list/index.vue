@@ -74,7 +74,7 @@
                                     <el-switch
                                         v-model="scope.row.is_shelf"
                                         :active-value="1"
-                                        :inactive-value="2"
+                                        :inactive-value="0"
                                         active-color="#1ABC9C"
                                         inactive-color="#ff4949"
                                         @change="changeSwitch(scope.row)">
@@ -92,14 +92,14 @@
                                </div>
                                  -->
                                <div>
-                                <span>推荐：</span>
+                                <span>显示：</span>
                                 <el-switch
                                     v-model="scope.row.is_show"
                                     :active-value="1"
-                                    :inactive-value="2"
+                                    :inactive-value="0"
                                     active-color="#1ABC9C"
                                     inactive-color="#ff4949"
-                                    @change="changeSwitch(scope.row)">
+                                    @change="changeShow(scope.row)">
                                 </el-switch>
                                </div> 
                             </template>                  
@@ -138,7 +138,7 @@
                         label="操作"
                         width="120">
                             <template slot-scope="scope">
-                                <el-button style="color:#1ABC9C" @click="handleClick(scope.row)" type="text" size="small">查看</el-button>
+                                <!-- <el-button style="color:#1ABC9C" @click="handleClick(scope.row)" type="text" size="small">查看</el-button> -->
                                 <el-button style="color:#1ABC9C" type="text" size="small">编辑</el-button>
                                 <el-button style="color:#1ABC9C" @click="delGoods(scope.row)" type="text" size="small">删除</el-button>
                             </template>
@@ -204,7 +204,7 @@
                         </el-card>
                     </div>
                     <div class="footer" >
-                        <el-button @click="toggleSelection(tableData)">全选</el-button>
+                        <!-- <el-button @click="toggleSelection(tableData)">全选</el-button> -->
                         <div class="block">
                             <el-pagination
                             @current-change="handleCurrentChange"
@@ -225,7 +225,7 @@
     // import Classification from '@/components/common/Classification.vue';
     //商品品牌
     import Brand from '@/components/common/Brand.vue';
-    import {goodsList,goodsInfo} from '@/api/goods/goods_list.js'
+    import {goodsList,goodsInfo,goodsSwitch,goodsShow,goodsDel} from '@/api/goods/goods_list.js'
     import {goodsListDel} from '@/api/goods/goods_classification.js'
     export default {
         created(){
@@ -260,11 +260,12 @@
         },
         methods:{
             // 获取全部商品
-            all_goods(){
-              goodsList().then((res)=>{
-                  this.tableData=res.data.data
-              })
-            },
+            // all_goods(){
+            //   goodsList().then((res)=>{
+            //       this.tableData=res.data.data
+            //       console.log(res.data.data)
+            //   })
+            // },
             // 控制全选与不全选
             toggleSelection(rows) {
                 if (rows) {
@@ -282,12 +283,23 @@
             // 标签下的上架与推荐
             changeSwitch (row) {
                console.log(row)
-               let data={is_shelf:row.is_shelf}
-               goodsList(data).then((res)=>{
-                  this.$message({
-                        message: res.msg,
-                        type: 'success'
-                    });
+               let data={is_shelf:row.is_shelf,id:row.id}
+               goodsSwitch(data).then((res)=>{
+                //   this.$message({
+                //         message: res.msg,
+                //         type: 'success'
+                //     });
+                console.log(res)
+                })
+            },
+            changeShow(val){
+                console.log(val)
+                let data={
+                    id:val.id,
+                    is_show:val.is_show
+                }
+                goodsShow(data).then(res=>{
+                    console.log(res)
                 })
             },
             // 获取商品列表数据
@@ -295,7 +307,7 @@
                 goodsList().then((res)=>{
                     this.tableData=res.data.data//获取商品列表
                     this.total= res.data.total//获取总条数
-                    // console.log(res)
+                    console.log(res)
                 })
             },
             // 上下页
@@ -357,8 +369,10 @@
             //删除商品
             delGoods(val){
                 console.log(val)
-                goodsListDel({id:val.id}).then((res)=>{
-                    console.log(res)
+                goodsDel({id:val.id}).then((res)=>{
+                    if(res.code==200){
+                        this.getgoods()
+                    }
                 })
                 
             }
@@ -467,8 +481,9 @@
                     }
                 }
                 .footer{
-                    display: flex;
-                    justify-content: space-between;
+                    // display: flex;
+                    // justify-content: right;
+                    text-align: right;
                     padding: 10px;
                 }
             }

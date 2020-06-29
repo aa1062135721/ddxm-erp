@@ -28,7 +28,7 @@
                                 <span style="color:red;">{{all}}</span>条
                             </p>
                             <el-checkbox-group class="checkbox" v-model="type"   v-for="(item,index) in goodslist" :key="index" >
-                                <el-checkbox :label="item" :value="index" :disabled.sync="item.gsp_id=='0'">{{item.g_title}}</el-checkbox>
+                                <el-checkbox :label="item" :value="index" :disabled.sync="item.gsp_id=='0'" :title="item.g_title">{{item.g_title}}</el-checkbox>
                             </el-checkbox-group>
                          </div>
                         <div style="margin-top:20px">
@@ -44,7 +44,7 @@
                             <span style="color:red;">{{all}}</span>条
                             </p>
                             <el-checkbox-group class="checkbox" v-model="suretype"  v-for="(item,index) in num" :key="index" >
-                                <el-checkbox :label="index" name="type" >{{item.g_title}}</el-checkbox>
+                                <el-checkbox :label="index" name="type" :title="item.g_title">{{item.g_title}}</el-checkbox>
                             </el-checkbox-group>
                         </div>
                          <div style="margin-top:20px">
@@ -68,7 +68,7 @@
 
 <script>
 import Brand from '@/components/common/Brand.vue';
-import { goodsList } from '@/api/goods/goods_list.js';
+import { goodsList,goodsBulk } from '@/api/goods/goods_list.js';
 export default {
     data() {
         return {
@@ -81,6 +81,7 @@ export default {
             current_page: 1, //计算当前页
             last_page: null, //总页数
             searchVal:'',//搜索
+            title_batch:[],
         };
     },
     methods: {
@@ -148,6 +149,11 @@ export default {
         reset(){
             this.getGoodsList()
         },
+        // titleBatch(){
+        //     goodsBulk().then(res=>{
+        //         this.title_batch=res.data
+        //     })
+        // },
         loadmore() {
             let _this = this;
             let dom = document.querySelector('#left_table');
@@ -203,7 +209,7 @@ export default {
 }
 .container {
     display: flex;
-    width: 100%;
+    width: 80%;
     margin: auto;
     padding: 0;
     .asider {
@@ -237,6 +243,7 @@ export default {
     }
     .sortingOptions {
         padding: 50px 60px;
+        min-width: 100px;
         margin: auto;
         .childHeader {
             display: flex;
@@ -247,10 +254,12 @@ export default {
     }
     .main {
         display: flex;
+        width: 100%;
+        justify-content: space-around;
         margin-bottom: 40px;
         .left_table,
         .right_table {
-            width: 500px;
+            width: 400px;
             margin-top: 20px;
             overflow-y: scroll;
             height: 300px;
@@ -265,8 +274,6 @@ export default {
                 padding: 10px 20px;
                 border-top: none;
                 overflow: hidden;
-                white-space: nowrap;
-                text-overflow: ellipsis;
             }
         }
          .right_table::-webkit-scrollbar {

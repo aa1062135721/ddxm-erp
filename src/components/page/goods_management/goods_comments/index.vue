@@ -96,6 +96,7 @@
                             @current-change="handleCurrentChange"
                             :current-page="currentPage"         
                             layout="total, prev, pager, next, jumper"
+                            :page-size="20"
                             :total="total">
                             </el-pagination>
                         </div>
@@ -148,17 +149,18 @@
                 goodsComment().then((res)=>{
                     this.tableData=res.data.data//获取商品列表
                     this.total=res.data.total
+                    this.currentPage = res.data.currentPage
                     console.log(res)
                 })  
             },
             // 上下页
             handleCurrentChange(val) {
-                console.log(val)
-               let data ={
+                let data ={
                    page:val
                }
                 goodsComment(data).then((res)=>{
                     this.tableData=res.data.data
+                    this.currentPage = res.data.currentPage
                 })
             },
             // 搜索商品
@@ -168,7 +170,8 @@
                 }
                 goodsComment(data).then((res)=>{
                     console.log(res)
-                   this.tableData=res.data.data
+                    this.tableData=res.data.data
+                    this.currentPage = res.data.currentPage
                 })
             },
             //搜索用户昵称
@@ -177,18 +180,21 @@
                    mobile:this.goods_Mobile
                }
                goodsComment(data).then((res)=>{
-                   this.tableData=res.data.data
+                    this.tableData=res.data.data
+                    this.currentPage = res.data.currentPage
                })
             },
             //是否显示
             changeSwitch(val){
-                console.log(val)
                 let data={
                     id:val.id,
                     is_switch:val.is_switch
                 }
                 commentSwitch(data).then((res)=>{
-                    console.log(res)
+                    this.$message({
+                        message:res.msg,
+                        type:'success'
+                    })
                 })
             }
         },

@@ -12,6 +12,36 @@ export const goodsList = query => {
     });
 };
 /**
+ *  商品-商品上下架
+ **/
+export const goodsSwitch= query => {
+    return request({
+        url: '/goods/goods/isSwitch',
+        method: 'post',
+        data: query
+    });
+};
+/**
+ *  商品-商品是否显示
+ **/
+export const goodsShow= query => {
+    return request({
+        url: '/goods/goods/isShow',
+        method: 'post',
+        data: query
+    });
+};
+/**
+ *  商品-删除商品
+ **/
+export const goodsDel= query => {
+    return request({
+        url: '/goods/goods/del',
+        method: 'post',
+        data: query
+    });
+};
+/**
  *  编辑商品信息【销售价格、库存预警值等】
  **/
 export const goodsInfo = query => {
@@ -142,4 +172,13 @@ export const goodsBulkShelfList= query => {
         data: query
     });
 };
-
+/**
+ *  商品批量修改查询
+ **/
+export const goodsBulk= query => {
+    return request({
+        url: '/goods/goods_bulk_edit/goodsBulk',
+        method: 'post',
+        data: query
+    });
+};

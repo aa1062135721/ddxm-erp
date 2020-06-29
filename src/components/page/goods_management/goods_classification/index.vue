@@ -91,6 +91,7 @@
                             @current-change="handleCurrentChange"
                             :current-page="currentPage"         
                             layout="total, prev, pager, next, jumper"
+                            :page-size="20"
                             :total="total">
                             </el-pagination>
                         </div>
@@ -253,7 +254,7 @@
 
 <style scoped lang="scss">
     .container{
-        width: 100%;
+        width: 90%;
         position: relative;
         .search-div{
             width: 100%;

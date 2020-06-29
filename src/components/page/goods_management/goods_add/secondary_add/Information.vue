@@ -35,10 +35,10 @@
                         <el-input style="width:40%" v-model="ruleForm.subtitle"></el-input>
                     </el-form-item>
                     <el-form-item label="商品品牌" >
-                        <Brand></Brand>
+                        <recyclingBrand @input='input'></recyclingBrand>
                     </el-form-item>
                     <el-form-item label="供应商">
-                        <Supplier></Supplier>
+                        <Supplier @input='input1'></Supplier>
                     </el-form-item>
                     <el-form-item label="商品介绍" prop="desc">
                         <el-input style="width:40%" type="textarea" v-model="ruleForm.desc"></el-input>
@@ -59,11 +59,11 @@
                     </div>
                     <div class="showTitle">
                         <span class="item" v-for="(item,index) in addExtensions" :key="index">
-                            <span>{{item.firstchoose}}</span>
-                            <span v-if="item.secondchoose">></span>
-                            <span>{{item.secondchoose}}</span>
-                            <span v-if="item.thirdchoose">></span>
-                            <span>{{item.thirdchoose}}</span>
+                            <span>{{item.one}}</span>
+                            <span v-if="item.two">></span>
+                            <span>{{item.two}}</span>
+                            <span v-if="item.three">></span>
+                            <span>{{item.three}}</span>
                         </span>
                     </div>
                     <div class="allList">
@@ -119,9 +119,10 @@
 </template>
 
 <script>
-import { getGoodsList, findGoodsList } from '../../../../../api/goods/goods_list';
-import  Brand from '../../../../common/Brand';
-import  Supplier from '../../../../common/Supplier';
+import { getGoodsList, findGoodsList } from '@/api/goods/goods_list';
+import {findChilds} from '@/api/common/index'
+import  recyclingBrand from '@/components/common/recyclingBrand';
+import  Supplier from '@/components/common/Supplier';
 
 export default {
     data() {
@@ -130,11 +131,10 @@ export default {
             second: null,
             third: null,
             flag: false,
-            addExtensions:[{
-                firstchoose:null,
-                secondchoose:null,
-                thirdchoose:null,
-            }],
+            addExtensions:[],
+            one:'',
+            two:'',
+            three:'',
             goods_id: 35, //保存获取到的一级菜单id
             tableData: [], //保存一级菜单列表
             secondClass: [], //保存二级菜单列表
@@ -170,65 +170,88 @@ export default {
                 this.tableData = res.data.data;
             });
         },
-        //获取二级菜单列表
-        showsecond() {
-            let data = {
-                id: this.goods_id
-            };
-            findGoodsList(data).then(res => {
-                this.secondClass = res.data.data;
-            });
-        },
         //获取一级菜单，请求二级菜单
         firstClass(val) {
             let data = {
-                id: val.id
+                pid: val.id
             };
-            findGoodsList(data).then(res => {
-                this.secondClass = res.data.data;
+            findChilds(data).then(res => {
+                let arr= []
+                if(res.data){
+                    res.data.forEach(v => {
+                        arr.push(v)
+                    });
+                }
+                this.secondClass = arr
             });
-            console.log(val.gc_name)
-            sessionStorage.setItem('one',val.gc_name) 
+            this.one = val.gc_name
+            this.two =''
+            this.three=''
+            this.thirdClass=[]
         },
         //获取二级菜单id，请求三级菜单
         twoClass(val) {
-            let data = {
-                id: val.id
-            };
-            findGoodsList(data).then(res => {
-                this.thirdClass = res.data.data;
-                console.log(res.data.data);
-            });
-            console.log(val.gc_name)
-             sessionStorage.setItem('two',val.gc_name) 
+            console.log(val)
+            let arr=[]
+            if(val.children){
+                val.children.forEach(v=>{
+                    arr.push(v)
+                })
+            }
+            this.thirdClass = arr
+            this.two = val.gc_name
+            this.three =''
         },
         //点击获取三级菜单下的选项
         threeClass(val){
-           console.log(val.gc_name)
-           sessionStorage.setItem('three',val.gc_name) 
+            this.three = val.gc_name
         },
         // 请求扩展分类
         addClass(){
             this.flag=true;
-            this.addExtensions[0].firstchoose=this.first;
-            this.addExtensions[0].secondchoose=this.second;
-            this.addExtensions[0].thirdchoose=this.third;
         },
         //扩展商品分类
         addGoodsClass(){
-            var data={
-                firstchoose:sessionStorage.getItem('one'),
-                secondchoose:sessionStorage.getItem('two'),
-                thirdchoose:sessionStorage.getItem('three'),
+            let arr=[]
+            let temp={
+                one:this.one,
+                two:this.two,
+                three:this.three,
             }
-            this.addExtensions.push(data)
-            sessionStorage.clear()
+           
+            if(this.secondClass&&this.two==''){
+                 this.$message({
+                        message:'请选择下一级',
+                        type:'warning'
+                    })
+            }else{
+                this.secondClass.forEach(v=>{
+                if(v.children&&this.three==''){
+                    this.$message({
+                        message:'请选择下一级',
+                        type:'warning'
+                        })
+                    }else{
+                        arr=[temp]
+                        
+                    }
+                    // return  arr.push(v)
+                })
+                console.log('111',arr)
+            }
+            this.addExtensions.push(arr)
+            console.log(this.addExtensions)
+        },
+        input(val){
+            console.log(val)
+        },
+        input1(val){
+            console.log(val)
         }
     },
     created() {
         this.goodsTitle = this.$store.state.goodsinfo_id;
         this.show();
-        this.showsecond();
     },
     mounted() {
         this.first = this.goodsTitle.first;
@@ -236,7 +259,7 @@ export default {
         this.third = this.goodsTitle.third;
     },
     components:{
-        Brand,
+        recyclingBrand,
         Supplier,
     }
 };

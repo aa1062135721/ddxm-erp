@@ -89,3 +89,14 @@ export const resourceDel = query => {
         params: query
     });
 };
+
+/**
+ * 分类查询-所有子分类
+ **/
+export const findChilds = query => {
+    return request({
+        url: '/system/common/findChilds',
+        method: 'post',
+        params: query
+    });
+};

@@ -54,7 +54,8 @@
 </template>
 
 <script>
-import { getGoodsList, findGoodsList } from '../../../../../api/goods/goods_list';
+import { getGoodsList, findGoodsList } from '@/api/goods/goods_list';
+import {findChilds} from '@/api/common/index'
 export default {
     data() {
         return {
@@ -74,25 +75,32 @@ export default {
             this.firstchoose=val.gc_name
             this.secondchoose=''
             this.thirdchoose=''
+            this.secondClass = []
+            this.thirdClass =[]
+            console.log(val)
             let data = {
-                id: val.id
+                pid: val.id
             };
-            findGoodsList(data).then(res => {
-                this.secondClass = res.data.data;
+            findChilds(data).then(res => {
+                let arr = []
+                res.data.forEach(v => {
+                    arr.push(v)
+                });
+                this.secondClass = arr
             });
             this.setGoodsInfo()
         },
         //获取二级菜单id，请求三级菜单
         twoClass(val){
-           this.secondchoose=val.gc_name
-           let data={
-               id:val.id
-           }
-            findGoodsList(data).then(res => {
-                this.thirdClass = res.data.data;
-                console.log(res.data.data)
-            });
-             this.setGoodsInfo()
+             let arr =[]
+            if(val.children){
+                val.children.forEach(v=>{
+                    arr.push(v)
+                })
+            }
+            this.thirdClass = arr
+            this.secondchoose=val.gc_name
+            this.setGoodsInfo()
         },
         //点击获取三级菜单下的选项
         threeClass(val){
@@ -109,15 +117,6 @@ export default {
                 this.tableData = res.data.data;
             });  
         },
-        //获取二级菜单列表
-        showsecond() {
-            let data = {
-                id: this.goods_id
-            };
-            findGoodsList(data).then(res => {
-                this.secondClass = res.data.data;
-            });
-        },
         //保存商品名称
         setGoodsInfo(){
             let data={
@@ -130,7 +129,7 @@ export default {
     },
     created() {
         this.show();
-        this.showsecond();
+        // this.showsecond();
     },
 };
 </script>

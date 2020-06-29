@@ -15,7 +15,7 @@
                         商品分类：<Classification v-model="requestData.title"></Classification>
                     </div> -->
                     <div>
-                        商品品牌：<Brand v-model="requestData.brand" @input='input'></Brand>
+                        商品品牌：<recyclingBrand v-model="requestData.brand" @input='input'></recyclingBrand>
                     </div>
                 </div>
                 <div class="goodsBox">
@@ -23,7 +23,7 @@
                         <span>数据列表</span>
                         <div>
                             <el-button style="background:#1ABC9C;color:#fff;" @click="flag=true">批量上架</el-button>
-                            <el-button style="background:#1ABC9C;color:#fff;">批量下架</el-button>
+                            <el-button style="background:#1ABC9C;color:#fff;" @click="rod=true">批量下架</el-button>
                         </div>
                     </div>
                     <el-table
@@ -82,7 +82,7 @@
                     <div class="shelves" v-if="flag">
                         <el-card class="box-card">
                             <div slot="header" class="clearfix">
-                                <span>上传时间</span>
+                                <span>上架时间</span>
                                 <el-button style="float: right; padding: 3px 0" type="text" @click="flag=false">X</el-button>
                             </div>
                             <div class="block" style="text-align:center; margin-top:40px;">
@@ -90,12 +90,35 @@
                                 <el-date-picker
                                 v-model="upTime"
                                 type="datetime"
+                             
+                                value-format="yyyy-MM-dd HH:mm:ss"
                                 placeholder="选择日期时间">
                                 </el-date-picker>
                             </div>
                             <div style="text-align:right;margin-top:40px;">
                                 <el-button @click="flag = false">取消</el-button>
                                 <el-button style="background:#1ABC9C;color:#fff;" @click="submit">确定</el-button>
+                            </div>
+                        </el-card>
+                    </div>
+                     <div class="shelves" v-if="rod">
+                        <el-card class="box-card">
+                            <div slot="header" class="clearfix">
+                                <span>下架时间</span>
+                                <el-button style="float: right; padding: 3px 0" type="text" @click="rod=false">X</el-button>
+                            </div>
+                            <div class="block" style="text-align:center; margin-top:40px;">
+                                <span class="demonstration" style="margin-right:20px;">下架时间:</span>
+                                <el-date-picker
+                                v-model="downTime"
+                                type="datetime"
+                                value-format="yyyy-MM-dd HH:mm:ss"
+                                placeholder="选择日期时间">
+                                </el-date-picker>
+                            </div>
+                            <div style="text-align:right;margin-top:40px;">
+                                <el-button @click="rod = false">取消</el-button>
+                                <el-button style="background:#1ABC9C;color:#fff;" @click="submitDowm" >确定</el-button>
                             </div>
                         </el-card>
                     </div>
@@ -109,7 +132,7 @@
     //商品分类
     // import Classification from '@/components/common/Classification.vue';
     //商品品牌
-    import Brand from '@/components/common/Brand.vue';
+    import recyclingBrand from '@/components/common/recyclingBrand.vue';
     import {goodsBulkShelfList} from '@/api/goods/goods_list.js'
     import {goodsBulkShelf} from '@/api/goods/goods_classification.js'
     export default {
@@ -135,11 +158,12 @@
                 upTime:null,//上架时间
                 downTime:null,//下架时间
                 flag:false,//控制上架蒙层
+                rod:false,//控制下架蒙层
                 ids:[],
             }
         }, 
         components: {
-            Brand,
+            recyclingBrand,
         },
         methods:{
             // 控制全选与不全选
@@ -171,38 +195,80 @@
              handleSelectionChange(val) {
                 let arr=[]
                 val.forEach(v=>{
-                   arr.push(v.id)
+                   arr.push(v)
                 })
                 this.ids = arr
             },
-            // 提交
+            // 提交上架
             submit(){
+                console.log(this.ids)
                 let data=[]
-                this.tableData.forEach(v=>{
-                   this.ids.forEach(i=>{
-                       let temp={
-                           goods_id:i,
-                           up_time:this.upTime,
-                           down_time:this.downTime,
-                           id:v.gbs_id
-                       }
-                        data.push(temp)
-                        console.log(data)
-                   })
+                this.ids.forEach(v=>{
+                    if(v.gbs_id===null){
+                        var temp={
+                            goods_id:v.id,
+                            up_time:this.upTime,
+                        }
+                    }else{
+                        var temp={
+                            goods_id:v.id,
+                            up_time:this.upTime,
+                            id:v.gbs_id
+                        }
+                    }
+                    data.push(temp)
+               
                 })
-              
-                goodsBulkShelf().then(res=>{
-                    console.log(res)
+                goodsBulkShelf(data).then(res=>{
+                    if(res.code==200){
+                         this.$message({
+                            message:res.msg,
+                            type:"success"
+                        })
+                        this.getgoods()
+                    }
+                   
+                })
+            },
+            //提交下架
+            submitDowm(){
+                let data=[]
+                this.ids.forEach(v=>{
+                         let temp={
+                            goods_id:v.id,
+                            down_time:this.downTime,
+                            id:v.gbs_id,
+                            up_time:v.up_time
+                         }
+                    data.push(temp)
+                    console.log(v)
+               
+                })
+                goodsBulkShelf(data).then(res=>{
+                    if(res.code==200){
+                         this.$message({
+                            message:res.msg,
+                            type:"success"
+                        })
+                        this.getgoods()
+                    }
+                   console.log(res)
                 })
             },
             // 上下页
             handleCurrentChange(val) {
-                console.log(val)
                let data ={
                    page:val
                }
                 goodsBulkShelfList(data).then((res)=>{
                     this.tableData=res.data.data
+                    this.currentPage=res.data.current_page
+                    this.tableData.forEach(v=>{
+                        v.imglist = []
+                        v.g_img.forEach(i=>{
+                            v.imglist.push(i.gr_url)
+                        })
+                    })
                 })
             },
             // 搜索商品
@@ -211,16 +277,29 @@
                     search_val:this.goods_id
                 }
                 goodsBulkShelfList(data).then((res)=>{
-                   this.tableData=res.data.data
+                    this.tableData=res.data.data
+                    this.total= res.data.total
+                    this.tableData.forEach(v=>{
+                        v.imglist = []
+                        v.g_img.forEach(i=>{
+                            v.imglist.push(i.gr_url)
+                        })
+                    })
                 })
             },
             //获取子组件传递的id
             input(val){
-                console.log(val)
-               let data={gb_title:val }
+                let data={br_id:val }
                 goodsBulkShelfList(data).then((res)=>{
-                  this.tableData=res.data.data
-                    // console.log(res.data.data)
+                    this.tableData=res.data.data
+                    this.total= res.data.total
+                    this.tableData.forEach(v=>{
+                        v.imglist = []
+                        v.g_img.forEach(i=>{
+                            v.imglist.push(i.gr_url)
+                        })
+                    })
+                    console.log(res)
                 })
             },
         },

@@ -41,7 +41,7 @@
 
                         <el-table-column label="原价">
                             <template slot-scope="scope">
-                                <el-input v-model="scope.row.recommendprice"></el-input>
+                                <el-input v-model="scope.row.price"></el-input>
                             </template>
                         </el-table-column>
                         <el-table-column label="会员价">
@@ -109,6 +109,7 @@
                 <template>
                     <div class="richText">
                     <div class="box1">
+                        <el-button @click="submit">提交</el-button>
                         <p>规格参数</p>
                         <div class="rich_title"></div>
                     </div>
@@ -241,6 +242,9 @@ export default {
         },
         beforeRemove(file, fileList) {
             return this.$confirm(`确定移除 ${file.name}？`);
+        },
+        submit(){
+            console.log(this.ruleForm.list)
         }
     }
 };
