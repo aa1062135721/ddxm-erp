@@ -51,17 +51,7 @@
                         </el-table-column>
                         <el-table-column label="上传图片">
                             <template slot-scope="scope">
-                                <el-upload
-                                    v-if="!scope.row.imgurl"
-                                    class="upload-demo"
-                                    action="https://jsonplaceholder.typicode.com/posts/"
-                                    :before-remove="beforeRemove"
-                                    multiple
-                                    :limit="1"
-                                    :on-exceed="handleExceed">
-                                    <el-button size="small" type="primary">点击上传</el-button>
-                                </el-upload>
-                                <img :src="scope.row.imgurl" />
+                                <goodsupload @click.native="getIndex(scope)" @getImgUrls="getImgUrls" v-model="scope.row.imgurl"></goodsupload>
                             </template>
                         </el-table-column>
                         <el-table-column label="条形码">
@@ -89,27 +79,13 @@
                             <div class="rich_title"></div>
                         </div>
                         <div class="imglist">
-                            <ul>
-                                <li>
-                                    <img src="https://t8.baidu.com/it/u=3571592872,3353494284&fm=79&app=86&size=h300&n=0&g=4n&f=jpeg?sec=1593583516&t=8e1e1c0dc5e934158f83f139370be8af">
-                                </li>
-                                 <li>
-                                    <img src="https://t8.baidu.com/it/u=3571592872,3353494284&fm=79&app=86&size=h300&n=0&g=4n&f=jpeg?sec=1593583516&t=8e1e1c0dc5e934158f83f139370be8af">
-                                </li>
-                                 <li>
-                                    <img src="https://t8.baidu.com/it/u=3571592872,3353494284&fm=79&app=86&size=h300&n=0&g=4n&f=jpeg?sec=1593583516&t=8e1e1c0dc5e934158f83f139370be8af">
-                                </li>
-                                 <li>
-                                    <img src="https://t8.baidu.com/it/u=3571592872,3353494284&fm=79&app=86&size=h300&n=0&g=4n&f=jpeg?sec=1593583516&t=8e1e1c0dc5e934158f83f139370be8af">
-                                </li>
-                            </ul>
+                            <div class="upimg"><singerUpImg @getImgUrls="setImg"></singerUpImg></div>
                         </div>
                     </div>
                 </div>
-                <template>
+                <!-- <template>
                     <div class="richText">
                     <div class="box1">
-                        <el-button @click="submit">提交</el-button>
                         <p>规格参数</p>
                         <div class="rich_title"></div>
                     </div>
@@ -118,7 +94,11 @@
                     </quill-editor>
                     </el-card>
                     </div>
-                </template>
+                </template> -->
+                <div style="text-align:center;margin-top:50px;">
+                     <el-button @click="submit">提交</el-button>
+                </div>
+
             </div>
         </div>
     </div>
@@ -126,10 +106,12 @@
 <script>
 import ChooseProperty from '@/components/common/ChooseProperty';
 import { goodsSpecs } from '@/api/goods/goods_list';
-import { quillEditor } from 'vue-quill-editor';
-import 'quill/dist/quill.core.css';
-import 'quill/dist/quill.snow.css';
-import 'quill/dist/quill.bubble.css';
+// import { quillEditor } from 'vue-quill-editor';
+import goodsupload from '@/components/common/goods_upload'
+import singerUpImg from '@/components/common/singerUpImg'
+// import 'quill/dist/quill.core.css';
+// import 'quill/dist/quill.snow.css';
+// import 'quill/dist/quill.bubble.css';
 
 export default {
     name: 'FuncFormsEdit',
@@ -137,8 +119,15 @@ export default {
         return {
             ruleForm: {
                 type: [],
-                list: [
-                ]
+                list: [{
+                        key:"",   //规格ID组合，有规格则为ID的组合，用下划线连接
+                        key_name:"",  //规格的名称
+                        recommendprice :"", //原价
+                        price :"",  //会员价
+                        imgurl:"",  //商品规格的图片地址，不填则此规格的图片为商品主图
+                        bar_code:"",   //商品条形码
+                        initial_sales:0,
+                    }]
             },
             rules: {
                 type: [{ type: 'array', required: true, message: '请至少选择一个活动性质', trigger: 'change' }]
@@ -149,12 +138,22 @@ export default {
             select_name: '规格',
             specifications: [], //存放商品列
             content: null,
-            editorOption: {}
+            tableIndex: null,
+            editorOption: {},
+            data:{},//存放第二步=>商品信息
+            g_imgs:[],//存放商品相册
+        
         };
     },
     components: {
         ChooseProperty,
-        quillEditor
+        // quillEditor,
+        goodsupload,
+        singerUpImg
+    },
+    mounted(){
+      this.data = JSON.parse(sessionStorage.getItem('data'))
+      console.log(this.data)
     },
     methods: {
         addSpecifications() {
@@ -171,7 +170,7 @@ export default {
                 });
             }
             // console.log(this.attribute)
-            console.log('arr', arr);
+            // console.log('arr', arr);
 
             let arr1 = Object.values(arr);
             let combine = function(...chunks) {
@@ -196,23 +195,23 @@ export default {
             // console.log('结果', result);
             let result2 = [];
             for (let item of result) {
-                let obj = { key_values: '', key_ids: '' };
+                let obj = { key_name: '', key: '' };
 
                 item.map((item2, index) => {
                     if (index + 1 === item.length) {
-                        obj.key_values += item2.gs_title;
-                        obj.key_ids += item2.id;
+                        obj.key_name += item2.gs_title;
+                        obj.key += item2.id;
                     } else {
-                        obj.key_values += item2.gs_title + '_';
-                        obj.key_ids += item2.id + '_';
+                        obj.key_name += item2.gs_title + '_';
+                        obj.key += item2.id + '_';
                     }
                 });
                 result2.push(obj);
             }
-            console.log('最终结果', result2);
+            // console.log('最终结果', result2);
             this.ruleForm.list = result2;
             this.ruleForm.list.forEach(_ => {
-                let msgList = _.key_values.split('_')
+                let msgList = _.key_name.split('_')
                 for (let i = 0; i < msgList.length; i++) {
                     _['val'+i] = msgList[i]
                 }
@@ -235,15 +234,35 @@ export default {
             }
             if (flag) this.PropertyList.push(val);
         },
-        handleExceed(files, fileList) {
-            this.$message.warning(
-                `当前限制选择 5 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`
-            );
+        getIndex(scope) {
+            this.tableIndex = scope.$index
         },
-        beforeRemove(file, fileList) {
-            return this.$confirm(`确定移除 ${file.name}？`);
+        //获取图片上传地址
+        getImgUrls(val){
+           this.ruleForm.list[this.tableIndex].imgurl = val
+        },
+        // 上传主图
+        setImg(val){
+            this.g_imgs.push(val)
+            console.log(val)
         },
         submit(){
+           let usData={
+               g_title:this.data.g_title,
+               g_subtitle:this.data.g_subtitle,
+               g_content:this.data.g_content,
+               brand_id:this.data.brand_id,
+               supplier_id:this.data.supplier_id,
+               g_specs:this.ruleForm.list,
+               g_class:this.data.g_class,
+               is_show:this.data.is_show,
+               g_type:this.data.g_type,
+               g_img:this.g_imgs,
+               g_ratio:this.data.g_ratio,
+               g_dis_price:this.data.g_dis_price,
+               type_id:this.data.type_id
+           }
+            sessionStorage.setItem("usData",JSON.stringify(usData) ) 
             console.log(this.ruleForm.list)
         }
     }
@@ -282,6 +301,7 @@ export default {
                 border-top: 25px solid transparent;
                 border-left: 25px solid rgb(161, 174, 194);
                 border-bottom: 25px solid transparent;
+                
             }
         }
     }
@@ -289,6 +309,7 @@ export default {
         margin-top: 50px;
         padding: 20px;
         margin: auto;
+        width: 100%;
         .specifications {
             background-color: #f9fafc;
             width: 90%;
@@ -355,21 +376,17 @@ export default {
         }
     }
     .addimg{
-        
+
         .imglist{
             padding-left: 50px;
-            ul{
-                list-style: none;
-                display: flex;
-                li{
-                    img{
-                        width: 100px;
-                        height: 100px;
-                        margin-right: 50px;
-                    }
-                }
-            }
         }
     }
 }
+// .upimg{
+//     .el-upload--picture-card{
+//         // width: 100px;
+//         // height: 100px;
+//         // line-height: 100px;
+//     }
+// }
 </style>

@@ -41,11 +41,11 @@
                 <div class="txt">
                     <p>
                         您当前选择的商品类别是：
-                        <span>{{firstchoose}}</span>
-                        <span v-if="secondchoose">></span>
-                        <span>{{secondchoose}}</span>
-                        <span v-if="thirdchoose">></span>
-                        <span>{{thirdchoose}}</span>
+                        <span>{{firstchoose.gc_name}}</span>
+                        <span v-if="secondchoose.gc_name">></span>
+                        <span>{{secondchoose.gc_name}}</span>
+                        <span v-if="thirdchoose.gc_name">></span>
+                        <span>{{thirdchoose.gc_name}}</span>
                     </p>
                 </div>
             </div>
@@ -65,14 +65,14 @@ export default {
             secondClass: [],//保存二级菜单列表
             thirdClass:[],//保存三级菜单列表
             firstchoose:"请选择",
-            secondchoose:null,
-            thirdchoose:null,
+            secondchoose:'',
+            thirdchoose:'',
         };
     },
     methods: {
         //获取一级菜单，请求二级菜单
         firstClass(val) {
-            this.firstchoose=val.gc_name
+            this.firstchoose=val
             this.secondchoose=''
             this.thirdchoose=''
             this.secondClass = []
@@ -99,12 +99,12 @@ export default {
                 })
             }
             this.thirdClass = arr
-            this.secondchoose=val.gc_name
+            this.secondchoose=val
             this.setGoodsInfo()
         },
         //点击获取三级菜单下的选项
         threeClass(val){
-            this.thirdchoose=val.gc_name
+            this.thirdchoose=val
             this.setGoodsInfo()
         },
         //获取一级菜单列表
@@ -124,7 +124,7 @@ export default {
                 second:this.secondchoose,
                 third:this.thirdchoose
             }
-            this.$store.commit('setGoodsinfoId',data)
+            sessionStorage.setItem('classification',JSON.stringify(data) )
         }
     },
     created() {

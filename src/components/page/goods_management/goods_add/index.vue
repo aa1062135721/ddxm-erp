@@ -22,7 +22,7 @@
        
         
          <div v-if="flag===1">
-            <el-button class="next" style="margin-top: 12px;" @click="next">下一步,填写商品信息</el-button>
+            <el-button class="next" style="margin-top: 12px;" @click="next" >下一步,填写商品信息</el-button>
          </div>
        <div v-else-if="flag===2">
           <el-button class="last" style="margin-top: 12px;" @click="last">上一步,选择商品分类</el-button>
@@ -30,7 +30,7 @@
        </div>
         <div v-else>
            <el-button class="last" style="margin-top: 12px;" @click="last">上一步,填写商品信息</el-button>
-          <el-button class="next" style="margin-top: 12px;" @click="next">完成提交商品</el-button>
+          <el-button class="next" style="margin-top: 12px;" @click="end">完成提交商品</el-button>
          
        </div>
     </div>
@@ -40,13 +40,15 @@
 import Classification from './secondary_add/Classification'
 import Information from './secondary_add/Information'
 import Attribute from './secondary_add/Attribute'
-
+import {goodsAdd} from '@/api/goods/goods_list'
 export default {
     data() {
       return {
         active: 0,
         flag:1,
         num:1,//用于计算步骤页
+        ids:'',
+        id:'',
       };
     },
     methods: {
@@ -55,6 +57,7 @@ export default {
         if (this.active++ > 3) this.active = 0;
         if(this.num===2){
           this.flag=2
+          this.ids=JSON.parse(sessionStorage.getItem("classification")) 
         }else if(this.num===3){
           this.flag=3
         }
@@ -64,9 +67,29 @@ export default {
         if (this.active-- > 3) this.active = 0;
         if(this.num===1){
           this.flag=1
+           sessionStorage.clear()
         }else if(this.num===2){
           this.flag=2
+          sessionStorage.clear()
         }
+      },
+      end(){
+         if (this.active++ > 3) this.active = 3;
+        if(this.ids.third){
+          this.id = this.ids.third.id
+        }else{
+          this.id = this.ids.second.id
+        }
+        let data={}
+        data=JSON.parse(sessionStorage.getItem("usData"))
+        data.g_class.push(this.id)
+        data.g_specs.forEach(v => {
+          v.initial_sales=0
+        });
+        console.log(data)
+        goodsAdd(data).then(res=>{
+          console.log(res)
+        })
       }
     },
     components:{

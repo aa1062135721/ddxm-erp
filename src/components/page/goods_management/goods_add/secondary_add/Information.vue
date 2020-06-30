@@ -17,11 +17,11 @@
                 >
                     <el-form-item label="商品分类" prop="name">
                         <div class="title_text">
-                            <span>{{first}}</span>
-                            <span v-if="second">></span>
-                            <span>{{second}}</span>
-                            <span v-if="third">></span>
-                            <span>{{third}}</span>
+                            <span >{{first.gc_name}}</span>
+                            <span v-if="second.gc_name">></span>
+                            <span>{{second.gc_name}}</span>
+                            <span v-if="third.gc_name">></span>
+                            <span>{{third.gc_name}}</span>
                             <span
                                 @click="addClass"
                                 style="margin-left: 20px; color:#47C9AF; cursor: pointer;"
@@ -37,11 +37,60 @@
                     <el-form-item label="商品品牌" >
                         <recyclingBrand @input='input'></recyclingBrand>
                     </el-form-item>
-                    <el-form-item label="供应商">
+                     <el-form-item label="供应商">
                         <Supplier @input='input1'></Supplier>
+                    </el-form-item>
+                    <el-form-item label="选择分区">
+                        <template>
+                            <el-select v-model="ruleForm.typeId" placeholder="请选择">
+                                <el-option
+                                v-for="item in options"
+                                :key="item.value"
+                                :label="item.gt_title"
+                                :value="item.id">
+                                </el-option>
+                            </el-select>
+                        </template>
+                    </el-form-item>
+                    <el-form-item label="商品库" >
+                        <el-radio v-model="ruleForm.radio" label="1">线上商城</el-radio>
+                        <el-radio v-model="ruleForm.radio" label="2">门店商城</el-radio>
+                        <el-radio v-model="ruleForm.radio" label="3">线上线下</el-radio>
+                    </el-form-item>
+                     <el-form-item label="商品分销"  >
+                        <el-radio-group v-model="ruleForm.ratio" @change="changeratio">
+                            <el-radio :label="1">不参与分销</el-radio>
+                            <el-radio :label="2">商品自身ratio的比例</el-radio>
+                            <el-radio :label="3">按照品牌或者分类的比例</el-radio>
+                        </el-radio-group>
+                    </el-form-item>
+                    <el-form-item label="分销佣金" v-if="rod">
+                         <div class="radio">
+                            <p>1级分销</p>
+                            <el-input v-model="ruleForm.g_dis_price.gd_one" style="width:200px"></el-input>
+                            <p>2级分销</p>
+                            <el-input v-model="ruleForm.g_dis_price.gd_two" style="width:200px"></el-input>
+                            <p>3级分销</p>
+                            <el-input v-model="ruleForm.g_dis_price.gd_three" style="width:200px"></el-input>
+                        </div>
+                    </el-form-item>
+                    <el-form-item label="是否显示">
+                         <template>
+                                <el-switch
+                                    v-model="ruleForm.is_show"
+                                    :active-value="1"
+                                    :inactive-value="0"
+                                    active-color="#1ABC9C"
+                                    inactive-color="#ff4949"
+                                   >
+                                </el-switch>
+                            </template>
                     </el-form-item>
                     <el-form-item label="商品介绍" prop="desc">
                         <el-input style="width:40%" type="textarea" v-model="ruleForm.desc"></el-input>
+                    </el-form-item>
+                    <el-form-item>
+                        <el-button @click="submit">提交</el-button>
                     </el-form-item>
                 </el-form>
             </div>
@@ -57,13 +106,23 @@
                         <span>添加扩展分类</span>
                         <span @click="flag=false">X</span>
                     </div>
-                    <div class="showTitle">
-                        <span class="item" v-for="(item,index) in addExtensions" :key="index">
+                    <div class="tochoose" style="font-size:14px; color:red;margin-bottom:40px;">
+                        <span>{{one}}</span>
+                        <span v-if="two">></span>
+                        <span>{{two}}</span>
+                        <span v-if="three">></span>
+                        <span>{{three}}</span>
+                    </div>
+                    <div class="showTitle" style="border:1px solid #ccc;min-height:40px;">
+                        <!--<span class="item" v-for="(item,index) in addExtensions" :key="index">
                             <span>{{item.one}}</span>
                             <span v-if="item.two">></span>
                             <span>{{item.two}}</span>
                             <span v-if="item.three">></span>
                             <span>{{item.three}}</span>
+                        </span>-->
+                        <span class="item" v-for="(item,index) in addList" :key="index">
+                            <span>{{ item.gc_name }}</span>
                         </span>
                     </div>
                     <div class="allList">
@@ -105,7 +164,7 @@
                             </div>
                         </div>
                         <div class="btn">
-                              <el-button @click="addGoodsClass">添加</el-button>
+                              <el-button :disabled="addState" @click="addGoodsClass">添加</el-button>
                         </div>
                     </div>
                     <div class="cardFoot">
@@ -119,7 +178,7 @@
 </template>
 
 <script>
-import { getGoodsList, findGoodsList } from '@/api/goods/goods_list';
+import { getGoodsList, findGoodsList,goodsTypeList } from '@/api/goods/goods_list';
 import {findChilds} from '@/api/common/index'
 import  recyclingBrand from '@/components/common/recyclingBrand';
 import  Supplier from '@/components/common/Supplier';
@@ -127,23 +186,36 @@ import  Supplier from '@/components/common/Supplier';
 export default {
     data() {
         return {
-            first: null,
-            second: null,
-            third: null,
+            first: '',
+            second: '',
+            third: '',
             flag: false,
+            rod:false,
+            addState: true,
+            addObj: {},
+            addList: [],
             addExtensions:[],
-            one:'',
-            two:'',
-            three:'',
+            one:'',//保存当前一级分类
+            two:'',//保存当前二级分类
+            three:'',//保存当前三级分类
             goods_id: 35, //保存获取到的一级菜单id
             tableData: [], //保存一级菜单列表
             secondClass: [], //保存二级菜单列表
             thirdClass: [], //保存三级菜单列表
-            goodsTitle: {},
+            goodsTitle: {},//保存vuex中选择的商品分类
+            brandId:null,//保存商品id
+            supplierId:null,//保存供应商id
+            addGoodsId:[],//保存添加id
+            options:[],//分区数据
             ruleForm: {
                 region: '',
                 subtitle: '',
                 desc: '',
+                is_show:0,
+                radio:0,
+                ratio:0,
+                g_dis_price:{},
+                typeId:null,//分区ID
             },
             rules: {
                 name: [{ required: true }],
@@ -178,6 +250,8 @@ export default {
             findChilds(data).then(res => {
                 let arr= []
                 if(res.data){
+                    this.addState = res.data.length > 0
+                    this.addObj = val
                     res.data.forEach(v => {
                         arr.push(v)
                     });
@@ -191,7 +265,10 @@ export default {
         },
         //获取二级菜单id，请求三级菜单
         twoClass(val) {
-            console.log(val)
+            this.addState = !(!val.children || val.children.length === 0);
+            this.addObj = val
+
+            // console.log(val)
             let arr=[]
             if(val.children){
                 val.children.forEach(v=>{
@@ -204,6 +281,8 @@ export default {
         },
         //点击获取三级菜单下的选项
         threeClass(val){
+            this.addState = false
+            this.addObj = val
             this.three = val.gc_name
         },
         // 请求扩展分类
@@ -212,48 +291,71 @@ export default {
         },
         //扩展商品分类
         addGoodsClass(){
+            console.log(this.addObj, 'addObj')
+            let ids = []
             let arr=[]
-            let temp={
-                one:this.one,
-                two:this.two,
-                three:this.three,
+            this.addList.forEach(item => {
+                ids.push(item.id)
+            })
+            if (ids.indexOf(this.addObj.id) > -1) {
+                return
             }
-           
-            if(this.secondClass&&this.two==''){
-                 this.$message({
-                        message:'请选择下一级',
-                        type:'warning'
-                    })
-            }else{
-                this.secondClass.forEach(v=>{
-                if(v.children&&this.three==''){
-                    this.$message({
-                        message:'请选择下一级',
-                        type:'warning'
-                        })
-                    }else{
-                        arr=[temp]
-                        
-                    }
-                    // return  arr.push(v)
-                })
-                console.log('111',arr)
-            }
-            this.addExtensions.push(arr)
-            console.log(this.addExtensions)
+            this.addList.push(this.addObj)
+            this.addList.forEach(v=>{
+                arr.push(v.id)
+            })
+           this.addGoodsId = arr
         },
+        //获取品牌ID
         input(val){
-            console.log(val)
+            this.brandId = val
         },
+        //获取供应商ID
         input1(val){
-            console.log(val)
+            this.supplierId = val
+        },
+        // 监听分销选项
+        changeratio(val){
+            if(val===3){
+                this.rod = true
+            }else[
+                this.rod = false,
+                this.ruleForm.g_dis_price = {}
+            ]
+        },
+        // 获取分区数据
+        getratio(){
+            goodsTypeList().then(res=>{
+                this.options = res.data.data
+            })
+        },
+        //提交商品
+        submit(){
+            let temp=[this.ruleForm.g_dis_price]
+            let data={
+                g_title:this.ruleForm.region,
+                g_subtitle:this.ruleForm.subtitle,
+                brand_id:this.brandId,
+                supplier_id:this.supplierId,
+                g_content:this.ruleForm.desc,
+                g_class:this.addGoodsId,
+                is_show:this.ruleForm.is_show,
+                g_type:this.ruleForm.radio,
+                g_ratio:this.ruleForm.ratio,
+                g_dis_price:temp,
+                type_id:this.ruleForm.typeId
+            }
+            sessionStorage.setItem('data',JSON.stringify(data))
+            console.log(data)
         }
     },
     created() {
-        this.goodsTitle = this.$store.state.goodsinfo_id;
+        this.goodsTitle =JSON.parse(sessionStorage.getItem("classification")) 
         this.show();
+        this.getratio()
     },
     mounted() {
+        console.log(this.goodsTitle)
         this.first = this.goodsTitle.first;
         this.second = this.goodsTitle.second;
         this.third = this.goodsTitle.third;
@@ -273,6 +375,7 @@ export default {
         width: 75%;
         margin: auto;
         padding: 0;
+
         .asider {
             width: 200px;
             min-height: 400px;
@@ -482,4 +585,5 @@ export default {
         }
     }
 }
+
 </style>

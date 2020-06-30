@@ -82,6 +82,16 @@ export const deleteGoods = query => {
     });
 };
 /**
+ *  添加商品
+ **/
+export const goodsAdd = query => {
+    return request({
+        url: '/goods/goods_add/add',
+        method: 'post',
+        data: query
+    });
+};
+/**
  *  添加商品- 商品分类列表
  **/
 export const getGoodsList = query => {
@@ -178,6 +188,16 @@ export const goodsBulkShelfList= query => {
 export const goodsBulk= query => {
     return request({
         url: '/goods/goods_bulk_edit/goodsBulk',
+        method: 'post',
+        data: query
+    });
+};
+/**
+ *  商品分区--分区列表
+ **/
+export const goodsTypeList= query => {
+    return request({
+        url: '/goods/goods_type/getList',
         method: 'post',
         data: query
     });
