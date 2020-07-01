@@ -114,13 +114,6 @@
                         <span>{{three}}</span>
                     </div>
                     <div class="showTitle" style="border:1px solid #ccc;min-height:40px;">
-                        <!--<span class="item" v-for="(item,index) in addExtensions" :key="index">
-                            <span>{{item.one}}</span>
-                            <span v-if="item.two">></span>
-                            <span>{{item.two}}</span>
-                            <span v-if="item.three">></span>
-                            <span>{{item.three}}</span>
-                        </span>-->
                         <span class="item" v-for="(item,index) in addList" :key="index">
                             <span>{{ item.gc_name }}</span>
                         </span>
@@ -169,7 +162,7 @@
                     </div>
                     <div class="cardFoot">
                         <el-button @click="flag=false">取消</el-button>
-                        <el-button>确定</el-button>
+                        <el-button @click="flag=false">确定</el-button>
                     </div>
                 </el-card>
             </div>
@@ -207,6 +200,7 @@ export default {
             supplierId:null,//保存供应商id
             addGoodsId:[],//保存添加id
             options:[],//分区数据
+            id:null,//保存编辑商品的ID
             ruleForm: {
                 region: '',
                 subtitle: '',
@@ -238,7 +232,7 @@ export default {
                 limit: this.limit
             };
             getGoodsList(data).then(res => {
-                console.log(res);
+                // console.log(res);
                 this.tableData = res.data.data;
             });
         },
@@ -333,6 +327,7 @@ export default {
         submit(){
             let temp=[this.ruleForm.g_dis_price]
             let data={
+                id:this.id,
                 g_title:this.ruleForm.region,
                 g_subtitle:this.ruleForm.subtitle,
                 brand_id:this.brandId,
@@ -353,12 +348,21 @@ export default {
         this.goodsTitle =JSON.parse(sessionStorage.getItem("classification")) 
         this.show();
         this.getratio()
+        // console.log('1111111',this.editGoods)
+        let a =JSON.parse(sessionStorage.getItem('editGoods')) 
+        if(a){
+            this.ruleForm.region = a.g_title,
+            this.ruleForm.is_show = a.is_show
+            this.id = a.id
+        }
     },
     mounted() {
-        console.log(this.goodsTitle)
-        this.first = this.goodsTitle.first;
-        this.second = this.goodsTitle.second;
-        this.third = this.goodsTitle.third;
+        // console.log(this.goodsTitle)
+        if(this.goodsTitle){
+            this.first = this.goodsTitle.first;
+            this.second = this.goodsTitle.second;
+            this.third = this.goodsTitle.third;
+        }
     },
     components:{
         recyclingBrand,

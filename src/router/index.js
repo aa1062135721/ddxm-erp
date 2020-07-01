@@ -19,6 +19,8 @@ export const constantRoutes = [
         {path: '/editBrand',component: () => import('../components/page/goods_management/brand/editBrand'),meta: { title: '编辑品牌' }},
         {path: '/photoAlbumList',component: () => import('../components/page/goods_management/photo_library/photoAlbumList'),meta: { title: '相册列表' }},
         {path: '/addType',component: () => import('../components/page/goods_management/goods_type/addType'),meta: { title: '新增规格' }},
+        {path: '/addPartition',component: () => import('../components/page/goods_management/goods_partition/addPartition'),meta: { title: '新增分区' }},
+        {path: '/editPartition',component: () => import('../components/page/goods_management/goods_partition/editPartition'),meta: { title: '编辑分区' }},
     ]
 },
 {path: '/login',component: () => import('../components/page/Login.vue'),meta: { title: '登录' }},

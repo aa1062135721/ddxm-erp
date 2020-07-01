@@ -1,10 +1,10 @@
 <template>
     <div>
-         <div class="crumbs">
+         <!-- <div class="crumbs">
             <el-breadcrumb separator="/">
                 <el-breadcrumb-item>添加商品</el-breadcrumb-item>
             </el-breadcrumb>
-        </div>
+        </div> -->
         <div>
             <div class="steps">
                 <el-steps :active="active" finish-status="success"  align-center>
@@ -14,10 +14,10 @@
                 </el-steps>
             </div>
         </div>
-        <keep-alive>
           <Classification v-if="flag===1"></Classification>
-        </keep-alive>
-          <Information v-if="flag===2"></Information>
+          <keep-alive>
+            <Information v-if="flag===2"></Information>
+          </keep-alive>
           <Attribute v-if="flag===3"></Attribute>
        
         
@@ -37,7 +37,7 @@
 </template>
 
 <script>
-import Classification from './secondary_add/Classification'
+import Classification from '@/components/page/goods_management/goods_add/secondary_add/Classification'
 import Information from './secondary_add/Information'
 import Attribute from './secondary_add/Attribute'
 import {goodsAdd} from '@/api/goods/goods_list'
@@ -57,7 +57,10 @@ export default {
         if (this.active++ > 3) this.active = 0;
         if(this.num===2){
           this.flag=2
-          this.ids=JSON.parse(sessionStorage.getItem("classification")) 
+          let a= JSON.parse(sessionStorage.getItem("classification")) 
+          if(a){
+            this.ids =a
+          }
         }else if(this.num===3){
           this.flag=3
         }
@@ -67,18 +70,18 @@ export default {
         if (this.active-- > 3) this.active = 0;
         if(this.num===1){
           this.flag=1
-           sessionStorage.clear()
         }else if(this.num===2){
           this.flag=2
-          sessionStorage.clear()
         }
       },
       end(){
-         if (this.active++ > 3) this.active = 3;
+        if (this.active++ > 3) this.active = 3;
         if(this.ids.third){
-          this.id = this.ids.third.id
-        }else{
-          this.id = this.ids.second.id
+          if(this.ids.third){
+             this.id = this.ids.third.id
+          }else{
+            this.id = this.ids.second.id
+          }
         }
         let data={}
         data=JSON.parse(sessionStorage.getItem("usData"))
@@ -88,7 +91,13 @@ export default {
         });
         console.log(data)
         goodsAdd(data).then(res=>{
-          console.log(res)
+          if(res.code ==200){
+            sessionStorage.clear()
+            this.$message({
+              message:res.msg,
+              type:"success"
+            })
+          }
         })
       }
     },
@@ -96,6 +105,14 @@ export default {
         Classification,
         Information,
         Attribute
+    },
+    created(){
+      let a  = this.$route.query.type
+      let val = this.$route.query.val
+      if(a){
+        this.flag = a
+        sessionStorage.setItem('editGoods',JSON.stringify(val))
+      }
     }
   }
 </script>

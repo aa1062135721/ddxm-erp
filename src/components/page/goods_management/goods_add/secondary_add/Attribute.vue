@@ -66,7 +66,7 @@
                         </el-table-column>
                         <el-table-column label="操作">
                             <template slot-scope="scope">
-                                <el-button type="text" @click="deleteJob(scope.row)">删除</el-button>
+                                <el-button type="text" @click="deleteJob(scope.$index)">删除</el-button>
                             </template>
                         </el-table-column>
                     </el-table>
@@ -240,6 +240,11 @@ export default {
         //获取图片上传地址
         getImgUrls(val){
            this.ruleForm.list[this.tableIndex].imgurl = val
+        },
+        //删除图片
+        deleteJob(val){
+            console.log(val)
+            this.ruleForm.list.splice(val,1)
         },
         // 上传主图
         setImg(val){

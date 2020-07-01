@@ -156,10 +156,13 @@
             // 上下页
             handleCurrentChange(val) {
                 let data ={
-                   page:val
+                    page:val,
+                    search_val:this.goods_id,
+                     mobile:this.goods_Mobile
                }
                 goodsComment(data).then((res)=>{
-                    this.tableData=res.data.data
+                    this.tableData=res.data.data,
+                    this.total=res.data.total,
                     this.currentPage = res.data.currentPage
                 })
             },
@@ -171,6 +174,7 @@
                 goodsComment(data).then((res)=>{
                     console.log(res)
                     this.tableData=res.data.data
+                    this.total=res.data.total
                     this.currentPage = res.data.currentPage
                 })
             },
@@ -182,6 +186,7 @@
                goodsComment(data).then((res)=>{
                     this.tableData=res.data.data
                     this.currentPage = res.data.currentPage
+                    this.total=res.data.total
                })
             },
             //是否显示

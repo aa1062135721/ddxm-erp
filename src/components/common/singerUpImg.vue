@@ -9,7 +9,7 @@
                 :on-success="uploadSuccess"
                 :before-upload="beforeAvatarUpload"
                 :multiple="false"
-                :limit="5"
+            
                 :file-list="fileList"
                 list-type="picture-card"
                 >
@@ -71,7 +71,10 @@
                 })
                 this.$emit('getImgUrls', imagesUrls);
             },
-
+            // //限制一次性选择文件个数
+            // handleExceed(files, fileList) {
+            //     this.$message.warning(`当前限制选择 5 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`);
+            // },
             //请求后台拿七牛云token
             getQiniuToken() {
                 getQiNiuToken().then(res => {

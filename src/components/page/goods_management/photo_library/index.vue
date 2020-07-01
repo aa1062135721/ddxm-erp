@@ -76,7 +76,6 @@
 
 <script>
     import { resourceList,resourceDel } from '@/api/common/index';
-    import {commentSwitch} from '@/api/goods/goods_classification.js'
     export default {
         created(){
             this.getgoods()
@@ -135,7 +134,7 @@
                      this.getgoods()
                 })
             },
-            //搜素品牌
+            //搜素相册名称
             searchImg(){
                 let data={
                     title:this.imgVal
@@ -143,6 +142,7 @@
                 resourceList(data).then(res=>{
                     this.tableData = res.data.data
                     this.total = res.data.count
+                    console.log(res)
                      this.tableData.forEach((v,index)=>{
                         v.count = v.child.length
                     })
@@ -150,9 +150,9 @@
             },
             // 上下页
             handleCurrentChange(val) {
-                console.log(val)
                let data ={
-                   page:val
+                    page:val,
+                    title:this.imgVal
                }
                 resourceList(data).then(res=>{
                     this.tableData = res.data.data
@@ -162,18 +162,6 @@
                         v.count = v.child.length
                     })
                 })
-            },
-            //是否显示
-            changeSwitch(val){
-                console.log(val.id)
-                // console.log(val.gc_status)
-                // let data = {
-                //     id:val.id,
-                //     is_switch:val.gc_status
-                // }
-                // commentSwitch(data).then((res)=>{
-                //     console.log(res)
-                // })
             },
         },
     }

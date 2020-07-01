@@ -40,7 +40,7 @@
                         width="130"
                         label="操作">
                             <template slot-scope="scope">
-                                <el-button style="color:#1ABC9C" @click="checkClick(scope.row)"  type="text" size="small">编辑</el-button>
+                                <el-button style="color:#1ABC9C" @click="edit(scope.row)" v-if="$_has('edit')" type="text" size="small">编辑</el-button>
                                 <el-button style="color:#1ABC9C" @click="deleteGoods(scope.row)" type="text" size="small">删除</el-button>
                             </template>
                         </el-table-column>
@@ -62,8 +62,8 @@
 </template>
 
 <script>
-    import { resourceList,resourceDel } from '@/api/common/index';
-    import {goodsTypeList} from '@/api/goods/goods_list'
+    import { resourceList,resourceDel} from '@/api/common/index';
+    import {goodsTypeList,goodsTypeDel} from '@/api/goods/goods_list'
     export default {
         created(){
             this.getgoods()
@@ -81,7 +81,7 @@
             //添加商品
             add(){
                 this.$router.push({
-                    path: '/addBrand',
+                    path: '/addPartition',
                 })
             },
             // 获取图片列表数据
@@ -91,16 +91,29 @@
                     this.total = res.data.count
                     console.log(res)
                 })
-              
-                  
             },
             // 编辑
-            checkClick(val){
-                console.log(val)
+            edit(val){
+                 this.$router.push({
+                    path: '/editPartition',
+                    query:{val}
+                })
             },
             // 删除
             deleteGoods(val){
-               console.log(val)
+                let data = {
+                    id:val.id
+                }
+                goodsTypeDel(data).then(res=>{
+                    if(res.code ==200){
+                        this.$message({
+                            message:res.msg,
+                            type:'success'
+                        })
+                        this.getgoods()
+                    }
+                   
+                })
             },
             // 上下页
             handleCurrentChange(val) {
@@ -119,7 +132,7 @@
 
 <style scoped lang="scss">
     .container{
-        width: 70%;
+        width: 80%;
         margin: auto;
         position: relative;
         .search-div{

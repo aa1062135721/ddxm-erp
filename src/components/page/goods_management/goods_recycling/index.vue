@@ -28,10 +28,10 @@
                         border
                         tooltip-effect="dark"
                         style="width: 100%;">
-                        <el-table-column
+                        <!-- <el-table-column
                         type="selection"
                         width="60">
-                        </el-table-column>
+                        </el-table-column> -->
                         <el-table-column
                         label="编号"
                         width="120"
@@ -82,7 +82,6 @@
                         </el-table-column>
                     </el-table>
                     <div class="footer" >
-                        <el-button @click="toggleSelection(tableData)">全选</el-button>
                         <div class="block">
                             <el-pagination
                             @current-change="handleCurrentChange"
@@ -131,20 +130,16 @@
            recyclingBrand
         },
         methods:{
-            // 控制全选与不全选
-            toggleSelection(rows) {
-                if (rows) {
-                rows.forEach(row => {
-                    this.$refs.multipleTable.toggleRowSelection(row);
-                });
-                } else {
-                    this.$refs.multipleTable.clearSelection();
-                }
-             },
-            //操作--查看
-             handleClick(row) {
-                console.log(row);
-            },
+            // // 控制全选与不全选
+            // toggleSelection(rows) {
+            //     if (rows) {
+            //     rows.forEach(row => {
+            //         this.$refs.multipleTable.toggleRowSelection(row);
+            //     });
+            //     } else {
+            //         this.$refs.multipleTable.clearSelection();
+            //     }
+            //  },
             // 获取商品列表数据
             getgoods(){
                 goodsRecycle().then((res)=>{
@@ -156,7 +151,8 @@
             handleCurrentChange(val) {
                 console.log(val)
                let data ={
-                   page:val
+                    page:val,
+                    search_val:this.goods_id
                }
                 goodsRecycle(data).then((res)=>{
                     this.tableData=res.data.data
@@ -168,7 +164,8 @@
                     search_val:this.goods_id
                 }
                 goodsRecycle(data).then((res)=>{
-                   this.tableData=res.data.data
+                    this.tableData=res.data.data
+                    this.total= res.data.total//获取总条数
                 })
             },
             //获取子组件传递的商品名称
@@ -185,10 +182,14 @@
                     id:val.id
                 }
                goodsReduction(data).then((res)=>{
-                     this.$message({
-                        message: res.msg,
-                        type: 'success'
-                    });
+                   if(res.code==200){
+                        this.$message({
+                            message: res.msg,
+                            type: 'success'
+                        });
+                    this.getgoods()
+                   }
+                    
                })
                this.getgoods()
             },
@@ -198,14 +199,15 @@
                     id:val.id
                 }
                 deleteGoods(data).then((res)=>{
-                     this.$message({
-                        message: res.msg,
-                        type: 'success'
-                    });
+                    if(res.code==200){
+                        this.$message({
+                            message: res.msg,
+                            type: 'success'
+                        });
+                        this.getgoods()
+                    }
                 })
-                this.getgoods()
             }
-            
         },
         computed:{
         },
@@ -214,7 +216,8 @@
 
 <style scoped lang="scss">
     .container{
-        width: 100%;
+        width: 80%;
+        margin: auto;
         .search-div{
             width: 100%;
             .SearchBar{
@@ -241,8 +244,8 @@
                     }
                 }
                 .footer{
-                    display: flex;
-                    justify-content: space-between;
+                    text-align: right;
+                    margin-right: 20px;
                     padding: 10px;
                 }
             }

@@ -202,3 +202,33 @@ export const goodsTypeList= query => {
         data: query
     });
 };
+/**
+ *  商品分区--删除分区
+ **/
+export const goodsTypeDel= query => {
+    return request({
+        url: '/goods/goods_type/del',
+        method: 'post',
+        data: query
+    });
+};
+/**
+ *  商品分区--编辑分区
+ **/
+export const goodsTypeEdit= query => {
+    return request({
+        url: '/goods/goods_type/edit',
+        method: 'post',
+        data: query
+    });
+};
+/**
+ *  商品分区--添加分区
+ **/
+export const goodsTypeAdd= query => {
+    return request({
+        url: 'goods/goods_type/add',
+        method: 'post',
+        data: query
+    });
+};

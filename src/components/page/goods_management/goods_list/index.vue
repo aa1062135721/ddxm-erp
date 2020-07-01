@@ -1,10 +1,10 @@
 <template>
     <div>
-       <div class="crumbs">
+       <!-- <div class="crumbs">
             <el-breadcrumb separator="/">
                 <el-breadcrumb-item>商品列表</el-breadcrumb-item>
             </el-breadcrumb>
-        </div>
+        </div> -->
         <div class="container">
             <div class="search-div">
                 <!-- <div class="choose">
@@ -35,10 +35,11 @@
                         border
                         tooltip-effect="dark"
                         style="width: 100%;">
-                        <el-table-column
+                        <!-- <el-table-column
                         type="selection"
-                        width="60">
-                        </el-table-column>
+                        width="80"
+                        >
+                        </el-table-column> -->
                         <el-table-column
                         label="编号"
                         width="120"
@@ -108,13 +109,13 @@
                         <el-table-column
                         label="排序"
                         width="120"
-                        prop="gb_title">
+                        prop="w_stock">
                         </el-table-column>
 
                         <el-table-column
                         label="SUK库存"
                         width="80"
-                        prop="gb_title">
+                        >
                             <template slot-scope="scope">
                                 <i @click="flag=true;changeClick(scope.row)" style="font-size:30px; color:#1ABC9C;cursor: pointer;" class="el-icon-edit-outline"></i>
                             </template>
@@ -125,21 +126,12 @@
                         width="120"
                         prop="sales">
                         </el-table-column>
-
-                        <el-table-column                      
-                        label="审核状态"
-                        width="120">
-                            <template>
-                               <p>已审核</p>
-                               <el-button style="color:#1ABC9C" type="text" size="small">审核详情</el-button>
-                            </template>
-                        </el-table-column>
                         <el-table-column
                         label="操作"
                         width="120">
                             <template slot-scope="scope">
                                 <!-- <el-button style="color:#1ABC9C" @click="handleClick(scope.row)" type="text" size="small">查看</el-button> -->
-                                <el-button style="color:#1ABC9C" type="text" size="small">编辑</el-button>
+                                <el-button style="color:#1ABC9C" type="text" size="small" @click="editGooods(scope.row)">编辑</el-button>
                                 <el-button style="color:#1ABC9C" @click="delGoods(scope.row)" type="text" size="small">删除</el-button>
                             </template>
                         </el-table-column>
@@ -252,6 +244,7 @@
                 recommendedPrice:'',//推荐价格
                 salesPrice:'',//销售价格
                 warning:'',//预警值
+                brandVal:''//商品品牌
             }
         }, 
         components: {
@@ -307,17 +300,32 @@
                 goodsList().then((res)=>{
                     this.tableData=res.data.data//获取商品列表
                     this.total= res.data.total//获取总条数
+                    this.currentPage = res.data.currentPage
                     console.log(res)
                 })
             },
             // 上下页
             handleCurrentChange(val) {
-                console.log(val)
-               let data ={
-                   page:val
-               }
+                var data={}
+                if(this.goods_id){
+                    data={
+                        page:val,
+                        search_val:this.goods_id,
+                    }
+                }else if(this.brandVal){
+                    data={
+                        page:val,
+                        gb_title:this.brandVal
+                    }
+                }else{
+                    data={
+                        page:val
+                    }
+                }
                 goodsList(data).then((res)=>{
                     this.tableData=res.data.data
+                
+                    console.log(res)
                 })
             },
             // 搜索商品
@@ -326,16 +334,21 @@
                     search_val:this.goods_id
                 }
                 goodsList(data).then((res)=>{
-                   this.tableData=res.data.data
+                    this.tableData=res.data.data
+                    this.total= res.data.total//获取总条数
+                    this.currentPage = res.data.currentPage
+                    console.log(res)
                 })
             },
             //获取子组件传递的id
             input(val){
-                console.log(val)
-               let data={gb_title:val }
+                this.brandVal = val
+                let data={gb_title:val }
                 goodsList(data).then((res)=>{
-                  this.tableData=res.data.data
-                    // console.log(res.data.data)
+                    this.tableData=res.data.data
+                    this.total= res.data.total//获取总条数
+                    this.currentPage = res.data.currentPage
+                    console.log(res)
                 })
             },
             //点击suk获取对应id
@@ -375,6 +388,14 @@
                     }
                 })
                 
+            },
+            //编辑商品
+            editGooods(val){
+                console.log(val)
+                this.$router.push({
+                    path:'/goods_management/goods_add',
+                    query:{type:2,val}
+                })
             }
         },
         computed:{
