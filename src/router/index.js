@@ -21,6 +21,7 @@ export const constantRoutes = [
         {path: '/addType',component: () => import('../components/page/goods_management/goods_type/addType'),meta: { title: '新增规格' }},
         {path: '/addPartition',component: () => import('../components/page/goods_management/goods_partition/addPartition'),meta: { title: '新增分区' }},
         {path: '/editPartition',component: () => import('../components/page/goods_management/goods_partition/editPartition'),meta: { title: '编辑分区' }},
+        {path: '/editSales',component: () => import('../components/page/SalesPromotion_management/secondsKill/editSales'),meta: { title: '编辑秒杀' }},
     ]
 },
 {path: '/login',component: () => import('../components/page/Login.vue'),meta: { title: '登录' }},

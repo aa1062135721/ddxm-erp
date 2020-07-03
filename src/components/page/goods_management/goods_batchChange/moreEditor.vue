@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="moreEditor">
        <div class="crumbs">
             <el-breadcrumb separator="/">
                 <el-breadcrumb-item>统一编辑</el-breadcrumb-item>
@@ -102,7 +102,9 @@ export default {
   }
 </script>
 <style scoped lang="scss">
- .table{
+.moreEditor{
+     font-family: '微软雅黑';
+    .table{
         border-collapse: collapse;
         margin:5px;
         thead{
@@ -138,4 +140,6 @@ export default {
             height: 40px;
        } 
    }
+}
+ 
 </style>

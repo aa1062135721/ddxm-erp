@@ -1,12 +1,12 @@
 <template>
     <div>
-        <div class="partiton">
+        <div class="editPartition">
             <div class="singer">
-                <span style="margin-right:10px;">分区名称 :</span>
+                <span style="margin-right:10px;">标题 :</span>
                 <el-input placeholder="请输入分区名称" style="width:400px;" v-model="name"></el-input>
             </div>
              <div class="singer1">
-                <p>购买须知 :</p>
+                <p>内容 :</p>
                 <Editor style="width:800px; margin-left:10px;" v-model="content"></Editor>
             </div>
             <div style="margin-top:150px; text-align:center" >
@@ -18,33 +18,47 @@
 
 <script>
     import Editor from '@/components/common/Editor'
-    import {goodsTypeAdd} from '@/api/goods/goods_list'
+    import {privacy} from '@/api/system/index'
     export default {
         data(){
             return{
                 name:'',//分区名称
                 content:'',
+                id:null,//分区ID
             }
         },
         components:{
             Editor
         },
+        mounted(){
+            this.getPartitionInfo()
+        },
         methods:{
-            submit(){
-                let data = {
-                    gt_title:this.name,
-                    gt_content:this.content,
-                }
-                goodsTypeAdd(data).then(res=>{
+            getPartitionInfo(){
+                privacy().then(res=>{
+                      this.name = res.data.title
+                      this.content = res.data.content
+                      this.id = res.data.id
                     console.log(res)
-                })
+               })
+            },
+            submit(){
+                console.log(this.content)
+                // let data = {
+                //     gt_title:this.name,
+                //     gt_content:this.content,
+                //     id:this.id
+                // }
+                // goodsTypeEdit(data).then(res=>{
+                //     console.log(res)
+                // })
             }
         },
     }
 </script>
 
 <style lang="scss" scoped>
-    .partiton{
+    .editPartition{
          font-family: '微软雅黑';
         width: 1000px;
         min-height: 600px;

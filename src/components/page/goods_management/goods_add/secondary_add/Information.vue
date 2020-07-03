@@ -373,6 +373,7 @@ export default {
 
 <style lang="scss" scoped>
 .information {
+     font-family: '微软雅黑';
     position: relative;
     .container {
         display: flex;

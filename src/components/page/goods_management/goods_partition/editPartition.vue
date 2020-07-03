@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="partiton">
+        <div class="editPartition">
             <div class="singer">
                 <span style="margin-right:10px;">分区名称 :</span>
                 <el-input placeholder="请输入分区名称" style="width:400px;" v-model="name"></el-input>
@@ -56,7 +56,8 @@
 </script>
 
 <style lang="scss" scoped>
-    .partiton{
+    .editPartition{
+         font-family: '微软雅黑';
         width: 1000px;
         min-height: 600px;
         border: 1px solid #ccc;

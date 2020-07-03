@@ -36,7 +36,7 @@ export default {
     data: function() {
         return {
             param: {
-                account: 'admin',
+                account: 'admin1',
                 password: '123456',
             },
             rules: {

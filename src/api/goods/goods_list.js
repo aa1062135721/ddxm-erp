@@ -161,7 +161,16 @@ export const goodsComment= query => {
         data: query
     });
 };
-
+/**
+ *  商品评论-删除
+ **/
+export const delComment= query => {
+    return request({
+        url: '/goods/goods_comment/del',
+        method: 'post',
+        data: query
+    });
+};
 /**
  *  商品批量修改基本信息
  **/
@@ -228,6 +237,16 @@ export const goodsTypeEdit= query => {
 export const goodsTypeAdd= query => {
     return request({
         url: 'goods/goods_type/add',
+        method: 'post',
+        data: query
+    });
+};
+/**
+ *  商品图片资源--设为首图
+ **/
+export const resourceFirst= query => {
+    return request({
+        url: 'goods/goods_resource/first',
         method: 'post',
         data: query
     });

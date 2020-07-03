@@ -10,17 +10,17 @@
                 :before-upload="beforeAvatarUpload"
                 :multiple="false"
                 :limit="1"
-                :file-list="fileList"
+                list-type="picture-card"
                 >
-                <el-button size="small" type="primary">点击上传</el-button>
-                <!-- <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div> -->
+                  <i class="el-icon-plus"></i>
             </el-upload>
         </div>
     </div>
 </template>
 
 <script>
-    import {getQiNiuToken} from '@/api/common/index'
+    import {getQiNiuToken} from '@/api/system/index'
+    
     export default {
         data() {
             return {
@@ -70,7 +70,10 @@
                 })
                 this.$emit('getImgUrls', imagesUrls);
             },
-
+            // //限制一次性选择文件个数
+            // handleExceed(files, fileList) {
+            //     this.$message.warning(`当前限制选择 5 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`);
+            // },
             //请求后台拿七牛云token
             getQiniuToken() {
                 getQiNiuToken().then(res => {

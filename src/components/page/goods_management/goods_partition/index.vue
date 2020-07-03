@@ -4,7 +4,7 @@
             <div class="search-div">
                 <div class="goodsBox">
                     <div class="mTitle">
-                        <span>数据列表</span>
+                        <span style="color:#666;">数据列表</span>
                         <div>
                             <el-button @click="add()" v-if="$_has('add')">添加</el-button>
                         </div>
@@ -132,13 +132,12 @@
 
 <style scoped lang="scss">
     .container{
-        width: 80%;
-        margin: auto;
+        box-sizing: border-box;
         position: relative;
+         font-family: '微软雅黑';
         .search-div{
             width: 100%;
             .goodsBox{
-                border: 1px solid rgb(236, 236, 236);
                 margin-top: 20px;  
                 .mTitle{
                     border: 1px solid rgb(224, 224, 224);
