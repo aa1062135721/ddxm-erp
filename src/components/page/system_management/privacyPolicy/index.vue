@@ -30,7 +30,7 @@
         components:{
             Editor
         },
-        mounted(){
+        created(){
             this.getPartitionInfo()
         },
         methods:{
@@ -39,7 +39,6 @@
                       this.name = res.data.title
                       this.content = res.data.content
                       this.id = res.data.id
-                    console.log(res)
                })
             },
             submit(){
