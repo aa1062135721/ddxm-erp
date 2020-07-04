@@ -10,7 +10,7 @@
                 <div class="goodsBox">
                     <div class="mTitle">
                         <span>数据列表</span>
-                        <el-button>添加</el-button>
+                        <el-button @click="add">添加</el-button>
                     </div>
                     <el-table
                         ref="multipleTable"
@@ -77,7 +77,7 @@
                         width="120">
                             <template slot-scope="scope">
                                 <el-button @click="reduction(scope.row)" style="color:#1ABC9C" v-if="$_has('edit')" type="text" size="small">编辑</el-button>
-                                <el-button @click="delete_goods(scope.row)" style="color:#1ABC9C" type="text" size="small">删除</el-button>
+                                <el-button @click="open(scope.row)" style="color:#1ABC9C" type="text" size="small">删除</el-button>
                             </template>
                         </el-table-column>
                     </el-table>
@@ -99,7 +99,7 @@
 </template>
 
 <script>
-    import {activityList} from '@/api/salesPromotion/index'
+    import {activityList,activityDel} from '@/api/salesPromotion/index'
     export default {
         created(){
             this.getgoods()
@@ -128,7 +128,7 @@
                 activityList({type:2,limit:20}).then((res)=>{
                     this.tableData=res.data.data//获取商品列表
                     this.total= res.data.count//获取总条数
-                    console.log(res)
+                    // console.log(res)
                 })
             },
             // //时间戳转换
@@ -180,6 +180,25 @@
                     query:{value:val}
                 })
             },
+            //添加
+            add(){
+                this.$router.push({
+                    path:'/addSales',
+                })
+            },
+            //删除
+            deleteKill(val){
+                console.log(val)
+                activityDel({id:val.id}).then(res=>{
+                    if(res.code==200){
+                        this.$message({
+                            message:res.msg,
+                            type:"success"
+                        })
+                        this.getgoods()
+                    }
+                })
+            },
             // 搜索商品
             searchGoods(){
                 let data={
@@ -191,8 +210,20 @@
                     this.total= res.data.total//获取总条数
                 })
             },
-        },
-        computed:{
+            open(val) {
+                this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+                }).then(() => {
+                this.deleteKill(val)
+                }).catch(() => {
+                this.$message({
+                    type: 'info',
+                    message: '已取消删除'
+                });          
+                });
+            }
         },
     }
 </script>

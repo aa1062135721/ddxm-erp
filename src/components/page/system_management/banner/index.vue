@@ -22,7 +22,9 @@
                 width="200"
                 align="center">
                 <template slot-scope="scope">
-                   <div v-html="scope.row.img" id="img"></div>
+                    <div id="img">
+                         <img :src="scope.row.img" >
+                    </div>
                 </template>
                 </el-table-column>
                 <el-table-column
@@ -62,7 +64,7 @@
                 align="center">
                 <template slot-scope="scope">
                     <el-button style="color:#1ABC9C" @click="edit(scope.row)"  type="text" size="small">编辑</el-button>
-                    <el-button style="color:#1ABC9C" @click="deleteGoods(scope.row)" type="text" size="small">删除</el-button>
+                    <el-button style="color:#1ABC9C" @click="open(scope.row)" type="text" size="small">删除</el-button>
                 </template>
                 </el-table-column>
             </el-table>
@@ -350,6 +352,20 @@ import { fstat } from 'fs';
                     this.total = res.data.total
                 })
             },
+            open(val) {
+                this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+                }).then(() => {
+                this.deleteGoods(val)
+                }).catch(() => {
+                this.$message({
+                    type: 'info',
+                    message: '已取消删除'
+                });          
+                });
+            }
         },
         created(){
             this.getBannerList()

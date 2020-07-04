@@ -127,13 +127,6 @@ import { Stats } from 'fs';
             }
         },
         methods:{
-            getSalesList(){
-                let a = this.$route.query.value
-                this.tableData.push(a) 
-                this.form.start_time = this.endmatDate(a.end_time)
-                this.form.end_time = this.formatDate(a.start_time)
-                console.log(this.form)
-            },
             //开始时间
             formatDate(row, column) {
                 let date = new Date(parseInt(row) * 1000);
@@ -214,16 +207,6 @@ import { Stats } from 'fs';
                 return (new Date(time)).getTime() / 1000
             }
         },
-        created(){
-            this.getSalesList()
-        },
-        mounted(){
-            this.tableData.forEach(v=>{
-                this.form.name = v.title
-                this.form.buy = v.people_num
-                this.id = v.id
-            })
-        }
     }
 </script>
 

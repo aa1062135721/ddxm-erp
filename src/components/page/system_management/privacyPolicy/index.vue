@@ -18,7 +18,7 @@
 
 <script>
     import Editor from '@/components/common/Editor'
-    import {privacy} from '@/api/system/index'
+    import {privacy,privacyEdit} from '@/api/system/index'
     export default {
         data(){
             return{
@@ -42,15 +42,19 @@
                })
             },
             submit(){
-                console.log(this.content)
-                // let data = {
-                //     gt_title:this.name,
-                //     gt_content:this.content,
-                //     id:this.id
-                // }
-                // goodsTypeEdit(data).then(res=>{
-                //     console.log(res)
-                // })
+                let data = {
+                    title:this.name,
+                    content:this.content,
+                    id:this.id
+                }
+                privacyEdit(data).then(res=>{
+                    if(res.code==200){
+                        this.$message({
+                            message:res.msg,
+                            type:"success"
+                        })
+                    }
+                })
             }
         },
     }

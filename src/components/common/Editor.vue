@@ -47,6 +47,14 @@ import "quill/dist/quill.snow.css";
 import "quill/dist/quill.bubble.css";
 
 export default {
+  mounted(){
+    // console.log(this.value)
+  },
+  watch: {
+    value(n) {
+      this.content = n;
+    }
+  },
   props: {
     /*编辑器的内容*/
     value: {
@@ -64,7 +72,7 @@ export default {
   },
 data() {
     return {
-      content: this.value,
+      content:'',
       quillUpdateImg: false, // 根据图片上传状态来确定是否显示loading动画，刚开始是false,不显示
       editorOption: {
         placeholder: "",

@@ -5,8 +5,37 @@ import request from '@/utils/request';
  **/
 export const privacy = query => {
     return request({
-        baseURL: 'http://ddxm661.com:8088',
         url: '/systemset/privacy/getList',
+        method: 'post',
+        data: query
+    });
+};
+/**
+ *  隐私保护政策
+ **/
+export const privacyEdit = query => {
+    return request({
+        url: '/systemset/privacy/edit',
+        method: 'post',
+        data: query
+    });
+};
+/**
+ *  服务协议
+ **/
+export const service = query => {
+    return request({
+        url: '/systemset/service_agreement/getList',
+        method: 'post',
+        data: query
+    });
+};
+/**
+ *  服务协议——新增
+ **/
+export const serviceEdit = query => {
+    return request({
+        url: '/systemset/service_agreement/edit',
         method: 'post',
         data: query
     });
@@ -16,7 +45,6 @@ export const privacy = query => {
  **/
 export const bannerList = query => {
     return request({
-        baseURL: 'http://ddxm661.com:8088',
         url: '/systemset/banner/getList',
         method: 'post',
         data: query
@@ -27,7 +55,6 @@ export const bannerList = query => {
  **/
 export const bannerEdit = query => {
     return request({
-        baseURL: 'http://ddxm661.com:8088',
         url: '/systemset/banner/edit',
         method: 'post',
         data: query
@@ -38,7 +65,6 @@ export const bannerEdit = query => {
  **/
 export const bannerAdd = query => {
     return request({
-        baseURL: 'http://ddxm661.com:8088',
         url: '/systemset/banner/add',
         method: 'post',
         data: query
@@ -49,7 +75,6 @@ export const bannerAdd = query => {
  **/
 export const bannerDel = query => {
     return request({
-        baseURL: 'http://ddxm661.com:8088',
         url: '/systemset/banner/del',
         method: 'post',
         data: query
@@ -60,7 +85,6 @@ export const bannerDel = query => {
  **/
 export const bannerSwitch = query => {
     return request({
-        baseURL: 'http://ddxm661.com:8088',
         url: '/systemset/banner/isSwitch',
         method: 'post',
         data: query
@@ -93,6 +117,76 @@ export const iconAdd = query => {
 export const iconEdit = query => {
     return request({
         url: '/systemset/Icon/edit',
+        method: 'post',
+        data: query
+    });
+};
+/**
+ *  超时管理——超时列表
+ **/
+export const timeSet = query => {
+    return request({
+        url: '/systemset/time_set/getList',
+        method: 'post',
+        data: query
+    });
+};
+/**
+ *  超时管理——编辑超时
+ **/
+export const timeSetOut = query => {
+    return request({
+        url: '/systemset/time_set/edit',
+        method: 'post',
+        data: query
+    });
+};
+/**
+ *  热门管理——热搜列表
+ **/
+export const hotList = query => {
+    return request({
+        url: '/systemset/Hot/getList',
+        method: 'post',
+        data: query
+    });
+};
+/**
+ *  热门管理——新增热搜
+ **/
+export const hotAdd = query => {
+    return request({
+        url: '/systemset/Hot/add',
+        method: 'post',
+        data: query
+    });
+};
+/**
+ *  热门管理——编辑热搜
+ **/
+export const hotEdit = query => {
+    return request({
+        url: '/systemset/Hot/edit',
+        method: 'post',
+        data: query
+    });
+};
+/**
+ *  热门管理——删除热搜
+ **/
+export const hotDel = query => {
+    return request({
+        url: '/systemset/Hot/del',
+        method: 'post',
+        data: query
+    });
+};
+/**
+ *  热门管理——禁用与启用
+ **/
+export const hotIsSwitch = query => {
+    return request({
+        url: '/systemset/Hot/isSwitch',
         method: 'post',
         data: query
     });
