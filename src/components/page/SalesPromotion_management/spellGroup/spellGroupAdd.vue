@@ -24,14 +24,19 @@
                 <el-table-column label="规格名称" prop="key_name" width="200" align="center"></el-table-column>
                 <el-table-column label="总库存" prop="w_stock" align="center"></el-table-column>
                 <el-table-column label="销售原价" prop="price" align="center"></el-table-column>
-                <el-table-column label="活动价格"  align="center" prop="newPrice">
-                    <template slot-scope="scope">
-                        <el-input type="number" style="width:120px" v-model="scope.row.newPrice"></el-input>
-                    </template>
-                </el-table-column>
                  <el-table-column label="限购数量"  align="center" prop="xgNum">
                     <template slot-scope="scope">
                         <el-input type="number" style="width:120px" v-model="scope.row.xgNum"></el-input>
+                    </template>
+                </el-table-column>
+                 <el-table-column label="团员价格"  align="center" >
+                    <template slot-scope="scope">
+                        <el-input type="number" style="width:120px" v-model="scope.row.players"></el-input>
+                    </template>
+                </el-table-column>
+                 <el-table-column label="团长价格"  align="center" >
+                    <template slot-scope="scope">
+                        <el-input type="number" style="width:120px" v-model="scope.row.captain"></el-input>
                     </template>
                 </el-table-column>
                  <el-table-column label="初始数量"  align="center" prop="csNum">
@@ -59,6 +64,9 @@
             <el-form-item label="标签">
                 <el-input v-model="form.name" style="width:220px;"></el-input>
             </el-form-item>
+            <el-form-item label="成团人员">
+                <el-input v-model="form.number" style="width:220px;"></el-input>
+            </el-form-item>
               <el-form-item label="每人限购">
                 <el-input v-model="form.buy"  style="width:220px;"></el-input>
             </el-form-item>
@@ -83,6 +91,12 @@
                         >
                         </el-date-picker>
                 </template>
+            </el-form-item>
+            <el-form-item label="自动成团">
+                <el-radio-group v-model="form.group">
+                    <el-radio :label="1">自动</el-radio>
+                    <el-radio :label="2">不自动</el-radio>
+                </el-radio-group>
             </el-form-item>
             <el-form-item label="是否显示">
                 <el-radio-group v-model="form.show">
@@ -175,7 +189,7 @@
 </template>
 
 <script>
-    import {seckillAdd,goodsList} from '@/api/salesPromotion/index'
+    import {CollageAdd,goodsList} from '@/api/salesPromotion/index'
     export default {
         data(){
             return{
@@ -187,8 +201,10 @@
                     region:'',
                     start_time:'',
                     end_time:'',
+                    number:'',
                     show:'',//是否显示
                     noMail:'',//是否免邮
+                    group:'',//自动拼团
                 },
                 id:null,//活动ID
                 total:1,//总条数
@@ -196,6 +212,7 @@
                 goodsVal:'',//搜索商品名称
                 flag:false,//控制蒙层
                 item:[],//保存选中商品
+               
             }
         },
         methods:{
@@ -232,7 +249,8 @@
                            specs_ids:'',
                            specs_names:'',
                            old_price:v.price,
-                           price:v.newPrice,
+                           price:v.players,
+                           commander_price:v.captain,
                            stock:v.xgNum,
                            virtually_num:v.csNum
                        }]
@@ -240,16 +258,18 @@
                    data={
                        title:this.form.name,
                        people_num:this.form.buy,
-                       type:2,
+                       type:3,
                        start_time:this.getTimestamp(this.form.start_time),
                        end_time:this.getTimestamp(this.form.end_time),
                        postage_way:this.form.noMail,
                        status:this.form.show,
+                       assemble_num:this.form.number,
+                       auto:this.form.group,
                        items:[temp]
                    }
                 })
                 console.log(data)
-                seckillAdd(data).then(res=>{
+                CollageAdd(data).then(res=>{
                   if(res.code==200){
                       this.$message({
                           message:res.msg,
@@ -273,7 +293,8 @@
                         res.data.data.forEach(m => {
                             m.xgNum = 0,
                             m.csNum = 0,
-                            m.newPrice = 0.00
+                            m.players = '0:00'
+                            m.captain = '0:00'
                         });
                     }
                     this.goodsTable = res.data.data

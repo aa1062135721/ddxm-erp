@@ -23,6 +23,10 @@ export const constantRoutes = [
         {path: '/editPartition',component: () => import('../components/page/goods_management/goods_partition/editPartition'),meta: { title: '编辑分区' }},
         {path: '/editSales',component: () => import('../components/page/SalesPromotion_management/secondsKill/editSales'),meta: { title: '编辑秒杀' }},
         {path: '/addSales',component: () => import('../components/page/SalesPromotion_management/secondsKill/addSales'),meta: { title: '添加秒杀' }},
+        {path: '/timeOutAdd',component: () => import('../components/page/SalesPromotion_management/time_To_Buy/timeOutAdd'),meta: { title: '添加限时购' }},
+        {path: '/timeOutEdit',component: () => import('../components/page/SalesPromotion_management/time_To_Buy/timeOutEdit'),meta: { title: '编辑限时购' }},
+        {path: '/spellGroupAdd',component: () => import('../components/page/SalesPromotion_management/spellGroup/spellGroupAdd'),meta: { title: '添加拼团' }},
+        {path: '/spellGroupEdit',component: () => import('../components/page/SalesPromotion_management/spellGroup/spellGroupEdit'),meta: { title: '编辑拼团' }},
     ]
 },
 {path: '/login',component: () => import('../components/page/Login.vue'),meta: { title: '登录' }},

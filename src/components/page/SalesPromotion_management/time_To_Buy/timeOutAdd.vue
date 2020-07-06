@@ -175,7 +175,7 @@
 </template>
 
 <script>
-    import {seckillAdd,goodsList} from '@/api/salesPromotion/index'
+    import {flashAdd,goodsList} from '@/api/salesPromotion/index'
     export default {
         data(){
             return{
@@ -249,13 +249,14 @@
                    }
                 })
                 console.log(data)
-                seckillAdd(data).then(res=>{
-                  if(res.code==200){
-                      this.$message({
-                          message:res.msg,
-                          type:'success'
-                      })
-                  }
+                flashAdd(data).then(res=>{
+                //   if(res.code==200){
+                //       this.$message({
+                //           message:res.msg,
+                //           type:'success'
+                //       })
+                //   }
+                console.log(res)
                 })      
             },
             //把时间日期转成时间戳
@@ -269,13 +270,6 @@
             //获取商品列表
             getGoodsList(){
                 goodsList().then(res=>{
-                    if(res.code==200){
-                        res.data.data.forEach(m => {
-                            m.xgNum = 0,
-                            m.csNum = 0,
-                            m.newPrice = 0.00
-                        });
-                    }
                     this.goodsTable = res.data.data
                     this.total = res.data.total
                     console.log(res)

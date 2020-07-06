@@ -10,7 +10,7 @@
                 <div class="goodsBox">
                     <div class="mTitle">
                         <span>数据列表</span>
-                        <el-button @click="add">添加</el-button>
+                        <el-button @click="add" style="background:#1ABC9C;color:#fff;">添加</el-button>
                     </div>
                     <el-table
                         ref="multipleTable"
@@ -52,7 +52,7 @@
                                  <el-switch
                                         v-model="scope.row.postage_way"
                                         :active-value="1"
-                                        :inactive-value="0"
+                                        :inactive-value="2"
                                         active-color="#1ABC9C"
                                         inactive-color="#ff4949"
                                         @change="isMail(scope.row)">
@@ -65,7 +65,7 @@
                                  <el-switch
                                         v-model="scope.row.status"
                                         :active-value="1"
-                                        :inactive-value="0"
+                                        :inactive-value="2"
                                         active-color="#1ABC9C"
                                         inactive-color="#ff4949"
                                         @change="changeSwitch(scope.row)">

@@ -122,8 +122,7 @@
 </template>
 
 <script>
-    import {activityEdit} from '@/api/salesPromotion/index'
-import { Stats } from 'fs';
+    import {flashEdit} from '@/api/salesPromotion/index'
     export default {
         data(){
             return{
@@ -218,7 +217,7 @@ import { Stats } from 'fs';
                     status:this.form.show
                 }
                 console.log(data)
-               activityEdit(data).then(res=>{
+               flashEdit(data).then(res=>{
                   if(res.code==200){
                       this.$message({
                           message:res.msg,

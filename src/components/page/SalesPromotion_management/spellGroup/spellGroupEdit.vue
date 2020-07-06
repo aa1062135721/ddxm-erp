@@ -11,32 +11,59 @@
                 :cell-style="{'text-align':'center'}"
             >
                 <el-table-column label="商品ID" width="120" prop="id" align="center"></el-table-column>
-                <el-table-column label="商品名称" prop="g_title" align="center"></el-table-column>
-                 <el-table-column
-                    prop="imgurl"
-                    label="图片"
-                    width="120"
-                    align="center">
+                <el-table-column label="商品名称" prop="g_title" align="center">
                     <template slot-scope="scope">
-                        <el-avatar shape="square" :size="100"  :src="scope.row.imgurl"></el-avatar>
+                        <span>{{scope.row.items[0].item_name}}</span>
                     </template>
                 </el-table-column>
-                <el-table-column label="规格名称" prop="key_name" width="200" align="center"></el-table-column>
-                <el-table-column label="总库存" prop="w_stock" align="center"></el-table-column>
-                <el-table-column label="销售原价" prop="price" align="center"></el-table-column>
-                <el-table-column label="活动价格"  align="center" prop="newPrice">
+                  <el-table-column label="规格名称" prop="items" width="200" align="center">
                     <template slot-scope="scope">
-                        <el-input type="number" style="width:120px" v-model="scope.row.newPrice"></el-input>
+                        <div v-for="(item,index) in scope.row.items" :key="index">
+                            <span v-if="item.spece_names">{{item.specs_names}}</span>
+                            <span v-else>无</span>
+                        </div>
                     </template>
                 </el-table-column>
-                 <el-table-column label="限购数量"  align="center" prop="xgNum">
+                  <el-table-column label="总库存" prop="items" align="center">
                     <template slot-scope="scope">
-                        <el-input type="number" style="width:120px" v-model="scope.row.xgNum"></el-input>
+                        <div v-for="(item,index) in scope.row.items" :key="index">
+                            <span>{{item.stock}}</span>
+                        </div>
+                    </template>
+                </el-table-column>
+                <el-table-column label="销售原价" prop="items" align="center">
+                    <template slot-scope="scope">
+                        <div v-for="(item,index) in scope.row.items" :key="index">
+                            <span>{{item.old_price}}</span>
+                        </div>
+                    </template>
+                </el-table-column>
+                 <el-table-column label="限购数量"  align="center" prop="people_num">
+                    <template slot-scope="scope">
+                       <div v-for="(item,index) in scope.row.items" :key="index">
+                            <el-input v-model="item.residue_num" type="number"></el-input>
+                        </div>
+                    </template>
+                </el-table-column>
+                 <el-table-column label="团员价格"  align="center" >
+                     <template slot-scope="scope">
+                       <div v-for="(item,index) in scope.row.items" :key="index">
+                            <el-input v-model="item.price" type="number"></el-input>
+                        </div>
+                    </template>
+                </el-table-column>
+                 <el-table-column label="团长价格"  align="center" >
+                    <template slot-scope="scope">
+                       <div v-for="(item,index) in scope.row.items" :key="index">
+                            <el-input v-model="item.commander_price" type="number"></el-input>
+                        </div>
                     </template>
                 </el-table-column>
                  <el-table-column label="初始数量"  align="center" prop="csNum">
                    <template slot-scope="scope">
-                        <el-input type="number" style="width:120px" v-model="scope.row.csNum"></el-input>
+                       <div v-for="(item,index) in scope.row.items" :key="index">
+                            <el-input v-model="item.virtually_num" type="number"></el-input>
+                        </div>
                     </template>
                 </el-table-column>
                 <el-table-column width="130" label="操作"  align="center">
@@ -58,6 +85,9 @@
             <el-form ref="form" :model="form" label-width="80px">
             <el-form-item label="标签">
                 <el-input v-model="form.name" style="width:220px;"></el-input>
+            </el-form-item>
+            <el-form-item label="成团人员">
+                <el-input v-model="form.number" style="width:220px;"></el-input>
             </el-form-item>
               <el-form-item label="每人限购">
                 <el-input v-model="form.buy"  style="width:220px;"></el-input>
@@ -83,6 +113,12 @@
                         >
                         </el-date-picker>
                 </template>
+            </el-form-item>
+            <el-form-item label="自动成团">
+                <el-radio-group v-model="form.group">
+                    <el-radio :label="1">自动</el-radio>
+                    <el-radio :label="2">不自动</el-radio>
+                </el-radio-group>
             </el-form-item>
             <el-form-item label="是否显示">
                 <el-radio-group v-model="form.show">
@@ -175,7 +211,7 @@
 </template>
 
 <script>
-    import {seckillAdd,goodsList} from '@/api/salesPromotion/index'
+    import {CollageEdit,goodsList} from '@/api/salesPromotion/index'
     export default {
         data(){
             return{
@@ -187,8 +223,10 @@
                     region:'',
                     start_time:'',
                     end_time:'',
+                    number:'',
                     show:'',//是否显示
                     noMail:'',//是否免邮
+                    group:'',//自动拼团
                 },
                 id:null,//活动ID
                 total:1,//总条数
@@ -196,9 +234,24 @@
                 goodsVal:'',//搜索商品名称
                 flag:false,//控制蒙层
                 item:[],//保存选中商品
+               
             }
         },
         methods:{
+             getSpellGroupList(){
+                let a = this.$route.query.value
+                this.tableData.push(a) 
+                this.id = a.id
+                this.form.name = a.title
+                this.form.number = a.assemble_num
+                this.form.buy = a.people_num
+                this.form.group = a.auto
+                this.form.show = a.status
+                this.form.start_time = this.endmatDate(a.end_time)
+                this.form.end_time = this.formatDate(a.start_time)
+                this.form.noMail = a.postage_way
+                console.log(a)
+            },
             //开始时间
             formatDate(row, column) {
                 let date = new Date(parseInt(row) * 1000);
@@ -222,34 +275,38 @@
                 return Y + M + D + h + m + s;
             },
             onSubmit(){
-                let data={}
+                let arr=[]
                 this.tableData.forEach(v=>{
-                let temp={}
-                 temp={
-                       item_id:v.id,
-                       item_name:v.g_title,
-                       specs:[{
-                           specs_ids:'',
-                           specs_names:'',
-                           old_price:v.price,
-                           price:v.newPrice,
-                           stock:v.xgNum,
-                           virtually_num:v.csNum
-                       }]
-                   }
-                   data={
+                    let temp={}
+                    v.items.forEach(item => {
+                        temp={
+                            item_id:item.id,
+                            item_name:item.item_name,
+                            id:item.id,
+                            specs_ids:item.specs_ids,
+                            specs_names:item.specs_names,
+                            old_price:item.old_price,
+                            price:item.price,
+                            commander_price:item.commander_price,
+                            stock:item.stock,
+                            virtually_num:item.virtually_num,
+                        }
+                        arr.push(temp)
+                    });
+                })
+                 let data={
+                       id:this.id,
                        title:this.form.name,
                        people_num:this.form.buy,
-                       type:2,
                        start_time:this.getTimestamp(this.form.start_time),
                        end_time:this.getTimestamp(this.form.end_time),
                        postage_way:this.form.noMail,
                        status:this.form.show,
-                       items:[temp]
+                       assemble_num:this.form.number,
+                       auto:this.form.group,
+                       items:arr
                    }
-                })
-                console.log(data)
-                seckillAdd(data).then(res=>{
+                CollageEdit(data).then(res=>{
                   if(res.code==200){
                       this.$message({
                           message:res.msg,
@@ -269,13 +326,6 @@
             //获取商品列表
             getGoodsList(){
                 goodsList().then(res=>{
-                    if(res.code==200){
-                        res.data.data.forEach(m => {
-                            m.xgNum = 0,
-                            m.csNum = 0,
-                            m.newPrice = 0.00
-                        });
-                    }
                     this.goodsTable = res.data.data
                     this.total = res.data.total
                     console.log(res)
@@ -313,7 +363,7 @@
             }
         },
         created(){
-            this.getGoodsList()
+            this.getSpellGroupList()
         }
     }
 </script>
