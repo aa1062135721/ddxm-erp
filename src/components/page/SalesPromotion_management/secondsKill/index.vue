@@ -4,7 +4,11 @@
             <div class="search-div">
                 <div class="SearchBar">
                     <div>
-                        活动名称 ：<el-input  placeholder="活动名称(回车键查看)" style="width: 220px; margin-right: 10px;" v-model="goods_name" @keyup.enter="searchGoods"></el-input>
+                        活动名称 ：<el-input  placeholder="活动名称(回车键查看)" style="width: 220px; margin-right: 10px;" v-model="goods_name" @keyup.enter="searchAcitity"></el-input>
+                    </div>
+                     <div>
+                        商品名称 ：<el-input  placeholder="商品名称" style="width: 220px; margin-right: 10px;" v-model="title"></el-input>
+                        <el-button style="background:#1ABC9C;color:#fff;" @click="searchGoods">搜索</el-button>
                     </div>
                 </div>
                 <div class="goodsBox">
@@ -87,7 +91,7 @@
                             @current-change="handleCurrentChange"
                             :current-page="currentPage"         
                             layout="total, prev, pager, next, jumper"
-                            :page-size="20"
+                            :page-size="10"
                             :total="total">
                             </el-pagination>
                         </div>
@@ -106,14 +110,15 @@
             document.onkeydown = (e)=>{
                 var key = e.key;
                 if(key === "Enter"){
-                    this.searchGoods()
+                    this.searchAcitity()
                 }
             }
         },
         data(){
             return{
                 currentPage: 1,//当前页
-                goods_name:'', //商品id
+                goods_name:'', //活动名称
+                title:'',//商品名称
                 requestData: {
                     title: '', //商品名称/商品条形码
                     brand:'',//商品品牌
@@ -125,7 +130,7 @@
         methods:{
             //获取秒杀列表
             getgoods(){
-                activityList({type:2,limit:20}).then((res)=>{
+                activityList({type:2,limit:10}).then((res)=>{
                     this.tableData=res.data.data//获取商品列表
                     this.total= res.data.count//获取总条数
                     // console.log(res)
@@ -167,7 +172,9 @@
                 console.log(val)
                let data ={
                     page:val,
-                    limit:20
+                    limit:10,
+                    title:this.goods_name,
+                    item_val:this.title
                }
                 activityList(data).then((res)=>{
                     this.tableData=res.data.data
@@ -199,15 +206,26 @@
                     }
                 })
             },
-            // 搜索商品
-            searchGoods(){
+            // 搜索活动
+            searchAcitity(){
                 let data={
-                    item_val:this.goods_name
+                    title:this.goods_name
                 }
                 activityList(data).then((res)=>{
                     console.log(res)
                     this.tableData=res.data.data
-                    this.total= res.data.total//获取总条数
+                    this.total= res.data.count//获取总条数
+                })
+            },
+            //搜索商品
+            searchGoods(){
+                let data={
+                    item_val:this.title
+                }
+                activityList(data).then((res)=>{
+                    console.log(res)
+                    this.tableData=res.data.data
+                    this.total= res.data.count//获取总条数
                 })
             },
             open(val) {

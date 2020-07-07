@@ -1,10 +1,18 @@
 <template>
     <div class="login-wrap">
+        <div style="width:100%;text-align:center;padding-top:120px;">
+            <img src="@/assets/img/login_logo.png">
+            <!-- <p style="font-size:18px;">捣蛋熊猫后台管理系统</p> -->
+        </div>
         <div class="ms-login">
-            <div class="ms-title">后台管理系统</div>
-            <el-form :model="param" :rules="rules" ref="login" label-width="0px" class="ms-content">
+            <div style="display:flex">
+                 <div class="ms-title "   @click="erp">erp系统</div>
+                 <div class="ms-title action"   @click="shop">shop系统</div>
+                 <div class="ms-title"  >门店系统</div>
+            </div>
+            <el-form :model="ErpParam" :rules="rules" ref="login" label-width="0px" class="ms-content" v-if="flag == 1">
                 <el-form-item prop="account">
-                    <el-input v-model="param.account" placeholder="username" clearable>
+                    <el-input v-model="ErpParam.account" placeholder="username" clearable>
 <!--                        <el-button slot="prepend" icon="el-icon-lx-people"></el-button>-->
                     </el-input>
                 </el-form-item>
@@ -12,31 +20,76 @@
                     <el-input
                         type="password"
                         placeholder="password"
-                        v-model="param.password"
+                        v-model="ErpParam.password"
                         @keyup.enter.native="submitForm()"
                         clearable
                     >
-<!--                        <el-button slot="prepend" icon="el-icon-lx-lock"></el-button>-->
+                       <!-- <el-button slot="prepend" icon="el-icon-lx-lock"></el-button> -->
                     </el-input>
                 </el-form-item>
                 <div class="login-btn">
                     <el-button type="primary" @click="submitForm()">登录</el-button>
                 </div>
-<!--                <p class="login-tips">Tips : 用户名和密码随便填。</p>-->
+               <!-- <p class="login-tips">Tips : 用户名和密码随便填。</p> -->
             </el-form>
+            <el-form :model="ShopParam" :rules="rules" ref="login" label-width="0px" class="ms-content" v-if="flag == 2">
+                <el-form-item prop="account">
+                    <el-input v-model="ShopParam.account" placeholder="username" clearable>
+                    </el-input>
+                </el-form-item>
+                <el-form-item prop="password">
+                    <el-input
+                        type="password"
+                        placeholder="password"
+                        v-model="ShopParam.password"
+                        @keyup.enter.native="submitShop()"
+                        clearable
+                    >
+                    </el-input>
+                </el-form-item>
+                <div class="login-btn">
+                    <el-button type="primary" @click="submitShop()">登录</el-button>
+                </div>
+            </el-form>
+            <!-- <el-form :model="StoresParam" :rules="rules" ref="login" label-width="0px" class="ms-content" v-if="flag == 3">
+                <el-form-item prop="account">
+                    <el-input v-model="StoresParam.account" placeholder="username" clearable>
+                    </el-input>
+                </el-form-item>
+                <el-form-item prop="password">
+                    <el-input
+                        type="password"
+                        placeholder="password"
+                        v-model="StoresParam.password"
+                        @keyup.enter.native="submitForm()"
+                        clearable
+                    >
+                    </el-input>
+                </el-form-item>
+                <div class="login-btn">
+                    <el-button type="primary" @click="submitForm()">登录</el-button>
+                </div>
+            </el-form> -->
         </div>
     </div>
 </template>
-
 <script>
 import { mapMutations } from 'vuex';
-import { login } from '@/api/user.js';
-
+import { loginErp,loginShop } from '@/api/user.js';
 export default {
     data: function() {
         return {
-            param: {
+            flag:2,
+            ErpParam: {
+                account: 'admin',
+                password: '123456',
+            },
+            ShopParam: {
                 account: 'admin1',
+                password: '123456',
+            },
+            StoresParam: {
+                account: 'admin2',
                 password: '123456',
             },
             rules: {
@@ -51,10 +104,10 @@ export default {
             this.$refs.login.validate(valid => {
                 if (valid) {
                     const requestData = {
-                        ...this.param,
-                        username: this.param.account,// 这儿为了兼容shop系统
+                        ...this.ErpParam,
+                        username: this.ErpParam.account,// 这儿为了兼容shop系统
                     };
-                    login(requestData).then(res => {
+                    loginErp(requestData).then(res => {
                         if (res.code === 200){
                             this.$message.success('登录成功');
                             this.setUserInfo(res.data);
@@ -63,13 +116,42 @@ export default {
                     }).catch(err => {
                         console.log(err)
                     })
-
                 } else {
                     this.$message.error('请输入账号和密码');
                     return false;
                 }
             });
         },
+        submitShop(){
+            this.$refs.login.validate(valid => {
+            if (valid) {
+                const requestData = {
+                    ...this.ShopParam,
+                    username: this.ShopParam.account,// 这儿为了兼容shop系统
+                };
+                loginShop(requestData).then(res => {
+                    if (res.code === 200){
+                        this.$message.success('登录成功');
+                        this.setUserInfo(res.data);
+                        this.$router.push('/');
+                    }
+                }).catch(err => {
+                    console.log(err)
+                })
+            } else {
+                this.$message.error('请输入账号和密码');
+                return false;
+            }
+            });
+        },
+        erp(){
+            window.location.href='http://testadmin2.ddxm661.com/erp/#/login'
+            console.log(123)
+        },
+        shop(){
+            window.location.href="http://ddxm661.com:8088/shop/#/login"
+            console.log(456)
+        }
     },
 };
 </script>
@@ -116,5 +198,9 @@ export default {
     font-size: 12px;
     line-height: 30px;
     color: #fff;
+}
+.action{
+    background: #fff;
+    color: black;
 }
 </style>

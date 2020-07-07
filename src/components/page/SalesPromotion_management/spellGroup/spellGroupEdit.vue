@@ -38,28 +38,28 @@
                         </div>
                     </template>
                 </el-table-column>
-                 <el-table-column label="限购数量"  align="center" prop="people_num">
+                 <el-table-column label="限购数量"  align="center" prop="people_num"  width="110">
                     <template slot-scope="scope">
                        <div v-for="(item,index) in scope.row.items" :key="index">
                             <el-input v-model="item.residue_num" type="number"></el-input>
                         </div>
                     </template>
                 </el-table-column>
-                 <el-table-column label="团员价格"  align="center" >
+                 <el-table-column label="团员价格"  align="center"  width="110">
                      <template slot-scope="scope">
                        <div v-for="(item,index) in scope.row.items" :key="index">
                             <el-input v-model="item.price" type="number"></el-input>
                         </div>
                     </template>
                 </el-table-column>
-                 <el-table-column label="团长价格"  align="center" >
+                 <el-table-column label="团长价格"  align="center" width="110">
                     <template slot-scope="scope">
                        <div v-for="(item,index) in scope.row.items" :key="index">
                             <el-input v-model="item.commander_price" type="number"></el-input>
                         </div>
                     </template>
                 </el-table-column>
-                 <el-table-column label="初始数量"  align="center" prop="csNum">
+                 <el-table-column label="初始数量"  align="center" prop="csNum"  width="110">
                    <template slot-scope="scope">
                        <div v-for="(item,index) in scope.row.items" :key="index">
                             <el-input v-model="item.virtually_num" type="number"></el-input>
@@ -250,7 +250,7 @@
                 this.form.start_time = this.endmatDate(a.end_time)
                 this.form.end_time = this.formatDate(a.start_time)
                 this.form.noMail = a.postage_way
-                console.log(a)
+                console.log('aaa',a)
             },
             //开始时间
             formatDate(row, column) {

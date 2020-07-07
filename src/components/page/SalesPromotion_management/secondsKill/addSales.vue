@@ -24,17 +24,17 @@
                 <el-table-column label="规格名称" prop="key_name" width="200" align="center"></el-table-column>
                 <el-table-column label="总库存" prop="w_stock" align="center"></el-table-column>
                 <el-table-column label="销售原价" prop="price" align="center"></el-table-column>
-                <el-table-column label="活动价格"  align="center" prop="newPrice">
+                <el-table-column label="活动价格"  align="center" prop="newPrice"  width="110">
                     <template slot-scope="scope">
                         <el-input type="number" style="width:120px" v-model="scope.row.newPrice"></el-input>
                     </template>
                 </el-table-column>
-                 <el-table-column label="限购数量"  align="center" prop="xgNum">
+                 <el-table-column label="限购数量"  align="center" prop="xgNum"  width="110">
                     <template slot-scope="scope">
                         <el-input type="number" style="width:120px" v-model="scope.row.xgNum"></el-input>
                     </template>
                 </el-table-column>
-                 <el-table-column label="初始数量"  align="center" prop="csNum">
+                 <el-table-column label="初始数量"  align="center" prop="csNum"  width="110">
                    <template slot-scope="scope">
                         <el-input type="number" style="width:120px" v-model="scope.row.csNum"></el-input>
                     </template>

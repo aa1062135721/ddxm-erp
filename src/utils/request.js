@@ -13,13 +13,15 @@ let loading;
  * 主要独立模块为page/order_management
  * 比如说登录啊，权限管理啊，动态路由啊都是公用的erp中的。
  */
+
+
+// console.log(1111111111)
 const service = axios.create({
     /**
      * 打包成erp系统
      * 开发环境也要把vue.config.js中的/api代理成http://testadmin2.ddxm661.com重启 TODO
      */
     // baseURL: process.env.NODE_ENV === 'development' ? '/api' : 'http://testadmin2.ddxm661.com',
-
     /**
      * 打包成shop系统
      * 开发环境也要把vue.config.js中的/api代理成http://ddxm661.com:8088重启项目 TODO

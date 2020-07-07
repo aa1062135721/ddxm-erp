@@ -72,7 +72,10 @@ export default {
   },
 data() {
     return {
-      content:'',
+      //ERP系统
+      content:this.value,
+      //shop系统
+      // content:'',
       quillUpdateImg: false, // 根据图片上传状态来确定是否显示loading动画，刚开始是false,不显示
       editorOption: {
         placeholder: "",

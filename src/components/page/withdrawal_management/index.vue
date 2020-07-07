@@ -3,6 +3,29 @@
         <div class="container">
              <div class="title">
                 <el-button @click="flag1=true">添加</el-button>
+                <div class="SearchBar"> 
+                    <el-input  oninput="if(value.length>11)value=value.slice(0,11)" placeholder="手机号" style="width: 220px; margin-right: 10px;" v-model="telNumber" type="number" clearable></el-input>
+                    <el-select v-model="choose" placeholder="请选择" clearable>
+                        <el-option
+                        v-for="item in options1"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value">
+                        </el-option>
+                    </el-select>
+                    <el-date-picker
+                        v-model="applyTime"
+                        type="datetimerange"
+                        range-separator="至"
+                        start-placeholder="开始日期"
+                        end-placeholder="结束日期"
+                        style="margin:0 10px;"
+                        value-format="yyyy-MM-dd HH:mm:ss"
+                        clearable 
+                        >
+                    </el-date-picker>
+                    <el-button style="background:#1ABC9C;color:#fff;" @click="search">搜索</el-button>
+                </div>
             </div>
             <el-table
                 :data="tableData"
@@ -75,9 +98,13 @@
                                         v-for="item in options"
                                         :key="item.value"
                                         :label="item.label"
-                                        :value="item.value">
+                                        :value="item.value"
+                                        format=yyyy-MM-dd>
                                         </el-option>
                                     </el-select>
+                            </el-form-item>
+                            <el-form-item label="审核原由">
+                                <el-input placeholder="请输入理由" type="textarea" style="width:220px" v-model="form.content"></el-input>
                             </el-form-item>
                             <el-form-item>
                                 <el-button style="background:#1ABC9C;color:#fff" @click="submitEdit">立即提交</el-button>
@@ -96,7 +123,7 @@
                     <div class="form">
                         <el-form  ref="formAdd"  label-width="80px" v-model="formAdd">
                            <el-form-item label="手机号">
-                               <el-input placeholder="手机号" v-model="formAdd.num" type="number"></el-input>
+                               <el-input placeholder="手机号"  oninput="if(value.length>11)value=value.slice(0,11)" v-model="formAdd.num" type="number"></el-input>
                            </el-form-item>
                            <el-form-item label="提现金额">
                                <el-input placeholder="提现金额" v-model="formAdd.money"></el-input>
@@ -117,7 +144,7 @@
 </template>
 
 <script>
-    import {cashout,cashoutEdit} from '@/api/salesPromotion/index'
+    import {cashout,cashoutEdit,cashoutAdd} from '@/api/salesPromotion/index'
     export default {
         data(){
             return{
@@ -126,8 +153,12 @@
                 total:1,
                 flag:false,//编辑
                 flag1:false,//编辑
+                telNumber:'',//手机号码,
+                choose:'',//请选择
+                applyTime:'',//申请时间
                 form:{
                     ad_place:0,
+                    content:"",
                 },
                 formAdd:{
                     num:'',
@@ -140,7 +171,14 @@
                     }, {
                     value: 2,
                     label: '拒绝'
-                    }],
+                }],
+                options1: [{
+                    value: 1,
+                    label: '同意'
+                    }, {
+                    value: 2,
+                    label: '拒绝'
+                }],
             }
         },
         methods:{
@@ -174,10 +212,10 @@
             },
             //编辑提交
             submitEdit(){
-                console.log(this.form)
                 let data={
                     id:this.form.id,
-                    ad_place:this.form.ad_place,
+                    status:this.form.ad_place,
+                    remarks:this.form.content
                 }
                 cashoutEdit(data).then(res=>{
                     if(res.code==200){
@@ -185,14 +223,40 @@
                             message:res.msg,
                             type:'success'
                         })
-                        this.flag = false
                         this.getBannerList()
                     }
+                    console.log(res)
+                })
+            },
+            //搜索
+            search(){
+                this.time()
+                let data={
+                    status:this.choose,
+                    member:this.telNumber,
+                    time:this.applyTime
+                }
+                cashout(data).then(res=>{
+                   this.tableData = res.data.data
                 })
             },
             //新增
             submitAdd(){
-                console.log(this.formAdd)
+                let data={
+                    mobile:this.formAdd.num,
+                    price:this.formAdd.money,
+                    remarks:this.formAdd.note
+                }
+                cashoutAdd(data).then(res=>{
+                    if(res.code==200){
+                        this.$message({
+                            message:res.msg,
+                            type:"success"
+                        })
+                        this.flag1 = false
+                        this.getBannerList()
+                    }
+                })
             },
              // 上下页
             handleCurrentChange(val) {
@@ -218,6 +282,13 @@
                     message: '已取消删除'
                 });          
                 });
+            },
+            //连接时间
+            time(){
+               if (this.applyTime) {
+                this.applyTime =  this.applyTime[0]+'-'+this.applyTime[1]
+               }
+             
             }
         },
         created(){
@@ -229,8 +300,13 @@
 <style lang="scss">
 .banner{
     .container{
+        .SearchBar{
+            margin-bottom: 10px;
+        }
         .title{
-            margin-bottom: 20px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
             button{
                 background: #1ABC9C;
                 color:#fff;

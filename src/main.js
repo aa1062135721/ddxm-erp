@@ -93,6 +93,23 @@ function saveObjArr(name, data) { //localStorage 存储数组对象的方法
 function getObjArr(name) { //localStorage 获取数组对象的方法
     return JSON.parse(window.localStorage.getItem(name));
 }
+//限制el-input 只能输入数字并限制长度
+Vue.directive('enterNumber', {
+       inserted: function (el) {
+         el.addEventListener("keypress",function(e){
+           e = e || window.event;
+           let charcode = typeof e.charCode === 'number' ? e.charCode : e.keyCode;
+           let re = /\d/;
+           if(!re.test(String.fromCharCode(charcode)) && charcode > 9 && !e.ctrlKey){
+             if(e.preventDefault){
+               e.preventDefault();
+            }else{
+              e.returnValue = false;
+            }
+          }
+        });
+     }
+    });
 
 // 按钮权限
 const hasPermission = userPermission => {

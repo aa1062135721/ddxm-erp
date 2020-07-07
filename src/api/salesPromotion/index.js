@@ -152,3 +152,13 @@ export const cashoutEdit= query => {
         data: query
     });
 };
+/**
+ *  提现管理——添加提现
+ **/
+export const cashoutAdd= query => {
+    return request({
+        url: '/cashout/cashout_mange/add',
+        method: 'post',
+        data: query
+    });
+};

@@ -8,56 +8,57 @@
                 border=""
                 tooltip-effect="dark"
                 style="width: 100%;"
+                :cell-style="{'text-align':'center'}"
             >
-                <el-table-column label="商品ID" width="120" prop="id"></el-table-column>
-                <el-table-column label="商品名称" prop="title">
+                <el-table-column label="商品ID" width="120" prop="id" align="center"></el-table-column>
+                <el-table-column label="商品名称" prop="title" align="center">
                     <template slot-scope="scope">
                         <span>{{scope.row.items[0].item_name}}</span>
                     </template>
                 </el-table-column>
-                <el-table-column label="规格名称" prop="items" width="200">
+                <el-table-column label="规格名称" prop="items" width="200" align="center">
                     <template slot-scope="scope">
                         <div v-for="(item,index) in scope.row.items" :key="index">
                             <span>{{item.specs_names}}</span>
                         </div>
                     </template>
                 </el-table-column>
-                <el-table-column label="总库存" prop="items">
+                <el-table-column label="总库存" prop="items" align="center">
                     <template slot-scope="scope">
                         <div v-for="(item,index) in scope.row.items" :key="index">
                             <span>{{item.stock}}</span>
                         </div>
                     </template>
                 </el-table-column>
-                <el-table-column label="销售原价" prop="items">
+                <el-table-column label="销售原价" prop="items" align="center">
                     <template slot-scope="scope">
                         <div v-for="(item,index) in scope.row.items" :key="index">
                             <span>{{item.old_price}}</span>
                         </div>
                     </template>
                 </el-table-column>
-                 <el-table-column label="活动价格" prop="items">
+                 <el-table-column label="活动价格" prop="items"  width="110" align="center">
                     <template slot-scope="scope">
                         <div v-for="(item,index) in scope.row.items" :key="index">
                             <el-input v-model="item.price" type="number"></el-input>
                         </div>
                     </template>
                 </el-table-column>
-                 <el-table-column label="限购数量"  align="center" prop="people_num">
+                 <el-table-column label="限购数量"  align="center" prop="people_num"  width="110">
                     <template slot-scope="scope">
                        <div v-for="(item,index) in scope.row.items" :key="index">
                             <el-input v-model="item.residue_num" type="number"></el-input>
                         </div>
                     </template>
                 </el-table-column>
-                 <el-table-column label="虚拟销量" prop="items">
+                 <el-table-column label="虚拟销量" prop="items"  width="110" align="center">
                     <template slot-scope="scope">
                         <div v-for="(item,index) in scope.row.items" :key="index">
                              <el-input v-model="item.virtually_num" type="number"></el-input>
                         </div>
                     </template>
                 </el-table-column>
-                <el-table-column width="130" label="操作">
+                <el-table-column width="130" label="操作" align="center">
                     <template slot-scope="scope">
                         <el-button
                             style="color:#1ABC9C"
@@ -210,6 +211,7 @@ import { Stats } from 'fs';
                  let data={
                     id:this.id,
                     title:this.form.name,
+                    type: 1,
                     people_num:this.form.buy,
                     start_time:this.getTimestamp(this.form.start_time) ,
                     end_time:this.getTimestamp(this.form.end_time) ,
