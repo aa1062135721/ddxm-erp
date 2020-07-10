@@ -2,7 +2,7 @@
     <div class="addClass">
         <div class="container">
             <div class="title">
-                <p>添加分类</p>
+                <p>编辑分类</p>
             </div>
             <div class="main">
                 <el-form ref="form" :model="form" label-width="80px">
@@ -19,12 +19,16 @@
                         <el-input style="width:214px" v-model="form.sorting"></el-input>
                     </el-form-item>
                     <el-form-item label="是否显示">
-                        <el-radio v-model="form.checkList" label="0">是</el-radio>
-                        <el-radio v-model="form.checkList" label="1">否</el-radio>
+                        <el-radio-group v-model="form.checkList">
+                            <el-radio :label="0">是</el-radio>
+                            <el-radio :label="1">否</el-radio>
+                        </el-radio-group>
                     </el-form-item>
                     <el-form-item label="分类类型">
-                        <el-radio v-model="form.checkType" label="1">商品分类</el-radio>
-                        <el-radio v-model="form.checkType" label="2">服务分类</el-radio>
+                        <el-radio-group v-model="form.checkType">
+                            <el-radio :label="1">商品分类</el-radio>
+                            <el-radio :label="2">服务分类</el-radio>
+                        </el-radio-group>
                     </el-form-item>
                     <el-form-item label="分类图标">
                         <Clickupload @getImgUrls="getImgUrls"></Clickupload>
@@ -48,8 +52,8 @@ export default {
                 name: '',
                 sorting: '',
                 region: null,
-                checkList: null,
-                checkType: [],
+                checkList: '',
+                checkType: '',
                 imgUrl: ''
             },
             fatherId: 0
@@ -60,7 +64,6 @@ export default {
             let data = {
                 pid: this.fatherId,
                 gc_name: this.form.name,
-                gc_sort: this.form.sorting,
                 gc_status: this.form.checkList,
                 gc_img: this.form.imgUrl,
                 gc_type: this.form.checkType,
@@ -77,11 +80,16 @@ export default {
         },
         //获取父级ID和级别
         getParentInfo() {
-            console.log('获取到的父级ID' + this.$route.query.row, '获取到的级别' + this.$route.query.gc_level);
-            this.form.region = this.$route.query.gc_level;
-            // if (this.$route.query.id) {
-            //     this.fatherId = this.$route.query.id;
-            // }
+            console.log( JSON.parse(this.$route.query.row) );
+            let a = JSON.parse(this.$route.query.row)
+            this.form.name = a.gc_name;
+            this.form.sorting = a.gc_sort,
+            this.form.checkList= a.gc_status,
+            this.form.checkType = a.gc_type,
+            this.form.region = a.gc_level+1;
+            if (this.$route.query.id) {
+                this.fatherId = this.$route.query.id;
+            }
         },
         //获取图片上传地址
         getImgUrls(val) {

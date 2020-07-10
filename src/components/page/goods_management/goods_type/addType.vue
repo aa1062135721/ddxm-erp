@@ -62,8 +62,15 @@
         },
         methods:{
             addtype(){
-               this.list.push(this.form.add)
-               this.form.add='';
+                if(this.form.add ==''){
+                    this.$message({
+                        message:"请输入至少一种规格"
+                    })
+                }else{
+                    this.list.push(this.form.add)
+                    this.form.add='';
+                }
+              
             },
             del(index){
                 this.list.splice(index,1)

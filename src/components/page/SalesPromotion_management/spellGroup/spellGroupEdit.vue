@@ -66,20 +66,7 @@
                         </div>
                     </template>
                 </el-table-column>
-                <el-table-column width="130" label="操作"  align="center">
-                    <template slot-scope="scope">
-                        <el-button
-                            style="color:#1ABC9C"
-                            @click="deleteGoods(scope.$index)"
-                            type="text"
-                            size="small"
-                        >删除</el-button>
-                    </template>
-                </el-table-column>
             </el-table>
-            <div class="add" style="text-align:center;color:#1ABC9C;margin-top:10px;">
-                <p @click="addGoods">点击此处添加商品</p>
-            </div>
         </div>
         <div class="fromList">
             <el-form ref="form" :model="form" label-width="80px">
@@ -137,81 +124,13 @@
             </el-form-item>
             </el-form>
         </div>
-        <div class="goodsList" v-if="flag">
-            <el-card class="box-card">
-                <div slot="header" class="clearfix">
-                    <span>选择商品</span>
-                    <el-button style="float: right; padding: 3px 0" type="text" @click="flag=false">X</el-button>
-                </div>
-                <div class="main">
-                    <div class="title" style="margin-bottom:20px;">
-                        <el-input style="width:200px" placeholder="商品名称" v-model="goodsVal"></el-input>
-                        <el-button style="background:#1ABC9C;color:#fff;margin-left:10px;" @click="searchGoods">搜索</el-button>
-                    </div>
-                    <div class="goodsTable">
-                         <el-table
-                            ref="multipleTable"
-                            :data="goodsTable"
-                            tooltip-effect="dark"
-                            style="width: 100%"
-                            @selection-change="selectionChange"
-                           >
-                            <el-table-column
-                            type="selection"
-                            width="55">
-                            </el-table-column>
-                            <el-table-column
-                            label="商品名称"
-                            prop="g_title"
-                            width="120">
-                            </el-table-column>
-                            <el-table-column
-                            prop="name"
-                            label="图片"
-                            width="120">
-                            <template slot-scope="scope">
-                                <el-avatar shape="square" :size="100"  :src="scope.row.imgurl"></el-avatar>
-                            </template>
-                            </el-table-column>
-                            <el-table-column
-                            prop="key_name"
-                            label="规格"
-                            >
-                            </el-table-column>
-                             <el-table-column
-                            prop="price"
-                            label="销售金额"
-                            show-overflow-tooltip>
-                            </el-table-column>
-                             <el-table-column
-                            prop="w_stock"
-                            label="总库存"
-                            show-overflow-tooltip>
-                            </el-table-column>
-                        </el-table>
-                    </div>
-                    <div class="block">
-                          <el-pagination
-                                @current-change="handleCurrentChange"
-                                :current-page="currentPage"
-                                layout="total, prev, pager, next, jumper"
-                                :total="total"
-                            ></el-pagination>
-                    </div>
-                </div>
-                <div class="btn">
-                    <el-button style="background:#1ABC9C;color:#fff" @click="sure">确定</el-button>
-                    <el-button @click="flag = false">取消</el-button>
-                </div>
-            </el-card>
-        </div>
     </div>
     </div>
     
 </template>
 
 <script>
-    import {CollageEdit,goodsList} from '@/api/salesPromotion/index'
+    import {CollageEdit} from '@/api/salesPromotion/index'
     export default {
         data(){
             return{
@@ -229,9 +148,6 @@
                     group:'',//自动拼团
                 },
                 id:null,//活动ID
-                total:1,//总条数
-                currentPage: 1, //当前页
-                goodsVal:'',//搜索商品名称
                 flag:false,//控制蒙层
                 item:[],//保存选中商品
                
@@ -319,48 +235,6 @@
              getTimestamp(time) { 
                 return (new Date(time)).getTime() / 1000
             },
-            //添加商品
-            addGoods(){
-                this.flag = true
-            },
-            //获取商品列表
-            getGoodsList(){
-                goodsList().then(res=>{
-                    this.goodsTable = res.data.data
-                    this.total = res.data.total
-                    console.log(res)
-                })
-            },
-            // 上下页
-            handleCurrentChange(val) {
-                goodsList({page:val,search_val:this.goodsVal}).then(res => {
-                    this.goodsTable = res.data.data;
-                    console.log(res);
-                });
-            },
-            //搜索商品名称
-            searchGoods(){
-               goodsList({search_val:this.goodsVal}).then(res=>{
-                   this.goodsTable = res.data.data
-                   this.total = res.data.total
-               })
-            },
-            //删除行
-            deleteGoods(index){
-                this.tableData.splice(index,1)
-            },
-            //监听选中行
-            selectionChange(val){
-                this.item  = val
-            },
-            //确认添加
-            sure(){
-                let arr=[]
-                this.item.forEach(v=>{
-                    arr.push(v)
-                })
-              this.tableData = arr
-            }
         },
         created(){
             this.getSpellGroupList()

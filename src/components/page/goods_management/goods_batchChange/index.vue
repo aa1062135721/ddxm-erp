@@ -21,7 +21,7 @@
                     </div>
                 </div>
                 <div class="main">
-                    <div>
+                    <div class="left">
                         <div class="left_table" id="left_table">
                             <p>
                                 已选择
@@ -46,7 +46,7 @@
                         </div>
                     </div>
                     <img src="../../../../assets/img/arrow.png">
-                    <div>
+                    <div class="right">
                         <div class="right_table">
                             <p>
                                 已选择
@@ -264,8 +264,9 @@ export default {
             }
         }
         .sortingOptions {
-            padding: 50px 60px;
-            min-width: 100px;
+            padding: 50px 50px;
+            box-sizing: border-box;
+            width: 100%;
             margin: auto;
             .childHeader {
                 display: flex;
@@ -276,12 +277,15 @@ export default {
         }
         .main {
             display: flex;
-            width: 100%;
-            justify-content: space-around;
+            flex-wrap: 1;
+            justify-content: flex-start;
             margin-bottom: 40px;
+            .left,.right{
+                width: 35%;
+            }
             .left_table,
             .right_table {
-                width: 400px;
+                width: 100%;
                 margin-top: 20px;
                 overflow-y: scroll;
                 height: 300px;
@@ -310,9 +314,11 @@ export default {
         }
     }
     .foot {
+        width: 90%;
         border-top: 1px solid #ccc;
         padding-top: 40px;
         text-align: center;
+        margin: auto;
     }
 }
 </style>

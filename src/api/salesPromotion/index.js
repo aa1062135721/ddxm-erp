@@ -2,6 +2,17 @@
 import request from '@/utils/request';
 
 /**
+ *  商品- 商品列表
+ **/
+export const goodsList = query => {
+    return request({
+        baseURL:'/api',
+        url: '/api/item/getGoodsList',
+        method: 'post',
+        data: query
+    });
+};
+/**
  *  秒杀——秒杀列表
  **/
 export const activityList = query => {
@@ -77,17 +88,6 @@ export const CollageEdit= query => {
 export const CollageDel= query => {
     return request({
         url: '/activity/Collage/del',
-        method: 'post',
-        data: query
-    });
-};
-/**
- *  商品- 商品列表
- **/
-export const goodsList = query => {
-    return request({
-        baseURL:'/api',
-        url: '/goods/goods/getList',
         method: 'post',
         data: query
     });

@@ -67,7 +67,7 @@
                                     type="text"
                                     size="small"
                                 >查看</el-button>
-                                <el-button style="color:#1ABC9C" type="text" size="small" @click="delComment(scope.row)">删除</el-button>
+                                <el-button style="color:#1ABC9C" type="text" size="small" @click="delComment(scope.row)"  v-if="$_has('del')">删除</el-button>
                             </template>
                         </el-table-column>
                     </el-table>

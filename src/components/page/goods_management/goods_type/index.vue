@@ -32,6 +32,7 @@
                                 <el-button
                                     style="color:#1ABC9C"
                                     @click="deleteGoods(scope.row)"
+                                    v-if="$_has('del')"
                                     type="text"
                                     size="small"
                                 >删除</el-button>
@@ -60,17 +61,19 @@
                             >X</el-button>
                         </div>
                         <div class="addedit">
-                            <div>
-                                <span style="color:red;">*</span>
-                                <span style="margin-right:5px;font-size:14px;">类型名称:</span>
-                                <el-input style="width:260px" v-model="form.name"></el-input>
-                            </div>
-                            <div
-                                style="text-align:center;line-height:50px; margin-top:20px;padding-left:6px;"
-                            >
-                                <span style="margin-right:5px;font-size:14px;">类型说明:</span>
-                                <el-input style="width:260px" type="textarea" v-model="form.desc"></el-input>
-                            </div>
+                            <el-form v-model="form">
+                                <el-form-item label="类型名称:" label-width="80px">
+                                        <el-input style="width:260px" v-model="form.name"></el-input>
+                                </el-form-item>
+                                <el-form-item label="类型说明:" label-width="80px">
+                                    <el-input style="width:260px" type="textarea" v-model="form.desc"></el-input>
+                                </el-form-item>
+                                    <el-form-item label="类型属性:" label-width="80px">
+                                        <div v-for="(item,index) in form.typeName" :key="index" style="width:160px;margin:0;padding:0;margin-left:10px;">
+                                            <el-input style="width:160px;margin-top:10px;" v-model="item.gs_title"></el-input>
+                                        </div>
+                                    </el-form-item>
+                            </el-form>
                         </div>
                         <div style="text-align:right;margin-top:20px;">
                             <el-button @click="cancel">取消</el-button>
@@ -101,8 +104,10 @@ export default {
                 desc: '',
                 name: '',
                 id: null,
-                gs_pid: null
-            }
+                gs_pid: null,
+                typeName:[],//保存编辑规格名
+            },
+           
         };
     },
     methods: {
@@ -120,9 +125,11 @@ export default {
                 this.tableData.forEach(v => {
                     v.son_name = '';
                     v.child.forEach(item => {
+                        
                         v.son_name += item.gs_title + '  ';
                     });
                 });
+               
             });
         },
         //编辑类型
@@ -130,10 +137,12 @@ export default {
             if (!this.flag) {
                 this.flag = true;
             }
+            console.log(val)
             this.form.name = val.gs_title;
             this.form.desc = val.gs_desc;
             this.form.id = val.id;
             this.form.gs_pid = val.gs_pid;
+            this.form.typeName = val.child
         },
         // 确定编辑
         sureEdit() {
@@ -223,10 +232,9 @@ export default {
                 width: 400px;
                 min-height: 100px;
                 position: absolute;
-                top: 50%;
-                left: 50%;
-                margin-left: -200px;
-                margin-top: -50px;
+                z-index: 100;
+                top: 25%;
+                left: 35%;
                 .addedit {
                     text-align: center;
                 }

@@ -64,6 +64,7 @@
                                 >还原</el-button>
                                 <el-button
                                     @click="delete_goods(scope.row)"
+                                    v-if="$_has('del')"
                                     style="color:#1ABC9C"
                                     type="text"
                                     size="small"

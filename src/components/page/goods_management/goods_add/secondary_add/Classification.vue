@@ -157,7 +157,7 @@ export default {
      font-family: '微软雅黑';
     .container {
         display: flex;
-        width: 80%;
+        width: 100%;
         margin: auto;
         padding: 0;
         .asider {
@@ -190,12 +190,13 @@ export default {
             }
         }
         .section {
-            flex-grow: 1;
+            overflow-y: auto;
             padding: 60px 100px;
+            width: 100%;
             .choose_class {
                 display: flex;
                 justify-content: space-between;
-                width: 600px;
+                // width: 600px;
                 margin-top: 30px;
                 .left_class {
                     margin-top: 20px;

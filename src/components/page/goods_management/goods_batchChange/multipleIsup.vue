@@ -25,9 +25,9 @@
                         <div>
                             <el-button
                                 style="background:#1ABC9C;color:#fff;"
-                                @click="flag=true"
+                                @click="shelves"
                             >批量上架</el-button>
-                            <el-button style="background:#1ABC9C;color:#fff;" @click="rod=true">批量下架</el-button>
+                            <el-button style="background:#1ABC9C;color:#fff;" @click="soldOut">批量下架</el-button>
                         </div>
                     </div>
                     <el-table
@@ -304,6 +304,26 @@ export default {
                 });
                 console.log(res);
             });
+        },
+        //点击批量上架
+        shelves(){
+            if(this.ids.length>0){
+                this.flag = true;
+            }else{
+                this.$message({
+                    message:'请选择至少一件商品'
+                })
+            }
+            
+        },
+        soldOut(){
+             if(this.ids.length>0){
+                this.rod = true;
+            }else{
+                this.$message({
+                    message:'请选择至少一件商品'
+                })
+            }
         }
     }
 };

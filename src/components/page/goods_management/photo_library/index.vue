@@ -21,16 +21,22 @@
                         tooltip-effect="dark"
                         style="width: 100%;"
                     >
-                        <el-table-column label="编号" width="120" prop="goods_id"></el-table-column>
-                        <el-table-column label="相册名称" prop="g_title"></el-table-column>
-                        <el-table-column label="封面" prop="gr_url" width="120">
+                        <el-table-column label="编号" width="120" prop="goods_id" align="center"></el-table-column>
+                        <el-table-column label="相册名称" prop="g_title" align="center"></el-table-column>
+                        <el-table-column label="封面" prop="gr_url" width="120" align="center">
                             <template slot-scope="scope">
-                                <el-avatar :size="60" :src="scope.row.gr_url"></el-avatar>
+                                <!-- <el-avatar :size="60" :src="scope.row.gr_url"></el-avatar> -->
+                                <el-image :src="scope.row.gr_url">
+                                    <div slot="error" class="image-slot">
+                                        <!-- <i class="el-icon-picture-outline"></i> -->
+                                        <p>暂无图片</p>
+                                    </div>
+                                </el-image>
                             </template>
                         </el-table-column>
-                        <el-table-column label="图片数量" prop="count"></el-table-column>
-                        <el-table-column label="排序" width="200" prop="gr_sort"></el-table-column>
-                        <el-table-column width="130" label="操作">
+                        <el-table-column label="图片数量" prop="count" align="center"></el-table-column>
+                        <el-table-column label="排序" width="200" prop="gr_sort" align="center"></el-table-column>
+                        <el-table-column width="130" label="操作" align="center">
                             <template slot-scope="scope">
                                 <el-button
                                     style="color:#1ABC9C"
@@ -42,6 +48,7 @@
                                 <el-button
                                     style="color:#1ABC9C"
                                     @click="deleteGoods(scope.row)"
+                                    v-if="$_has('del')"
                                     type="text"
                                     size="small"
                                 >删除</el-button>

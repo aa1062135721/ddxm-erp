@@ -59,13 +59,13 @@ export default {
                 id: this.$route.query.id
             };
             goodsListFind(data).then(res => {
-               
-                console.log(this.commentList);
-                if(this.commentList.goods){
-                    this.commentList = res.data;
-                }else{
-                    this.$refs.none.innerHTML='暂无任何信息'
-                }
+                    res.data.forEach(v => {
+                        if(v.goods){
+                            this.commentList = res.data;
+                        }else{
+                        this.$refs.none.innerHTML='暂无任何信息'
+                    }
+                });
             });
         }
     },

@@ -14,33 +14,28 @@
             <template v-for="(oneItem, oneIndex) in items">
                 <el-submenu v-if="oneItem.children" :index="oneItem.path" :key="oneIndex">
                         <template slot="title">
-                            <!--<i class="el-icon-lx-copy"></i>-->
                             <span slot="title">{{ oneItem.meta.title }}</span>
                         </template>
                         <template v-for="(twoItem, twoIndex) in oneItem.children">
                             <el-submenu v-if="twoItem.children" :index="twoItem.path" :key="twoIndex">
                                 <template slot="title">
-                                    <!--<i class="el-icon-lx-copy"></i>-->
                                     <span slot="title">{{ twoItem.meta.title }}</span>
                                 </template>
                                 <el-menu-item v-for="(threeItem, threeIndex) in twoItem.children" :key="threeIndex" :index="threeItem.path">
                                     <template slot="title">
-                                        <!--<i class="el-icon-lx-copy"></i>-->
                                         <span slot="title">{{ threeItem.title }}</span>
                                     </template>
                                 </el-menu-item>
                             </el-submenu>
                             <el-menu-item v-else :index="twoItem.path" :key="twoIndex">
                                 <template slot="title">
-                                    <!--<i class="el-icon-lx-copy"></i>-->
                                     <span slot="title">{{ twoItem.meta.title }}</span>
                                 </template>
                             </el-menu-item>
                         </template>
                     </el-submenu>
                 <el-menu-item v-else :index="oneItem.path" :key="oneIndex">
-                    <template slot="title">
-                        <!--<i class="el-icon-lx-copy"></i>-->
+                    <template slot="title" >
                         <span slot="title">{{ oneItem.meta.title }}</span>
                     </template>
                 </el-menu-item>
@@ -110,6 +105,9 @@ export default {
 }
 .sidebar > ul {
     height: 100%;
+}
+.sidebar > ul >li{
+    border-bottom: 1px dotted #ccc;
 }
 .is-active{
     background-color: #FFFFFF !important;

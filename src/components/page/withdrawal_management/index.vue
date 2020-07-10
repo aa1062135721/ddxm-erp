@@ -2,10 +2,10 @@
     <div class="banner">
         <div class="container">
              <div class="title">
-                <el-button @click="flag1=true">添加</el-button>
                 <div class="SearchBar"> 
-                    <el-input  oninput="if(value.length>11)value=value.slice(0,11)" placeholder="手机号" style="width: 220px; margin-right: 10px;" v-model="telNumber" type="number" clearable></el-input>
-                    <el-select v-model="choose" placeholder="请选择" clearable>
+                    <el-button @click="flag1=true" style="margin-right:10px">添加</el-button>
+                    <el-input  oninput="if(value.length>11)value=value.slice(0,11)" placeholder="手机号" style="width: 15%; margin-right: 10px;" v-model="telNumber" type="number" clearable></el-input>
+                    <el-select v-model="choose" placeholder="请选择" clearable style="width:10%">
                         <el-option
                         v-for="item in options1"
                         :key="item.value"
@@ -19,7 +19,7 @@
                         range-separator="至"
                         start-placeholder="开始日期"
                         end-placeholder="结束日期"
-                        style="margin:0 10px;"
+                        style="margin:0 10px; width:400px;"
                         value-format="yyyy-MM-dd HH:mm:ss"
                         clearable 
                         >
@@ -306,7 +306,7 @@
         .title{
             margin-bottom: 10px;
             display: flex;
-            justify-content: space-between;
+            justify-content: flex-start;
             button{
                 background: #1ABC9C;
                 color:#fff;

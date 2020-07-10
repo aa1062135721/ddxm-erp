@@ -57,7 +57,7 @@
                             <template slot-scope="scope">
                                 <el-button
                                     style="color:#1ABC9C"
-                                    @click="handleClick(scope.row)"
+                                    @click="editClass(scope.row)"
                                     v-if="$_has('edit')"
                                     type="text"
                                     size="small"
@@ -65,6 +65,7 @@
                                 <el-button
                                     style="color:#1ABC9C"
                                     @click="deleteGoods(scope.row)"
+                                      v-if="$_has('del')"
                                     type="text"
                                     size="small"
                                 >删除</el-button>
@@ -183,6 +184,16 @@ export default {
             this.$router.push({
                 path: '/addClass'
             });
+        },
+        //编辑
+        editClass(row){
+            console.log(row)
+            this.$router.push({
+                path:'/editClass',
+                query:{
+                    row:JSON.stringify(row)
+                }
+            })
         },
         // 获取商品列表数据
         getgoods() {

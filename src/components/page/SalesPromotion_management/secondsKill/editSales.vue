@@ -58,16 +58,6 @@
                         </div>
                     </template>
                 </el-table-column>
-                <el-table-column width="130" label="操作" align="center">
-                    <template slot-scope="scope">
-                        <el-button
-                            style="color:#1ABC9C"
-                            @click="deleteGoods(scope.row)"
-                            type="text"
-                            size="small"
-                        >删除</el-button>
-                    </template>
-                </el-table-column>
             </el-table>
         </div>
         <div class="fromList">
