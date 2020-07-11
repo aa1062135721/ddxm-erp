@@ -90,7 +90,7 @@
                         <el-input style="width:40%" type="textarea" v-model="ruleForm.desc"></el-input>
                     </el-form-item>
                     <el-form-item>
-                        <el-button @click="submit">提交</el-button>
+                        <el-button @click="submit" style="background:#47c9af;color:#fff;">提交至下一步</el-button>
                     </el-form-item>
                 </el-form>
             </div>

@@ -7,7 +7,6 @@
             <div class="content">
                 <transition name="move" mode="out-in">
                         <router-view></router-view>
-
                 </transition>
                 <el-backtop target=".content"></el-backtop>
             </div>

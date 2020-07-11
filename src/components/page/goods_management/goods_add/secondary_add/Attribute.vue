@@ -118,7 +118,7 @@
                     </div>
                 </template>-->
                 <div style="text-align:center;margin-top:50px;">
-                    <el-button @click="submit">提交</el-button>
+                    <el-button @click="submit" style="background:#47c9af;color:#fff;">点击提交</el-button>
                 </div>
             </div>
         </div>

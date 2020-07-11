@@ -18,12 +18,12 @@ const service = axios.create({
      * 打包成erp系统
      * 开发环境也要把vue.config.js中的/api代理成http://testadmin2.ddxm661.com重启 TODO
      */
-    baseURL: process.env.NODE_ENV === 'development' ? '/api' : 'http://testadmin2.ddxm661.com',
+    // baseURL: process.env.NODE_ENV === 'development' ? '/api' : 'http://testadmin2.ddxm661.com',
     /**
      * 打包成shop系统
      * 开发环境也要把vue.config.js中的/api代理成http://ddxm661.com:8088重启项目 TODO
      */
-    // baseURL: process.env.NODE_ENV === 'development' ? '/aShop' : 'http://ddxm661.com:8088',
+    baseURL: process.env.NODE_ENV === 'development' ? '/aShop' : 'http://ddxm661.com:8088',
     timeout: 3000
 });
 
@@ -41,21 +41,21 @@ service.interceptors.request.use(
          * 如果打包成erp,则这个if不要注释了。
          * 如果打包成shop 这个if要注释起来
         //  */
-        if (process.env.NODE_ENV === 'production') {
-            if (config.baseURL === '/aShop') {
-                config.baseURL = 'http://ddxm661.com:8088'
-            }
-        }
+        // if (process.env.NODE_ENV === 'production') {
+        //     if (config.baseURL === '/aShop') {
+        //         config.baseURL = 'http://ddxm661.com:8088'
+        //     }
+        // }
          /**
          * erp
          * 如果打包成shop,则这个if不要注释了。
          * 如果打包成erp 这个if要注释起来
         //  */
-        // if (process.env.NODE_ENV === 'production') {
-        //     if (config.baseURL === '/api') {
-        //         config.baseURL = 'http://testadmin2.ddxm661.com'
-        //     }
-        // }
+        if (process.env.NODE_ENV === 'production') {
+            if (config.baseURL === '/api') {
+                config.baseURL = 'http://testadmin2.ddxm661.com'
+            }
+        }
         return config;
     },
     error => {
@@ -87,33 +87,33 @@ service.interceptors.response.use(
             Promise.reject();
         }
     },
-    // error => {
-    //     loading.close();
-    //     return Promise.reject(error);
-    // }
-    //测试---------------------------------------------------
     error => {
-        if (error && error.response) {
-          switch (error.response.status) {
-            case 400: error.message = '请求错误(400)'; break;
-            case 401: this.$router.push('@/components/page/Login.vue'); break;
-            case 403: error.message = '拒绝访问(403)'; break;
-            case 404: error.message = '请求出错(404)'; break;
-            case 408: error.message = '请求超时(408)'; break;
-            case 500: error.message = '服务器错误(500)'; break;
-            case 501: error.message = '服务未实现(501)'; break;
-            case 502: error.message = '网络错误(502)'; break;
-            case 503: error.message = '服务不可用(503)'; break;
-            case 504: error.message = '网络超时(504)'; break;
-            case 505: error.message = 'HTTP版本不受支持(505)'; break;
-            default: error.message = `连接出错(${error.response.status})!`;
-          }
-        } else {
-          error.message = '连接服务器失败!'
-        }
-        message.error(error.message);
         loading.close();
         return Promise.reject(error);
-      }
+    }
+    //测试---------------------------------------------------
+    // error => {
+    //     if (error && error.response) {
+    //       switch (error.response.status) {
+    //         case 400: error.message = '请求错误(400)'; break;
+    //         case 401: this.$router.push('@/components/page/Login.vue'); break;
+    //         case 403: error.message = '拒绝访问(403)'; break;
+    //         case 404: error.message = '请求出错(404)'; break;
+    //         case 408: error.message = '请求超时(408)'; break;
+    //         case 500: error.message = '服务器错误(500)'; break;
+    //         case 501: error.message = '服务未实现(501)'; break;
+    //         case 502: error.message = '网络错误(502)'; break;
+    //         case 503: error.message = '服务不可用(503)'; break;
+    //         case 504: error.message = '网络超时(504)'; break;
+    //         case 505: error.message = 'HTTP版本不受支持(505)'; break;
+    //         default: error.message = `连接出错(${error.response.status})!`;
+    //       }
+    //     } else {
+    //       error.message = '连接服务器失败!'
+    //     }
+    //     message.error(error.message);
+    //     loading.close();
+    //     return Promise.reject(error);
+    //   }
 );
 export default service;

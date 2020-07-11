@@ -109,7 +109,11 @@ export default {
                     };
                     loginErp(requestData).then(res => {
                         if (res.code === 200){
-                            this.$message.success('登录成功');
+                            this.$message({
+                                duration:1000,
+                                message:'登录成功',
+                                type:'success'
+                            })
                             this.setUserInfo(res.data);
                             this.$router.push('/');
                         }
@@ -131,7 +135,11 @@ export default {
                 };
                 loginShop(requestData).then(res => {
                     if (res.code === 200){
-                        this.$message.success('登录成功');
+                        this.$message({
+                            duration:1000,
+                            message:'登录成功',
+                            type:'success'
+                        })
                         this.setUserInfo(res.data);
                         this.$router.push('/');
                     }

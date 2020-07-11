@@ -63,7 +63,7 @@
                                     size="small"
                                 >还原</el-button>
                                 <el-button
-                                    @click="delete_goods(scope.row)"
+                                    @click="open(scope.row)"
                                     v-if="$_has('del')"
                                     style="color:#1ABC9C"
                                     type="text"
@@ -196,6 +196,23 @@ export default {
                     });
                     this.getgoods();
                 }
+            });
+        },
+        //提示
+        open(val) {
+            this.$confirm('本次删除将永久删除该商品无法找回, 是否继续?', '提示', {
+                cancelButtonText: '取消',
+                confirmButtonText: '确定',
+                type: 'warning'
+            })
+            .then(() => {
+                this.delete_goods(val);
+            })
+            .catch(() => {
+                this.$message({
+                    type: 'info',
+                    message: '已取消删除'
+                });
             });
         }
     },
