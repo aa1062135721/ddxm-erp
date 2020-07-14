@@ -66,11 +66,11 @@
                     </el-form-item>
                     <el-form-item label="分销佣金" v-if="rod">
                          <div class="radio">
-                            <p>1级分销</p>
+                            <p style="color:#666">1级分销</p>
                             <el-input v-model="ruleForm.g_dis_price.gd_one" style="width:200px"></el-input>
-                            <p>2级分销</p>
+                            <p style="color:#666">2级分销</p>
                             <el-input v-model="ruleForm.g_dis_price.gd_two" style="width:200px"></el-input>
-                            <p>3级分销</p>
+                            <p style="color:#666">3级分销</p>
                             <el-input v-model="ruleForm.g_dis_price.gd_three" style="width:200px"></el-input>
                         </div>
                     </el-form-item>
@@ -191,7 +191,7 @@ export default {
             one:'',//保存当前一级分类
             two:'',//保存当前二级分类
             three:'',//保存当前三级分类
-            goods_id: 35, //保存获取到的一级菜单id
+            goods_id: 35, //默认一级菜单id
             tableData: [], //保存一级菜单列表
             secondClass: [], //保存二级菜单列表
             thirdClass: [], //保存三级菜单列表
@@ -308,7 +308,7 @@ export default {
         input1(val){
             this.supplierId = val
         },
-        // 监听分销选项
+        // 分销选项
         changeratio(val){
             if(val===3){
                 this.rod = true

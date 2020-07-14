@@ -127,12 +127,8 @@
 <script>
 import ChooseProperty from '@/components/common/ChooseProperty';
 import { goodsSpecs } from '@/api/goods/goods_list';
-// import { quillEditor } from 'vue-quill-editor';
 import goodsupload from '@/components/common/goods_upload';
 import singerUpImg from '@/components/common/singerUpImg';
-// import 'quill/dist/quill.core.css';
-// import 'quill/dist/quill.snow.css';
-// import 'quill/dist/quill.bubble.css';
 
 export default {
     name: 'FuncFormsEdit',
@@ -153,7 +149,7 @@ export default {
                 ]
             },
             rules: {
-                type: [{ type: 'array', required: true, message: '请至少选择一个活动性质', trigger: 'change' }]
+                type: [{ type: 'array', required: true, message: '请至少选择一种商品规格', trigger: 'change' }]
             },
             PropertyList: [], //存放属性规格
             columnList: [], //存放动态列
@@ -178,6 +174,10 @@ export default {
         console.log(this.data);
     },
     methods: {
+        //增加规格
+        /**
+         * 这里用了笛卡尔积算法，具体可查看百度，笛卡尔积js算法
+         */
         addSpecifications() {
             this.ruleForm.list = [];
             let arr = [];
@@ -191,9 +191,6 @@ export default {
                     }
                 });
             }
-            // console.log(this.attribute)
-            // console.log('arr', arr);
-
             let arr1 = Object.values(arr);
             let combine = function(...chunks) {
                 let res = [];
@@ -212,13 +209,11 @@ export default {
                 helper(0, []);
                 return res;
             };
-            // // // 得到的结果
             let result = combine(...arr1);
-            // console.log('结果', result);
+            console.log('结果', result);
             let result2 = [];
             for (let item of result) {
                 let obj = { key_name: '', key: '' };
-
                 item.map((item2, index) => {
                     if (index + 1 === item.length) {
                         obj.key_name += item2.gs_title;
@@ -230,9 +225,10 @@ export default {
                 });
                 result2.push(obj);
             }
-            // console.log('最终结果', result2);
             this.ruleForm.list = result2;
+            console.log(result2)
             this.ruleForm.list.forEach(_ => {
+                console.log("111",_)
                 let msgList = _.key_name.split('_');
                 for (let i = 0; i < msgList.length; i++) {
                     _['val' + i] = msgList[i];
@@ -241,7 +237,6 @@ export default {
 
             this.columnList = [];
             this.PropertyList.forEach(_ => {
-                console.log(Object.keys(_)[0]);
                 this.columnList.push(Object.keys(_)[0]);
             });
         },
