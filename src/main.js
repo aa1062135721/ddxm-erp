@@ -30,7 +30,6 @@ router.beforeEach((to, from, next) => {
     // console.log("路由钩子函数to：",to);
     // console.log("路由钩子函数from：",from);
     // console.log("路由钩子函数next：",next);
-
     if (store.state.userInfo.username) {
         if (to.path === '/login') {
             next({ path: '/' }); // 如果再跑去登录页面则重定向到主页

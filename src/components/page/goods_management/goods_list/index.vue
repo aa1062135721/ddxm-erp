@@ -115,7 +115,7 @@
                                 >编辑</el-button>
                                 <el-button
                                     style="color:#1ABC9C"
-                                    @click="delGoods(scope.row)"
+                                    @click="open(scope.row)"
                                     v-if="$_has('del')"
                                     type="text"
                                     size="small"
@@ -419,6 +419,20 @@ export default {
             this.$router.push({
                 path: '/goods_management/goods_add',
                 query: { type: 2, val }
+            });
+        },
+        open(val) {
+            this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+            cancelButtonText: '取消',
+            confirmButtonText: '确定',
+            type: 'warning'
+            }).then(() => {
+                this.delGoods(val)
+            }).catch(() => {
+                this.$message({
+                    type: 'info',
+                    message: '已取消删除'
+                });          
             });
         }
     },

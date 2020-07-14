@@ -41,7 +41,7 @@
                         label="操作">
                             <template slot-scope="scope">
                                 <el-button style="color:#1ABC9C" @click="edit(scope.row)" v-if="$_has('edit')" type="text" size="small">编辑</el-button>
-                                <el-button style="color:#1ABC9C" @click="deleteGoods(scope.row)" type="text" size="small"   v-if="$_has('del')">删除</el-button>
+                                <el-button style="color:#1ABC9C" @click="open(scope.row)" type="text" size="small"   v-if="$_has('del')">删除</el-button>
                             </template>
                         </el-table-column>
                     </el-table>
@@ -126,6 +126,20 @@
                     this.total = res.data.count
                 })
             },
+            open(val) {
+                this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+                }).then(() => {
+                    this.deleteGoods(val)
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    });          
+                });
+            }
         },
     }
 </script>
