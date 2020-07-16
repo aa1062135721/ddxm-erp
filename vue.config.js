@@ -18,6 +18,13 @@ module.exports = {
                 pathRewrite:{
                     '/aShop':''
                 }
+            },
+            '/stores':{
+                target:'http://stores.ddxm661.com',
+                changeOrigin:true,
+                pathRewrite:{
+                    '/stores':''
+                }
             }
         }
     }

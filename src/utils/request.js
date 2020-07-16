@@ -18,12 +18,12 @@ const service = axios.create({
      * 打包成erp系统
      * 开发环境也要把vue.config.js中的/api代理成http://testadmin2.ddxm661.com重启 TODO
      */
-    baseURL: process.env.NODE_ENV === 'development' ? '/api' : 'http://testadmin2.ddxm661.com',
+    // baseURL: process.env.NODE_ENV === 'development' ? '/api' : 'http://testadmin2.ddxm661.com',
     /**
      * 打包成shop系统
      * 开发环境也要把vue.config.js中的/api代理成http://ddxm661.com:8088重启项目 TODO
      */
-    // baseURL: process.env.NODE_ENV === 'development' ? '/aShop' : 'http://ddxm661.com:8088',
+    baseURL: process.env.NODE_ENV === 'development' ? '/aShop' : 'http://ddxm661.com:8088',
     timeout: 3000
 });
 //request拦截器
@@ -35,27 +35,23 @@ service.interceptors.request.use(
             spinner: 'el-icon-loading',
             background: 'rgba(0, 0, 0, 0.7)'
         });
-
+    //打包系统时，要把下面另一个系统中的if注释掉--------------------------------------
         /**
-         * erp
-         * 如果打包成erp,则这个if不要注释了。
-         * 如果打包成shop 这个if要注释起来
-        //  */
-        if (process.env.NODE_ENV === 'production') {
-            if (config.baseURL === '/aShop') {
-                config.baseURL = 'http://ddxm661.com:8088'
-            }
-        }
-         /**
-         * shop
-         * 如果打包成shop,则这个if不要注释了。
-         * 如果打包成erp 这个if要注释起来
+         * erp系统
         //  */
         // if (process.env.NODE_ENV === 'production') {
-        //     if (config.baseURL === '/api') {
-        //         config.baseURL = 'http://testadmin2.ddxm661.com'
+        //     if (config.baseURL === '/aShop') {
+        //         config.baseURL = 'http://ddxm661.com:8088'
         //     }
         // }
+         /**
+         * shop系统
+        //  */
+        if (process.env.NODE_ENV === 'production') {
+            if (config.baseURL === '/api') {
+                config.baseURL = 'http://testadmin2.ddxm661.com'
+            }
+        }
         return config;
     },
     error => {

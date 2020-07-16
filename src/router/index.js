@@ -28,6 +28,8 @@ export const constantRoutes = [
         {path: '/timeOutEdit',component: () => import('../components/page/SalesPromotion_management/time_To_Buy/timeOutEdit'),meta: { title: '编辑限时购' }},
         {path: '/spellGroupAdd',component: () => import('../components/page/SalesPromotion_management/spellGroup/spellGroupAdd'),meta: { title: '添加拼团' }},
         {path: '/spellGroupEdit',component: () => import('../components/page/SalesPromotion_management/spellGroup/spellGroupEdit'),meta: { title: '编辑拼团' }},
+        {path: '/editUser',component: () => import('../components/page/user_management/user_list/editUser'),meta: { title: '编辑用户' }},
+        {path: '/checkUser',component: () => import('../components/page/user_management/user_list/checkUser'),meta: { title: '用户详情' }},
     ]
 },
 {path: '/login',component: () => import('../components/page/Login.vue'),meta: { title: '登录' }},
