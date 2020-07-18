@@ -1,5 +1,5 @@
 module.exports = {
-    outputDir: 'shop',
+    outputDir: 'erp',
     baseUrl: './',
     assetsDir: 'static',
     productionSourceMap: false,
