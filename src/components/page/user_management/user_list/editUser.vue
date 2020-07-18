@@ -5,7 +5,7 @@
             <div class="main">
                 <el-form v-model="form" label-width="100px" class="form">
                     <el-form-item label="手机号码：">
-                        <el-input style="number" placeholder="请输入手机号码" style="width:215px;" v-model="form.telNumber"></el-input>
+                        <el-input type="number" placeholder="请输入手机号码" style="width:215px" v-model="form.telNumber"></el-input>
                     </el-form-item>
                      <el-form-item label="用户昵称：">
                         <el-input placeholder="请输入用户昵称" style="width:215px;" v-model="form.nickName"></el-input>

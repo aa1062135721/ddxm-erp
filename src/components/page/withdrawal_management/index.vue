@@ -93,7 +93,7 @@
                     <div class="form">
                         <el-form  ref="form"  label-width="80px" v-model="form">
                             <el-form-item label="确认">
-                                    <el-select v-model="form.ad_place" placeholder="请选择">
+                                    <el-select v-model="form.ad_place" placeholder="请选择" >
                                         <el-option
                                         v-for="item in options"
                                         :key="item.value"

@@ -92,7 +92,7 @@ function saveObjArr(name, data) { //localStorage 存储数组对象的方法
 function getObjArr(name) { //localStorage 获取数组对象的方法
     return JSON.parse(window.localStorage.getItem(name));
 }
-//限制el-input 只能输入数字并限制长度
+//只能输入数字并限制长度
 Vue.directive('enterNumber', {
        inserted: function (el) {
          el.addEventListener("keypress",function(e){
@@ -110,6 +110,20 @@ Vue.directive('enterNumber', {
      }
     });
 
+// 注册滚动条加载触发事件v-loadmore绑定
+Vue.directive('loadmore', {
+    bind (el, binding) {
+        // 获取element-ui定义好的scroll盒子
+        const SELECTWRAP_DOM = el.querySelector('.el-select-dropdown .el-select-dropdown__wrap')
+        SELECTWRAP_DOM.addEventListener('scroll', function () {
+        
+        const CONDITION = this.scrollHeight - this.scrollTop <= this.clientHeight
+        if (CONDITION) {
+            binding.value()
+        }
+        })
+    }
+})
 // 按钮权限
 const hasPermission = userPermission => {
     return store.state.authButton.indexOf(userPermission) !== -1
@@ -121,3 +135,4 @@ new Vue({
     store,
     render: h => h(App)
 }).$mount('#app');
+

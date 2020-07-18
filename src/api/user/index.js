@@ -30,12 +30,22 @@ export const editMember = query => {
     });
 };
 /**
- *  用户管理-编辑
+ *  门店列表
  **/
 export const shopList = query => {
     return request({
         baseURL:'/stores',
         url: 'shop/shop_manage/getList',
+        method: 'post',
+        data: query
+    });
+};
+/**
+ *  用户管理-微信推送
+ **/
+export const sendWxMsgs = query => {
+    return request({
+        url: '/member/member_manage/sendWxMsgs',
         method: 'post',
         data: query
     });
