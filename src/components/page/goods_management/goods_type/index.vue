@@ -150,7 +150,8 @@ export default {
                 gs_title: this.form.name,
                 id: this.form.id,
                 gs_desc: this.form.desc,
-                gs_pid: this.form.gs_pid
+                gs_pid: this.form.gs_pid,
+                child:this.form.typeName
             };
             editSpecs(data).then(res => {
                 this.$message({

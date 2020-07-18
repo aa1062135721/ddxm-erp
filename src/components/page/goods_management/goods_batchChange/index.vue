@@ -45,7 +45,7 @@
                             <el-button style="background:#42c6ac;color:#fff;" @click="confirm">确定</el-button>
                         </div>
                     </div>
-                    <img src="../../../../assets/img/arrow.png">
+                    <img src="../../../../assets/img/arrow.png" @click="confirm">
                     <div class="right">
                         <div class="right_table">
                             <p>

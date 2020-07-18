@@ -6,9 +6,9 @@
         </div>
         <div class="ms-login">
             <div style="display:flex">
-                 <div class="ms-title "   @click="erp">erp系统</div>
-                 <div class="ms-title action"   @click="shop">shop系统</div>
-                 <div class="ms-title"  >门店系统</div>
+                 <div class="ms-title action" style="cursor: pointer;"   @click="erp">erp系统</div>
+                 <div class="ms-title " style="cursor: pointer;"  @click="shop">shop系统</div>
+                 <div class="ms-title"  style="cursor: pointer;" >门店系统</div>
             </div>
             <el-form :model="ErpParam" :rules="rules" ref="login" label-width="0px" class="ms-content" v-if="flag == 1">
                 <el-form-item prop="account">
@@ -166,7 +166,6 @@ export default {
 
 <style scoped>
 .login-wrap {
-    position: relative;
     width: 100%;
     height: 100%;
     background-image: url(../../assets/img/login-bg.jpg);
@@ -182,11 +181,9 @@ export default {
     border-bottom: 1px solid #ddd;
 }
 .ms-login {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    width: 350px;
-    margin: -190px 0 0 -175px;
+    width: 400px;
+    margin-left: 40%;
+    margin-top: 10px;
     border-radius: 5px;
     background: rgba(255, 255, 255, 0.3);
     overflow: hidden;

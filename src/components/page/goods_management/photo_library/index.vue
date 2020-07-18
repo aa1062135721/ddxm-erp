@@ -28,8 +28,8 @@
                                 <!-- <el-avatar :size="60" :src="scope.row.gr_url"></el-avatar> -->
                                 <el-image :src="scope.row.gr_url">
                                     <div slot="error" class="image-slot">
-                                        <!-- <i class="el-icon-picture-outline"></i> -->
-                                        <p>暂无图片</p>
+                                        <i class="el-icon-picture-outline" style="font-size:40px"></i>
+                                        <!-- <p>暂无图片</p> -->
                                     </div>
                                 </el-image>
                             </template>

@@ -11,8 +11,7 @@
                     </el-form-item>
                     <el-form-item label="上级分类">
                         <el-select v-model="form.region" placeholder="请选择分类">
-                            <el-option value="1" v-if="!form.region"></el-option>
-                            <el-option value="2"></el-option>
+                            <el-option value="1" ></el-option>
                         </el-select>
                     </el-form-item>
                     <el-form-item label="排序">
